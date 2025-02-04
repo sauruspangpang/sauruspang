@@ -39,6 +39,9 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         composable("profile") {
             ProfilePage(navController, viewmodel)
         }
+//        composable("home") {
+//            HomeScreen(navController, viewmodel)
+//        }
     }
 }
 

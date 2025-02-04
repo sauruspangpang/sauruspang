@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -30,8 +31,8 @@ import com.ksj.sauruspang.R
 fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var name by remember { mutableStateOf("") }
     var birth by remember { mutableStateOf("") }
-    var userProfile by remember { mutableStateOf(0) }
-    var selectedImage by remember { mutableStateOf(R.drawable.test1) }
+    var userProfile by remember { mutableIntStateOf(0) }
+    var selectedImage by remember { mutableIntStateOf(R.drawable.test1) }
 
     Row(
         modifier = Modifier.fillMaxSize(),
