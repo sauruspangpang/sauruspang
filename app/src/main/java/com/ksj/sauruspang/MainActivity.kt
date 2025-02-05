@@ -1,5 +1,7 @@
 package com.ksj.sauruspang
 
+import Learnpackage.HomeScreen
+import Learnpackage.StageScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
 import ProfilePackage.ProfileViewmodel
@@ -39,9 +41,12 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         composable("profile") {
             ProfilePage(navController, viewmodel)
         }
-//        composable("home") {
-//            HomeScreen(navController, viewmodel)
-//        }
+        composable("home") {
+            HomeScreen(navController, viewmodel)
+        }
+        composable("stage") {
+            StageScreen(navController, viewmodel)
+        }
     }
 }
 

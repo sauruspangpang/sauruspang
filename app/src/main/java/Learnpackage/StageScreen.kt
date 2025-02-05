@@ -1,5 +1,6 @@
 package Learnpackage
 
+import ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
@@ -27,10 +28,11 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
 @Composable
-fun StageScreen() {
+fun StageScreen(navController: NavController, viewModel: ProfileViewmodel) {
     Column(
         modifier = Modifier
             .background(Color(0xFFFDD4AA))
