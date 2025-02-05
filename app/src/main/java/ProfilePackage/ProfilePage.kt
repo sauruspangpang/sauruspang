@@ -2,6 +2,7 @@ package ProfilePackage
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -45,17 +46,17 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 modifier = Modifier.padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(profile.selectedImage),
-                    contentDescription = "profile image",
-                    modifier = Modifier
-                        .size(80.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            viewModel.profiles.remove(profile)
-                            navController.navigate("home")
-                        }
-                )
+                    Image(
+                        painter = painterResource(profile.selectedImage),
+                        contentDescription = "profile image",
+                        modifier = Modifier
+                            .size(80.dp)
+                            .clip(CircleShape)
+                            .clickable {
+                                viewModel.profiles.remove(profile)
+                                navController.navigate("home")
+                            }
+                    )
                 Column(modifier = Modifier.padding(10.dp)) {
                     Text(text = "이름: ${profile.name}", style = MaterialTheme.typography.bodyLarge)
                     Text(
