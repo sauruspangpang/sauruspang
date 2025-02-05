@@ -1,14 +1,11 @@
 package Learnpackage
 
-import android.content.pm.ActivityInfo
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import ProfilePackage.ProfileViewmodel
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,35 +26,46 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ksj.sauruspang.R
-import com.ksj.sauruspang.ui.theme.SauruspangTheme
 
-class HomeActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-        setContent {
-            SauruspangTheme {
-                HomeScreen()
+@Composable
+fun LearnScreen(navController: NavController, category: String, day: String) {
+    val images = when (category) {
+        "과일" -> listOf(R.drawable.fruit, R.drawable.fruit, R.drawable.fruit)
+        "색깔" -> listOf(R.drawable.test1, R.drawable.test2, R.drawable.test3)
+        else -> emptyList()
+    }
+
+    Column(
+        modifier = Modifier
+            .background(Color(0xFFFDD4AA))
+            .fillMaxSize()
+    ) {
+        Text(
+            text = "$category - $day",
+            style = TextStyle(
+                fontSize = 30.sp,
+                fontWeight = FontWeight.Bold,
+            ),
+            modifier = Modifier.padding(20.dp)
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+        ) {
+            images.forEach { image ->
+                Image(
+                    painter = painterResource(id = image),
+                    contentDescription = "",
+                    modifier = Modifier
+                        .size(200.dp)
+                        .padding(10.dp)
+                )
             }
         }
-    }
-}
-
-
-
-
-@Preview(
-    showBackground = true,
-    widthDp = 854,
-    heightDp = 384
-)
-@Composable
-fun HomeScreenPreview() {
-    SauruspangTheme {
-        StageScreen()
     }
 }

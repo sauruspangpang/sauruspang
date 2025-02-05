@@ -1,7 +1,9 @@
 package Learnpackage
 
+import ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 
@@ -27,10 +29,13 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.ksj.sauruspang.CategoryList
 import com.ksj.sauruspang.R
 
 @Composable
-fun StageScreen() {
+fun StageScreen(navController: NavController, viewModel: ProfileViewmodel, category: String) {
+    val items = listOf("Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7")
     Column(
         modifier = Modifier
             .background(Color(0xFFFDD4AA))
@@ -75,8 +80,8 @@ fun StageScreen() {
             modifier = Modifier
                 .fillMaxHeight()
                 .horizontalScroll(rememberScrollState())
-        ){
-            ZigzagRow(listOf("Day1", "Day2", "Day3", "Day4", "Day5","Day6","Day7"))
+        ) {
+            ZigzagRow(items, category, navController)
         }
 
 
@@ -85,9 +90,8 @@ fun StageScreen() {
 }
 
 
-
 @Composable
-fun ZigzagRow(days: List<String>) {
+fun ZigzagRow(days: List<String>, category: String, navController: NavController) {
     Row(
         modifier = Modifier
             .padding(30.dp)
@@ -95,19 +99,22 @@ fun ZigzagRow(days: List<String>) {
         days.forEachIndexed { index, day ->
             DayBox(
                 day = day,
-                isTop = index % 2 == 0 // Alternate position (even index: bottom, odd index: top)
+                isTop = index % 2 == 0, // Alternate position (even index: bottom, odd index: top)
+                category = category,
+                navController = navController
             )
         }
     }
 }
 
 @Composable
-fun DayBox(day: String, isTop: Boolean) {
+fun DayBox(day: String, isTop: Boolean, category: String, navController: NavController) {
     Box(
         modifier = Modifier
             .offset(y = if (isTop) (-20).dp else 80.dp)
             .size(width = 140.dp, height = 90.dp)
-            .background(Color.White),
+            .background(Color.White)
+            .clickable { navController.navigate("learn/$category/$day") },
         contentAlignment = Alignment.Center
     ) {
         Text(

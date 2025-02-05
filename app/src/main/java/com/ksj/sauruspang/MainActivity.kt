@@ -1,5 +1,8 @@
 package com.ksj.sauruspang
 
+import Learnpackage.HomeScreen
+import Learnpackage.LearnScreen
+import Learnpackage.StageScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
 import ProfilePackage.ProfileViewmodel
@@ -39,9 +42,19 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         composable("profile") {
             ProfilePage(navController, viewmodel)
         }
-//        composable("home") {
-//            HomeScreen(navController, viewmodel)
-//        }
+        composable("home") {
+            HomeScreen(navController, viewmodel)
+        }
+
+        composable("stage/{category}") { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: ""
+            StageScreen(navController, viewmodel, category)
+        }
+        composable("learn/{category}/{day}") { backStackEntry ->
+            val category = backStackEntry.arguments?.getString("category") ?: ""
+            val day = backStackEntry.arguments?.getString("day") ?: ""
+            LearnScreen(navController, category, day)
+        }
     }
 }
 

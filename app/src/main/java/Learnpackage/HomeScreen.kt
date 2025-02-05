@@ -1,9 +1,11 @@
 package Learnpackage
 
+import ProfilePackage.ProfileViewmodel
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -26,11 +28,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
 
     Column(
         modifier = Modifier
@@ -76,13 +79,13 @@ fun HomeScreen() {
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ){
-            CategoryBox(R.drawable.rectangle1,"차")
-            CategoryBox(R.drawable.rectangle1,"차")
-            CategoryBox(R.drawable.rectangle1,"차")
-            CategoryBox(R.drawable.rectangle1,"차")
-            CategoryBox(R.drawable.rectangle1,"차")
-            CategoryBox(R.drawable.rectangle1,"차")
-            CategoryBox(R.drawable.rectangle1,"차")
+            CategoryBox(R.drawable.rectangle1,"과일", navController)
+            CategoryBox(R.drawable.rectangle1,"색깔", navController)
+//            CategoryBox(R.drawable.rectangle1,"차", navController)
+//            CategoryBox(R.drawable.rectangle1,"차", navController)
+//            CategoryBox(R.drawable.rectangle1,"차", navController)
+//            CategoryBox(R.drawable.rectangle1,"차", navController)
+//            CategoryBox(R.drawable.rectangle1,"차", navController)
 
         }
 
@@ -94,7 +97,7 @@ fun HomeScreen() {
 
 
 @Composable
-fun CategoryBox(fruit: Int, name:String){
+fun CategoryBox(fruit: Int, name:String, navController: NavController){
     Box(
         modifier = Modifier
             .fillMaxHeight()
@@ -107,6 +110,7 @@ fun CategoryBox(fruit: Int, name:String){
             modifier = Modifier
                 .size(180.dp)
                 .align(Alignment.Center)
+                .clickable { navController.navigate("stage/$name") }
         )
         Image(
             painter = painterResource(id = R.drawable.fruit),
