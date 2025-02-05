@@ -25,6 +25,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="Learnpackage.HomeActivity"
+            android:configChanges="orientation"
+            android:screenOrientation= "sensorLandscape"
+            tools:ignore="LockedOrientationActivity">
+        </activity>
     </application>
 
 </manifest>
