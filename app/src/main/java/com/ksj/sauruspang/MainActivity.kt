@@ -3,6 +3,7 @@ package com.ksj.sauruspang
 import Learnpackage.HomeScreen
 import Learnpackage.LearnScreen
 import Learnpackage.StageScreen
+import Learnpackage.WordQuizScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
 import ProfilePackage.ProfileViewmodel
@@ -30,10 +31,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 @Composable
 fun NaySys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
-    NavHost(navController = navController, if (ProfileViewmodel().profiles.isEmpty()) "main" else "profile",
+    NavHost(navController = navController,
+        if (ProfileViewmodel().profiles.isEmpty()) "main" else "profile",
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }) {
         composable("main") {
@@ -53,7 +56,15 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         composable("learn/{category}/{day}") { backStackEntry ->
             val category = backStackEntry.arguments?.getString("category") ?: ""
             val day = backStackEntry.arguments?.getString("day") ?: ""
-            LearnScreen(navController, category, day)
+            if (category == "과일"
+                || category == "색깔"
+                || category == "동물"
+                || category == "이동수단"
+                || category == "학용품"
+                || category == "옷"
+            ) {
+                LearnScreen(navController, category, day)
+            } else WordQuizScreen(navController, category, day)
         }
     }
 }
