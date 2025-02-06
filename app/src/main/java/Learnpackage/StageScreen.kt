@@ -6,7 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
+
 import androidx.compose.foundation.layout.Column
+
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -21,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -30,8 +33,9 @@ import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
 @Composable
-fun StageScreen(navController: NavController, viewModel: ProfileViewmodel, category: String) {
-    val items = listOf("Day1", "Day2", "Day3", "Day4", "Day5", "Day6", "Day7")
+fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel) {
+    val category = QuizCategory.allCategories.find { it.name == categoryName }
+
     Column(
         modifier = Modifier
             .background(Color(0xFFFDD4AA))
@@ -69,9 +73,6 @@ fun StageScreen(navController: NavController, viewModel: ProfileViewmodel, categ
                 contentDescription = "",
                 modifier = Modifier
                     .size(70.dp)
-                    .clickable {
-                        navController.navigate("Rcoginition")
-                    }
             )
 
         }
@@ -79,8 +80,10 @@ fun StageScreen(navController: NavController, viewModel: ProfileViewmodel, categ
             modifier = Modifier
                 .fillMaxHeight()
                 .horizontalScroll(rememberScrollState())
-        ) {
-            ZigzagRow(items, category, navController)
+        ){
+            category?.days?.let { days ->
+                ZigzagRow(days, categoryName, navController)
+            }
         }
 
 
@@ -89,17 +92,19 @@ fun StageScreen(navController: NavController, viewModel: ProfileViewmodel, categ
 }
 
 
+
 @Composable
-fun ZigzagRow(days: List<String>, category: String, navController: NavController) {
+fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController) {
     Row(
         modifier = Modifier
             .padding(30.dp)
+
     ) {
         days.forEachIndexed { index, day ->
             DayBox(
-                day = day,
-                isTop = index % 2 == 0, // Alternate position (even index: bottom, odd index: top)
-                category = category,
+                dayIndex = day.dayNumber-1,
+                isTop = index % 2 == 0,
+                categoryName = categoryName,
                 navController = navController
             )
         }
@@ -107,20 +112,20 @@ fun ZigzagRow(days: List<String>, category: String, navController: NavController
 }
 
 @Composable
-fun DayBox(day: String, isTop: Boolean, category: String, navController: NavController) {
+fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: NavController) {
     Box(
         modifier = Modifier
             .offset(y = if (isTop) (-20).dp else 80.dp)
             .size(width = 140.dp, height = 90.dp)
             .background(Color.White)
-            .clickable { navController.navigate("learn/$category/$day") },
+            .clickable {
+                navController.navigate("learn/$categoryName/$dayIndex")
+            },
         contentAlignment = Alignment.Center
     ) {
         Text(
-            day,
-            style = TextStyle(
-                fontSize = 40.sp
-            )
+            "Day ${dayIndex+1}",
+            style = TextStyle(fontSize = 40.sp)
         )
     }
 }

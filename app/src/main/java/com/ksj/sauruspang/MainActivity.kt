@@ -1,10 +1,11 @@
 package com.ksj.sauruspang
 
+import Learnpackage.CameraScreen
 import Learnpackage.HomeScreen
 import Learnpackage.LearnScreen
+import Learnpackage.QuizCategory
+import Learnpackage.QuizScreen
 import Learnpackage.StageScreen
-import Learnpackage.WordInputScreen
-import Learnpackage.WordQuizScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
 import ProfilePackage.ProfileViewmodel
@@ -24,7 +25,6 @@ import com.ksj.sauruspang.ui.theme.SauruspangTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             SauruspangTheme {
                 NaySys(viewmodel = ProfileViewmodel())
@@ -32,7 +32,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 @Composable
 fun NaySys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
@@ -49,35 +48,48 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         composable("home") {
             HomeScreen(navController, viewmodel)
         }
+        composable("stage/{categoryName}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            StageScreen(navController, categoryName, viewmodel)
+        }
+        composable("learn/{categoryName}/{dayIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
 
-        composable("stage/{category}") { backStackEntry ->
-            val category = backStackEntry.arguments?.getString("category") ?: ""
-            StageScreen(navController, viewmodel, category)
+            // Navigate to the first question index (0) when the user reaches the day
+            navController.navigate("learn/$categoryName/$dayIndex/0")
         }
-        composable("learn/{category}/{day}") { backStackEntry ->
-            val category = backStackEntry.arguments?.getString("category") ?: ""
-            val day = backStackEntry.arguments?.getString("day") ?: ""
-            if (category == "과일"
-                || category == "색깔"
-                || category == "동물"
-                || category == "이동수단"
-                || category == "학용품"
-                || category == "옷"
-            ) {
-                LearnScreen(navController, category, day)
-            } else WordQuizScreen(navController, category, day)
+
+        composable("learn/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
+            val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
+            LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
-        composable("WordInput") {
-            WordInputScreen(navController)
+
+        composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
+            val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
+            CameraScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
+
     }
 }
 
+
+//@Preview(widthDp = 1000, heightDp = 450, showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    SauruspangTheme {
+//        MainScreen(navController = rememberNavController(), viewModel = ProfileViewmodel())
+//    }
+//}
 
 @Preview(widthDp = 1000, heightDp = 450, showBackground = true)
 @Composable
 fun GreetingPreview() {
     SauruspangTheme {
-        MainScreen(navController = rememberNavController(), viewModel = ProfileViewmodel())
+        QuizScreen(navController = rememberNavController(), categoryName = "과일", 0, 0,ProfileViewmodel())
     }
 }
