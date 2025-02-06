@@ -30,7 +30,7 @@ import com.ksj.sauruspang.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WordQuizScreen(avController: NavController, category: String, day: String) {
+fun WordQuizScreen(navController: NavController, category: String, day: String) {
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
 
     Scaffold(
@@ -46,7 +46,7 @@ fun WordQuizScreen(avController: NavController, category: String, day: String) {
                             contentDescription = "",
                             modifier = Modifier
                                 .size(50.dp)
-                                .clickable { avController.popBackStack() }
+                                .clickable { navController.popBackStack() }
                         )
                         LinearProgressIndicator(
                             progress = { progress },
@@ -91,7 +91,7 @@ fun WordQuizScreen(avController: NavController, category: String, day: String) {
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable { avController.navigate("") }
+                    .clickable { navController.navigate("WordInput") }
             )
         }
     }

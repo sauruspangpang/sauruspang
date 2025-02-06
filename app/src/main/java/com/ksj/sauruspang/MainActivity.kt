@@ -3,6 +3,7 @@ package com.ksj.sauruspang
 import Learnpackage.HomeScreen
 import Learnpackage.LearnScreen
 import Learnpackage.StageScreen
+import Learnpackage.WordInputScreen
 import Learnpackage.WordQuizScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
@@ -65,6 +66,9 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             ) {
                 LearnScreen(navController, category, day)
             } else WordQuizScreen(navController, category, day)
+        }
+        composable("WordInput") {
+            WordInputScreen(navController)
         }
     }
 }

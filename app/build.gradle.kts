@@ -60,6 +60,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation("io.coil-kt:coil-compose:2.3.0")
+    implementation("androidx.compose.foundation:foundation:LATEST_COMPOSE_VERSION")
+    implementation ("com.google.mlkit:digital-ink-recognition:18.1.0")
+    implementation ("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4")
 
 
 }

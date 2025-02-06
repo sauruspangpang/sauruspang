@@ -69,6 +69,9 @@ fun StageScreen(navController: NavController, viewModel: ProfileViewmodel, categ
                 contentDescription = "",
                 modifier = Modifier
                     .size(70.dp)
+                    .clickable {
+                        navController.navigate("Rcoginition")
+                    }
             )
 
         }
