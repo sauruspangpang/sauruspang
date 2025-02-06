@@ -19,6 +19,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +31,7 @@ import androidx.navigation.NavController
 
 @Composable
 fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
+    val profile = remember { viewModel.profiles }
     Text(
         text = "사용자 프로필",
         style = MaterialTheme.typography.headlineLarge,
@@ -41,22 +44,21 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
             .padding(100.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        viewModel.profiles.forEach { profile ->
+        profile.forEach { profile ->
             Row(
                 modifier = Modifier.padding(10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                    Image(
-                        painter = painterResource(profile.selectedImage),
-                        contentDescription = "profile image",
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(CircleShape)
-                            .clickable {
-                                viewModel.profiles.remove(profile)
-                                navController.navigate("home")
-                            }
-                    )
+                Image(
+                    painter = painterResource(profile.selectedImage),
+                    contentDescription = "profile image",
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape)
+                        .clickable {
+                            navController.navigate("home")
+                        }
+                )
                 Column(modifier = Modifier.padding(10.dp)) {
                     Text(text = "이름: ${profile.name}", style = MaterialTheme.typography.bodyLarge)
                     Text(
