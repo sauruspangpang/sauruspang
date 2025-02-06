@@ -1,20 +1,18 @@
 package com.ksj.sauruspang
 
-import Learnpackage.CameraScreen
+import Learnpackage.camera.CameraScreen
 import Learnpackage.HomeScreen
-import Learnpackage.LearnScreen
-import Learnpackage.QuizCategory
-import Learnpackage.QuizScreen
+import Learnpackage.camera.LearnScreen
+import Learnpackage.camera.QuizScreen
 import Learnpackage.StageScreen
-import Learnpackage.WordInputScreen
-import Learnpackage.WordQuizScreen
+import Learnpackage.word.WordInputScreen
+import Learnpackage.word.WordQuizScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
 import ProfilePackage.ProfileViewmodel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable

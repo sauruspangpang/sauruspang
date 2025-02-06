@@ -1,5 +1,6 @@
-package Learnpackage
+package Learnpackage.camera
 
+import Learnpackage.QuizCategory
 import ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -8,13 +9,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -24,7 +26,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -38,10 +39,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LearnScreen(
+fun QuizScreen(
     navController: NavController,
     categoryName: String,
     dayIndex: Int,
@@ -62,7 +62,7 @@ fun LearnScreen(
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.arrow),
-                            contentDescription = "",
+                            contentDescription = "button to stagescreen",
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {
@@ -109,23 +109,43 @@ fun LearnScreen(
                         }
                     }
             )
-            Image(
-                painter = painterResource(id = question.imageId),
-                contentDescription = "question image",
+            Box(
                 modifier = Modifier
-                    .size(200.dp)
+                    .fillMaxHeight()
+                    .width(700.dp)
                     .align(Alignment.Center)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(id = question.imageId),
+                            contentDescription = "question image",
+                            modifier = Modifier
+                                .size(200.dp)
 
-            )
-            Text(question.english,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .offset(y=-(20).dp),
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 75.sp
-                )
-            )
+                        )
+                        Text(
+                            question.korean,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 45.sp
+                            )
+                        )
+
+                    }
+                    Column() {
+                        Button(onClick = {}) { Text("apple") }
+                    }
+
+                }
+
+            }
+
             Image(
                 painter = painterResource(id = R.drawable.frontnull),
                 contentDescription = "next question",
