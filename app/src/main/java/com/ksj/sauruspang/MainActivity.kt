@@ -1,6 +1,8 @@
 package com.ksj.sauruspang
 
 import Learnpackage.HomeScreen
+import Learnpackage.LearnScreen
+import Learnpackage.QuizCategory
 import Learnpackage.StageScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
@@ -21,7 +23,6 @@ import com.ksj.sauruspang.ui.theme.SauruspangTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContent {
             SauruspangTheme {
                 NaySys(viewmodel = ProfileViewmodel())
@@ -32,7 +33,8 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NaySys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
-    NavHost(navController = navController, if (ProfileViewmodel().profiles.isEmpty()) "main" else "profile",
+    NavHost(navController = navController,
+        if (ProfileViewmodel().profiles.isEmpty()) "main" else "profile",
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }) {
         composable("main") {
@@ -44,17 +46,41 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         composable("home") {
             HomeScreen(navController, viewmodel)
         }
-        composable("stage") {
-            StageScreen(navController, viewmodel)
+        composable("stage/{categoryName}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            StageScreen(navController, categoryName, viewmodel)
         }
+        composable("learn/{categoryName}/{dayIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
+
+            // Navigate to the first question index (0) when the user reaches the day
+            navController.navigate("learn/$categoryName/$dayIndex/0")
+        }
+
+        composable("learn/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
+            val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
+            LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+        }
+
     }
 }
 
+
+//@Preview(widthDp = 1000, heightDp = 450, showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    SauruspangTheme {
+//        MainScreen(navController = rememberNavController(), viewModel = ProfileViewmodel())
+//    }
+//}
 
 @Preview(widthDp = 1000, heightDp = 450, showBackground = true)
 @Composable
 fun GreetingPreview() {
     SauruspangTheme {
-        MainScreen(navController = rememberNavController(), viewModel = ProfileViewmodel())
+        LearnScreen(navController = rememberNavController(), categoryName = "과일", 0, 0,ProfileViewmodel())
     }
 }

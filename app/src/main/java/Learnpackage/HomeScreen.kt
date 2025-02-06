@@ -80,13 +80,10 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ) {
-            CategoryBox(R.drawable.rectangle1, "차", navController)
-            CategoryBox(R.drawable.rectangle1, "차", navController)
-            CategoryBox(R.drawable.rectangle1, "차", navController)
-            CategoryBox(R.drawable.rectangle1, "차", navController)
-            CategoryBox(R.drawable.rectangle1, "차", navController)
-            CategoryBox(R.drawable.rectangle1, "차", navController)
-            CategoryBox(R.drawable.rectangle1, "차", navController)
+            
+            QuizCategory.allCategories.forEach { category ->
+                CategoryBox(category,navController)
+            }
 
         }
 
@@ -97,30 +94,30 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
 
 
 @Composable
-fun CategoryBox(fruit: Int, name: String, navController: NavController) {
+fun CategoryBox(category: QuizCategory, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxHeight()
-//                    .background(Color.White)
+            .clickable {navController.navigate("stage/${category.name}")  }
 
     ) {
         Image(
-            painter = painterResource(id = fruit),
+            painter = painterResource(R.drawable.rectangle1),
             contentDescription = "",
             modifier = Modifier
                 .size(180.dp)
                 .align(Alignment.Center)
-                .clickable { navController.navigate("stage") }
+               // .clickable { navController.navigate("stage") }
         )
         Image(
-            painter = painterResource(id = R.drawable.fruit),
+            painter = painterResource(id = category.thumbnail),
             contentDescription = "",
             modifier = Modifier
                 .size(70.dp)
                 .align(Alignment.Center)
         )
         Text(
-            name,
+            category.name,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 50.dp),
@@ -133,7 +130,7 @@ fun CategoryBox(fruit: Int, name: String, navController: NavController) {
                 .size(60.dp)
                 .align(Alignment.TopEnd)
                 .padding(top = 10.dp, end = 10.dp)
-                .clickable { navController.navigate("stage") }
+            //    .clickable { navController.navigate("stage") }
         )
     }
 }
