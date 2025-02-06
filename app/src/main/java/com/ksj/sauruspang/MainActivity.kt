@@ -1,8 +1,10 @@
 package com.ksj.sauruspang
 
+import Learnpackage.CameraScreen
 import Learnpackage.HomeScreen
 import Learnpackage.LearnScreen
 import Learnpackage.QuizCategory
+import Learnpackage.QuizScreen
 import Learnpackage.StageScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
@@ -65,6 +67,13 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
 
+        composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
+            val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
+            CameraScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+        }
+
     }
 }
 
@@ -81,6 +90,6 @@ fun NaySys(viewmodel: ProfileViewmodel) {
 @Composable
 fun GreetingPreview() {
     SauruspangTheme {
-        LearnScreen(navController = rememberNavController(), categoryName = "과일", 0, 0,ProfileViewmodel())
+        QuizScreen(navController = rememberNavController(), categoryName = "과일", 0, 0,ProfileViewmodel())
     }
 }

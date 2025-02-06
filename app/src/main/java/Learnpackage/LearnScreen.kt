@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -30,7 +31,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
@@ -98,8 +102,10 @@ fun LearnScreen(
                     .size(140.dp)
                     .align(Alignment.CenterStart)
                     .clickable(enabled = questionIndex > 0) {
-                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}") {
-                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+                        if (questionIndex > 0) {
+                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                        } else {
+                            navController.popBackStack()
                         }
                     }
             )
@@ -111,20 +117,29 @@ fun LearnScreen(
                     .align(Alignment.Center)
 
             )
-            Text("$questionIndex,${questions.size}")
+            Text(question.english,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y=-(20).dp),
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 75.sp
+                )
+            )
             Image(
                 painter = painterResource(id = R.drawable.frontnull),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable(enabled = questionIndex < questions.size - 1)
-                    {
-                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-                        }
-
-                    }
+//                    .clickable(enabled = questionIndex < questions.size - 1)
+//                    {
+//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
+//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+//                        }
+//
+//                    }
+                    .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") }
             )
         }
     }
