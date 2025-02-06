@@ -1,5 +1,6 @@
 package Learnpackage
 
+import ProfilePackage.ProfileViewmodel
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
@@ -48,7 +50,13 @@ import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WordInputScreen(navController: NavHostController) {
+fun WordInputScreen(
+    navController: NavController,
+    categoryName: String,
+    dayIndex: Int,
+    questionIndex: Int,
+    viewModel: ProfileViewmodel
+) {
     val inkManager = remember { InkManager() }
     var recognizedText by remember { mutableStateOf("Recognition Result: ") }
     var isModelDownloaded by remember { mutableStateOf(false) }
@@ -63,7 +71,6 @@ fun WordInputScreen(navController: NavHostController) {
             isModelDownloaded = success
         }
     }
-
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -90,14 +97,13 @@ fun WordInputScreen(navController: NavHostController) {
                 drawPath(inkManager.path, Color.Black, style = Stroke(width = 5f))
             }
         }
-    }
+
         // Recognize button
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = {
                     if (isModelDownloaded) {
@@ -147,7 +153,7 @@ fun WordInputScreen(navController: NavHostController) {
             )
         }
     }
-
+}
 
 private fun downloadModel(
     model: DigitalInkRecognitionModel,

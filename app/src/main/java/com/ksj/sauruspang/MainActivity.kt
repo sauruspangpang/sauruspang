@@ -6,6 +6,8 @@ import Learnpackage.LearnScreen
 import Learnpackage.QuizCategory
 import Learnpackage.QuizScreen
 import Learnpackage.StageScreen
+import Learnpackage.WordInputScreen
+import Learnpackage.WordQuizScreen
 import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
 import ProfilePackage.ProfileViewmodel
@@ -32,6 +34,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 @Composable
 fun NaySys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
@@ -60,11 +63,24 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             navController.navigate("learn/$categoryName/$dayIndex/0")
         }
 
+
         composable("learn/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+            // Check if the category is not Fruits, Animals, or Colors
+            if (categoryName !in listOf("과일", "동물", "색")) {
+                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+            } else {
+                LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+            }
+        }
+
+        composable("WordInput/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
+            val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
+            WordInputScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
 
         composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
@@ -90,6 +106,12 @@ fun NaySys(viewmodel: ProfileViewmodel) {
 @Composable
 fun GreetingPreview() {
     SauruspangTheme {
-        QuizScreen(navController = rememberNavController(), categoryName = "과일", 0, 0,ProfileViewmodel())
+        QuizScreen(
+            navController = rememberNavController(),
+            categoryName = "과일",
+            0,
+            0,
+            ProfileViewmodel()
+        )
     }
 }

@@ -1,5 +1,6 @@
 package Learnpackage
 
+import ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +31,13 @@ import com.ksj.sauruspang.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WordQuizScreen(navController: NavController, category: String, day: String) {
+fun WordQuizScreen(
+    navController: NavController,
+    categoryName: String,
+    dayIndex: Int,
+    questionIndex: Int,
+    viewModel: ProfileViewmodel
+) {
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
 
     Scaffold(
@@ -91,7 +98,7 @@ fun WordQuizScreen(navController: NavController, category: String, day: String) 
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable { navController.navigate("WordInput") }
+                    .clickable { navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex}") }
             )
         }
     }
