@@ -64,8 +64,12 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
     implementation ("com.airbnb.android:lottie-compose:6.6.2")
 
+    val cameraxVersion = "1.3.1"
+    implementation ("androidx.camera:camera-core:${cameraxVersion}")
+    implementation ("androidx.camera:camera-camera2:${cameraxVersion}")
+    implementation ("androidx.camera:camera-view:${cameraxVersion}")
+    implementation ("androidx.camera:camera-lifecycle:$cameraxVersion")
 
-
-
-
+    implementation ("androidx.fragment:fragment-ktx:1.8.5")
+    implementation ("androidx.activity:activity-ktx:1.10.0")
 }
