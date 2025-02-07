@@ -11,6 +11,7 @@ import ProfilePackage.MainScreen
 import ProfilePackage.ProfilePage
 import ProfilePackage.ProfileViewmodel
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -22,20 +23,31 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
+    private lateinit var tts: TextToSpeech
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            SauruspangTheme {
-                NaySys(viewmodel = ProfileViewmodel())
+        tts = TextToSpeech(this) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                tts.language = Locale.US // Set default language to English
             }
         }
+        setContent {
+            SauruspangTheme {
+                NaySys(viewmodel = ProfileViewmodel(), tts)
+            }
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        tts.shutdown() // Release resources when the activity is destroyed
     }
 }
 
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel) {
+fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
     val navController = rememberNavController()
     NavHost(navController = navController,
         if (ProfileViewmodel().profiles.isEmpty()) "main" else "profile",
@@ -71,7 +83,7 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             if (categoryName !in listOf("과일", "동물", "색")) {
                 WordQuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
             } else {
-                LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+                LearnScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel)
             }
         }
 
@@ -96,11 +108,12 @@ fun NaySys(viewmodel: ProfileViewmodel) {
 @Composable
 fun GreetingPreview() {
     SauruspangTheme {
-        QuizScreen(
+        LearnScreen(
             navController = rememberNavController(),
             categoryName = "과일",
             0,
             0,
+            null,
             ProfileViewmodel()
         )
     }
