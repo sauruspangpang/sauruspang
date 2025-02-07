@@ -3,6 +3,7 @@ package Learnpackage.camera
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -54,21 +55,18 @@ fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewM
                 CapturedImage(capturedImage)
                 Row (modifier = Modifier.height(60.dp)){
                     //버튼들 박스로 만들고 텍스트로 기능 적어두고 클릭어블로 기능넣기
-                    Button(
-                        onClick = { capturedImage.value = null },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
-                        shape = RectangleShape,
+                    Box(
                         modifier = Modifier.weight(1f)
                             .fillMaxSize()
+                            .background(color = Color.Red)
+                            .clickable { capturedImage.value = null }
                     ) {
                         Text("다시 촬영", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     }
-                    Button(onClick = {
-                        navController.navigate("answer")
-                    },
-                        colors = ButtonDefaults.buttonColors(containerColor = Color.Green),
-                        shape = RectangleShape,
+                    Box(
                         modifier = Modifier.weight(1f)
+                            .clickable { navController.navigate("answer") }
+                            .background(color = Color.Green)
                             .fillMaxSize()) {
                         Text("정답 확인", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     }

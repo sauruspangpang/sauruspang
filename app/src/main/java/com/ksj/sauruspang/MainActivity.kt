@@ -44,7 +44,6 @@ class MainActivity : ComponentActivity() {
 
         }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -106,7 +105,6 @@ fun NavSys(viewmodel: ProfileViewmodel) {
             // Navigate to the first question index (0) when the user reaches the day
             navController.navigate("learn/$categoryName/$dayIndex/0")
         }
-
 
         composable("learn/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
