@@ -161,6 +161,7 @@ private fun downloadModel(
         }
 }
 
+
 // InkManager 클래스 (실시간 그리기 지원)
 class InkManager {
     var path = Path()  // 상태 변수 제거
