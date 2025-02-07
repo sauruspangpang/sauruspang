@@ -19,8 +19,8 @@ import java.io.InputStream
 
 // ImageInput sealed class 정의
 sealed class ImageInput {
-    data class UriInput(val uri: Uri) : ImageInput()
-    data class BitmapInput(val bitmap: Bitmap) : ImageInput()
+    data class UriInput(val uri: Uri?) : ImageInput()
+    data class BitmapInput(val bitmap: Bitmap?) : ImageInput()
 }
 
 object ImagePrediction {
@@ -51,10 +51,10 @@ object ImagePrediction {
             try {
                 // imageInput에 따라 임시 파일 생성
                 val imageFile = when (imageInput) {
-                    is ImageInput.UriInput -> createTempFileFromUri(context, imageInput.uri)
+                    is ImageInput.UriInput -> createTempFileFromUri(context, imageInput.uri!!)
                     is ImageInput.BitmapInput -> createTempFileFromBitmap(
                         context,
-                        imageInput.bitmap
+                        imageInput.bitmap!!
                     )
                 }
 
