@@ -1,4 +1,4 @@
-package Learnpackage
+package com.ksj.sauruspang.Learnpackage
 
 import com.ksj.sauruspang.R
 
@@ -66,6 +66,6 @@ sealed class QuizCategory(val name: String, val thumbnail :Int, val days: List<Q
         ))
 
     companion object {
-        val allCategories = listOf(Fruits, Animals, Colors,Jobs)
+        val allCategories = listOf(Fruits, Animals, Colors, Jobs)
     }
 }

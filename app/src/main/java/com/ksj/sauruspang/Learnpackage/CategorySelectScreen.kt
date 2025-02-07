@@ -1,6 +1,6 @@
-package Learnpackage
+package com.ksj.sauruspang.Learnpackage
 
-import ProfilePackage.ProfileViewmodel
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

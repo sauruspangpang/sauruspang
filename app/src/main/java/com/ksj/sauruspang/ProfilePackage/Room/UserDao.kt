@@ -1,4 +1,4 @@
-package ProfilePackage.Room
+package com.ksj.sauruspang.ProfilePackage.Room
 
 import androidx.room.Dao
 import androidx.room.Delete

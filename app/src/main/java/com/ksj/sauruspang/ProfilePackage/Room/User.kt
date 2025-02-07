@@ -1,4 +1,4 @@
-package ProfilePackage.Room
+package com.ksj.sauruspang.ProfilePackage.Room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

@@ -1,22 +1,17 @@
-package Learnpackage.camera
+package com.ksj.sauruspang.Learnpackage.camera
 
-import Learnpackage.QuizCategory
-import ProfilePackage.ProfileViewmodel
+import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -39,9 +34,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuizScreen(
+fun LearnScreen(
     navController: NavController,
     categoryName: String,
     dayIndex: Int,
@@ -61,8 +57,8 @@ fun QuizScreen(
                             .fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.arrow),
-                            contentDescription = "button to stagescreen",
+                            painter = painterResource(id = R.drawable.image_backhome),
+                            contentDescription = "",
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {
@@ -96,7 +92,7 @@ fun QuizScreen(
 
         ) {
             Image(
-                painter = painterResource(id = R.drawable.back),
+                painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier
                     .size(140.dp)
@@ -109,45 +105,25 @@ fun QuizScreen(
                         }
                     }
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(700.dp)
-                    .align(Alignment.Center)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Image(
-                            painter = painterResource(id = question.imageId),
-                            contentDescription = "question image",
-                            modifier = Modifier
-                                .size(200.dp)
-
-                        )
-                        Text(
-                            question.korean,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 45.sp
-                            )
-                        )
-
-                    }
-                    Column() {
-                        Button(onClick = {}) { Text("apple") }
-                    }
-
-                }
-
-            }
-
             Image(
-                painter = painterResource(id = R.drawable.frontnull),
+                painter = painterResource(id = question.imageId),
+                contentDescription = "question image",
+                modifier = Modifier
+                    .size(200.dp)
+                    .align(Alignment.Center)
+
+            )
+            Text(question.english,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y=-(20).dp),
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 75.sp
+                )
+            )
+            Image(
+                painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)

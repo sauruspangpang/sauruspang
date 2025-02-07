@@ -1,7 +1,7 @@
-package Learnpackage.word
+package com.ksj.sauruspang.Learnpackage.word
 
-import Learnpackage.QuizCategory
-import ProfilePackage.ProfileViewmodel
+import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

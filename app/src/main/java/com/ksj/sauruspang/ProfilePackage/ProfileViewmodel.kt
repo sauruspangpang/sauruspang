@@ -1,7 +1,7 @@
-package ProfilePackage
+package com.ksj.sauruspang.ProfilePackage
 
-import ProfilePackage.Room.AppDatabase
-import ProfilePackage.Room.User
+import com.ksj.sauruspang.ProfilePackage.Room.AppDatabase
+import com.ksj.sauruspang.ProfilePackage.Room.User
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.AndroidViewModel

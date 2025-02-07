@@ -1,4 +1,4 @@
-package ProfilePackage
+package com.ksj.sauruspang.ProfilePackage
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

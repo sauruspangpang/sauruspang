@@ -1,15 +1,15 @@
 package com.ksj.sauruspang
 
-import Learnpackage.HomeScreen
-import Learnpackage.StageScreen
-import Learnpackage.camera.CameraScreen
-import Learnpackage.camera.LearnScreen
-import Learnpackage.camera.QuizScreen
-import Learnpackage.word.WordInputScreen
-import Learnpackage.word.WordQuizScreen
-import ProfilePackage.MainScreen
-import ProfilePackage.ProfilePage
-import ProfilePackage.ProfileViewmodel
+import com.ksj.sauruspang.Learnpackage.HomeScreen
+import com.ksj.sauruspang.Learnpackage.StageScreen
+import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
+import com.ksj.sauruspang.Learnpackage.camera.LearnScreen
+import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
+import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
+import com.ksj.sauruspang.Learnpackage.word.WordQuizScreen
+import com.ksj.sauruspang.ProfilePackage.MainScreen
+import com.ksj.sauruspang.ProfilePackage.ProfilePage
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -69,7 +69,7 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             // Check if the category is not Fruits, Animals, or Colors
-            if (categoryName !in listOf("과일", "동물", "색")) {
+            if (categoryName !in listOf("과일과 야채", "동물", "색")) {
                 WordQuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
             } else {
                 LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
@@ -92,16 +92,3 @@ fun NaySys(viewmodel: ProfileViewmodel) {
 
     }
 }
-
-//@Preview(widthDp = 1000, heightDp = 450, showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    SauruspangTheme {
-//        QuizScreen(
-//            navController = rememberNavController(),
-//            categoryName = "과일",
-//            0,
-//            0,
-//        )
-//    }
-//}

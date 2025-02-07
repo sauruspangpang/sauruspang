@@ -1,6 +1,6 @@
-package Learnpackage.word
+package com.ksj.sauruspang.Learnpackage.word
 
-import ProfilePackage.ProfileViewmodel
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image

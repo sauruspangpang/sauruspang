@@ -1,4 +1,4 @@
-package ProfilePackage.Room
+package com.ksj.sauruspang.ProfilePackage.Room
 
 import android.content.Context
 import androidx.room.Database
