@@ -53,7 +53,6 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                             .size(80.dp)
                             .clip(CircleShape)
                             .clickable {
-                                viewModel.profiles.remove(profile)
                                 navController.navigate("home")
                             }
                     )

@@ -68,15 +68,6 @@ fun NaySys(viewmodel: ProfileViewmodel) {
     }
 }
 
-
-//@Preview(widthDp = 1000, heightDp = 450, showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    SauruspangTheme {
-//        MainScreen(navController = rememberNavController(), viewModel = ProfileViewmodel())
-//    }
-//}
-
 @Preview(widthDp = 1000, heightDp = 450, showBackground = true)
 @Composable
 fun GreetingPreview() {
