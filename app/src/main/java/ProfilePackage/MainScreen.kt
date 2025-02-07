@@ -7,13 +7,16 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,10 +30,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
@@ -45,7 +51,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-
         Image(
             painter = painterResource(R.drawable.createprofile_wallpaper),
             contentDescription = null,
@@ -54,8 +59,10 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
         )
         Text(
             text = "아이 프로필 생성하기",
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues())
+            fontSize = 32.sp,
+            fontWeight = FontWeight.ExtraBold,
+            modifier = Modifier
+                .padding(20.dp)
         )
         Row(
             modifier = Modifier
@@ -63,22 +70,56 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
-
             Image(
                 painter = painterResource(selectedImage),
                 contentDescription = "background",
                 modifier = Modifier
                     .padding(10.dp)
                     .size(200.dp)
-                    .clip(CircleShape)
+                    .clip(RoundedCornerShape(16.dp))
             )
+            Spacer(modifier = Modifier.width(20.dp))
             Row {
                 Column {
-                    TextField(
-                        value = name,
-                        onValueChange = { name = it },
-                        modifier = Modifier.padding(10.dp)
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        TextField(
+                            value = name,
+                            onValueChange = { name = it },
+                            modifier = Modifier.padding(10.dp)
+                        )
+                        Spacer(modifier = Modifier.width(60.dp))
+                        Box(
+                            modifier = Modifier
+                                .background(
+                                    Color(0xFF0022B2),
+                                    shape = RoundedCornerShape(12.dp)
+                                ) // 배경색 및 둥근 모서리
+                                .shadow(
+                                    elevation = 8.dp, // 그림자 강도
+                                    shape = RoundedCornerShape(12.dp), // 그림자 모양
+                                    spotColor = Color(0xFF505050) // 그림자 색상
+                                )
+                                .clickable {
+                                    if (name.isNotEmpty() && birth.isNotEmpty()) {
+                                        viewModel.addProfile(
+                                            name,
+                                            birth,
+                                            userProfile++,
+                                            selectedImage
+                                        )
+                                    }
+                                    navController.navigate("profile")
+                                }
+                        ) {
+                            Text(
+                                text = "생성하기",
+                                fontSize = 28.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFFFFFFF) // 글자색 (흰색)
+                                , modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                    }
                     TextField(
                         value = birth,
                         onValueChange = { birth = it },
@@ -88,15 +129,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                         DynamicImageLoding { selectedImage = it }
                     }
                 }
-                Button(onClick = {
-                    if (name.isNotEmpty() && birth.isNotEmpty()) {
-                        viewModel.addProfile(name, birth, userProfile++, selectedImage)
-                    }
-                    navController.navigate("profile")
-                }, modifier = Modifier.padding(10.dp)) {
-                    Text(text = "만들기")
 
-                }
             }
         }
     }
@@ -113,10 +146,12 @@ fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
                 contentDescription = "foreground",
                 modifier = Modifier
                     .padding(10.dp)
+                    .clip(RoundedCornerShape(16.dp))
                     .clickable {
                         onImageSelected(resourceId)
 
                     }
+
             )
         }
     }
