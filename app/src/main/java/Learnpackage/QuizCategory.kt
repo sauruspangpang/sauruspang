@@ -54,7 +54,17 @@ sealed class QuizCategory(val name: String, val thumbnail :Int, val days: List<Q
         ))
     ))
 
+    object Jobs : QuizCategory("직업",
+        R.drawable.jobs,
+        listOf(
+            QuizDay(1, listOf(
+                QuizQuestion(R.drawable.red, "개발자", "Developer"),
+                QuizQuestion(R.drawable.red, "PM", "Product Manager"),
+                QuizQuestion(R.drawable.red, "디자이너", "Designer")
+            ))
+        ))
+
     companion object {
-        val allCategories = listOf(Fruits, Animals, Colors)
+        val allCategories = listOf(Fruits, Animals, Colors,Jobs)
     }
 }
