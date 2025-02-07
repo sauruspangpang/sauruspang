@@ -1,10 +1,10 @@
 package com.ksj.sauruspang
 
-import Learnpackage.camera.CameraScreen
 import Learnpackage.HomeScreen
+import Learnpackage.StageScreen
+import Learnpackage.camera.CameraScreen
 import Learnpackage.camera.LearnScreen
 import Learnpackage.camera.QuizScreen
-import Learnpackage.StageScreen
 import Learnpackage.word.WordInputScreen
 import Learnpackage.word.WordQuizScreen
 import ProfilePackage.MainScreen
@@ -13,11 +13,11 @@ import ProfilePackage.ProfileViewmodel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -26,9 +26,10 @@ import com.ksj.sauruspang.ui.theme.SauruspangTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val viewModel = ProfileViewmodel(application)
         setContent {
             SauruspangTheme {
-                NaySys(viewmodel = ProfileViewmodel())
+                NaySys(viewModel)
             }
         }
     }
@@ -38,7 +39,7 @@ class MainActivity : ComponentActivity() {
 fun NaySys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
     NavHost(navController = navController,
-        if (ProfileViewmodel().profiles.isEmpty()) "main" else "profile",
+        startDestination =  if (viewmodel.profiles.isEmpty()) "main" else "home",
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }) {
         composable("main") {
@@ -92,16 +93,15 @@ fun NaySys(viewmodel: ProfileViewmodel) {
     }
 }
 
-@Preview(widthDp = 1000, heightDp = 450, showBackground = true)
-@Composable
-fun GreetingPreview() {
-    SauruspangTheme {
-        QuizScreen(
-            navController = rememberNavController(),
-            categoryName = "과일",
-            0,
-            0,
-            ProfileViewmodel()
-        )
-    }
-}
+//@Preview(widthDp = 1000, heightDp = 450, showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    SauruspangTheme {
+//        QuizScreen(
+//            navController = rememberNavController(),
+//            categoryName = "과일",
+//            0,
+//            0,
+//        )
+//    }
+//}
