@@ -77,7 +77,7 @@ fun LearnScreen(
 
     fun listen(text: String, locale: Locale) {
         if (tts != null) {
-            tts.language = locale
+            tts.language = Locale.US
         }
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
