@@ -14,8 +14,8 @@ data class QuizQuestion(
 
 
 sealed class QuizCategory(val name: String, val thumbnail :Int, val days: List<QuizDay>) {
-    object Fruits : QuizCategory("과일",
-        R.drawable.fruit,
+    object Fruits : QuizCategory("과일과 야채",
+        R.drawable.fruitsvegies_category,
         listOf(
         QuizDay(1, listOf(
             QuizQuestion(R.drawable.fruitvegies_apple, "사과", "Apple"),

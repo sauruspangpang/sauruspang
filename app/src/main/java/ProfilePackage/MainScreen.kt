@@ -4,13 +4,18 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -23,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -36,45 +42,61 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var userProfile by remember { mutableIntStateOf(0) }
     var selectedImage by remember { mutableIntStateOf(R.drawable.test1) }
 
-    Row(
-        modifier = Modifier
-            .paint(painterResource(R.drawable.kidsprofile_wallpaper))
-            .fillMaxSize(),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
+    Box(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Image(
-            painter = painterResource(selectedImage),
-            contentDescription = "background",
-            modifier = Modifier
-                .padding(10.dp)
-                .size(200.dp)
-                .clip(CircleShape)
-        )
-        Row {
-            Column {
-                TextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    modifier = Modifier.padding(10.dp)
-                )
-                TextField(
-                    value = birth,
-                    onValueChange = { birth = it },
-                    modifier = Modifier.padding(10.dp)
-                )
-                Row {
-                    DynamicImageLoding { selectedImage = it }
-                }
-            }
-            Button(onClick = {
-                if (name.isNotEmpty() && birth.isNotEmpty()) {
-                    viewModel.addProfile(name, birth, userProfile++, selectedImage)
-                }
-                navController.navigate("profile")
-            }, modifier = Modifier.padding(10.dp)) {
-                Text(text = "만들기")
 
+        Image(
+            painter = painterResource(R.drawable.createprofile_wallpaper),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+        )
+        Text(
+            text = "아이 프로필 생성하기",
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues())
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+
+            Image(
+                painter = painterResource(selectedImage),
+                contentDescription = "background",
+                modifier = Modifier
+                    .padding(10.dp)
+                    .size(200.dp)
+                    .clip(CircleShape)
+            )
+            Row {
+                Column {
+                    TextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    TextField(
+                        value = birth,
+                        onValueChange = { birth = it },
+                        modifier = Modifier.padding(10.dp)
+                    )
+                    Row {
+                        DynamicImageLoding { selectedImage = it }
+                    }
+                }
+                Button(onClick = {
+                    if (name.isNotEmpty() && birth.isNotEmpty()) {
+                        viewModel.addProfile(name, birth, userProfile++, selectedImage)
+                    }
+                    navController.navigate("profile")
+                }, modifier = Modifier.padding(10.dp)) {
+                    Text(text = "만들기")
+
+                }
             }
         }
     }
