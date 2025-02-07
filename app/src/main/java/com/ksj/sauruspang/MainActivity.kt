@@ -13,6 +13,7 @@ import ProfilePackage.ProfileViewmodel
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
@@ -90,15 +91,6 @@ fun NaySys(viewmodel: ProfileViewmodel) {
 
     }
 }
-
-
-//@Preview(widthDp = 1000, heightDp = 450, showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    SauruspangTheme {
-//        MainScreen(navController = rememberNavController(), viewModel = ProfileViewmodel())
-//    }
-//}
 
 @Preview(widthDp = 1000, heightDp = 450, showBackground = true)
 @Composable

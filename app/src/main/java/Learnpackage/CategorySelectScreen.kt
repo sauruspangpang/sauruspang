@@ -1,8 +1,6 @@
 package Learnpackage
 
 import ProfilePackage.ProfileViewmodel
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -39,6 +38,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
         modifier = Modifier
             .background(Color(0xFFFDD4AA))
             .fillMaxSize()
+            .paint(painterResource(R.drawable.main_wallpaper))
     ) {
         Row(
             modifier = Modifier
@@ -60,15 +60,16 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
                         fontWeight = FontWeight.Bold,
                     )
                 )
+                Image(painter = painterResource(R.drawable.image_starpoint), contentDescription = "")
                 Text(
-                    "⭐\uFE0F 245",
+                    "245",
                     modifier = Modifier
                         .padding(start = 20.dp),
                 )
             }
             Spacer(Modifier.weight(1f))
             Image(
-                painter = painterResource(id = R.drawable.book),
+                painter = painterResource(id = R.drawable.image_photobook),
                 contentDescription = "",
                 modifier = Modifier
                     .size(70.dp)
@@ -124,7 +125,7 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
         )
 
         Image(
-            painter = painterResource(id = R.drawable.camera),
+            painter = painterResource(id = R.drawable.image_cameramark),
             contentDescription = "",
             modifier = Modifier
                 .size(60.dp)

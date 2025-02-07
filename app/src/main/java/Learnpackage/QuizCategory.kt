@@ -18,49 +18,50 @@ sealed class QuizCategory(val name: String, val thumbnail :Int, val days: List<Q
         R.drawable.fruit,
         listOf(
         QuizDay(1, listOf(
-            QuizQuestion(R.drawable.apple, "사과", "Apple"),
-            QuizQuestion(R.drawable.banana, "바나나", "Banana"),
-            QuizQuestion(R.drawable.apple, "오렌지", "Orange")
+            QuizQuestion(R.drawable.fruitvegies_apple, "사과", "Apple"),
+            QuizQuestion(R.drawable.fruitvegies_banana, "바나나", "Banana"),
+            QuizQuestion(R.drawable.fruitvegies_watermelon, "수박", "Watermelon")
+
         )),
         QuizDay(2, listOf(
-            QuizQuestion(R.drawable.grape, "포도", "Grape"),
-            QuizQuestion(R.drawable.peach, "복숭아", "Peach"),
-            QuizQuestion(R.drawable.grape, "멜론", "Melon")
+            QuizQuestion(R.drawable.fruitvegies_pear, "배", "Pear"),
+            QuizQuestion(R.drawable.fruitvegies_strawberry, "딸기", "Strawberry"),
+            QuizQuestion(R.drawable.fruitvegies_peach, "복숭아", "Peach"),
         ))
     ))
 
     object Animals : QuizCategory("동물",
-        R.drawable.animals,
+        R.drawable.animal_category,
         listOf(
         QuizDay(1, listOf(
-            QuizQuestion(R.drawable.cat, "고양이", "Cat"),
-            QuizQuestion(R.drawable.cat, "강아지", "Dog"),
-            QuizQuestion(R.drawable.cat, "사자", "Lion")
+            QuizQuestion(R.drawable.animal_dog, "강아지", "Dog"),
+            QuizQuestion(R.drawable.animal_cat, "고양이", "Cat"),
+            QuizQuestion(R.drawable.animal_tiger, "호랑이", "Tiger"),
         )),
         QuizDay(2, listOf(
-            QuizQuestion(R.drawable.elephant, "코끼리", "Elephant"),
-            QuizQuestion(R.drawable.elephant, "호랑이", "Tiger"),
-            QuizQuestion(R.drawable.elephant, "토끼", "Rabbit")
+            QuizQuestion(R.drawable.animal_lion, "사자", "Lion"),
+            QuizQuestion(R.drawable.animal_horse, "말", "Horse"),
+            QuizQuestion(R.drawable.animal_sheep, "양", "Sheep")
         ))
     ))
 
     object Colors : QuizCategory("색",
-        R.drawable.color,
+        R.drawable.colors_category,
         listOf(
         QuizDay(1, listOf(
-            QuizQuestion(R.drawable.red, "빨강", "Red"),
-            QuizQuestion(R.drawable.red, "파랑", "Blue"),
-            QuizQuestion(R.drawable.red, "초록", "Green")
+            QuizQuestion(R.drawable.colors_red, "빨강", "Red"),
+            QuizQuestion(R.drawable.colors_orange, "주황", "Orange"),
+            QuizQuestion(R.drawable.colors_yellow, "노랑", "Yellow")
         ))
     ))
 
     object Jobs : QuizCategory("직업",
-        R.drawable.jobs,
+        R.drawable.jobs_category,
         listOf(
             QuizDay(1, listOf(
-                QuizQuestion(R.drawable.red, "개발자", "Developer"),
-                QuizQuestion(R.drawable.red, "PM", "Product Manager"),
-                QuizQuestion(R.drawable.red, "디자이너", "Designer")
+                QuizQuestion(R.drawable.jobs_teacher, "선생님", "Teacher"),
+                QuizQuestion(R.drawable.jobs_police, "경찰관", "Police Officer"),
+                QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
             ))
         ))
 

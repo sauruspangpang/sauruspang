@@ -1,5 +1,6 @@
 package Learnpackage.word
 
+import Learnpackage.QuizCategory
 import ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +39,9 @@ fun WordQuizScreen(
     questionIndex: Int,
     viewModel: ProfileViewmodel
 ) {
+    val category = QuizCategory.allCategories.find { it.name == categoryName }
+    val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
+    val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
 
     Scaffold(
@@ -49,11 +53,15 @@ fun WordQuizScreen(
                             .fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.arrow),
+                            painter = painterResource(id = R.drawable.image_backhome),
                             contentDescription = "",
                             modifier = Modifier
                                 .size(50.dp)
-                                .clickable { navController.popBackStack() }
+                                .clickable {
+                                    category?.name?.let { categoryName ->
+                                        navController.navigate("stage/$categoryName")
+                                    }
+                                }
                         )
                         LinearProgressIndicator(
                             progress = { progress },
@@ -79,7 +87,7 @@ fun WordQuizScreen(
 
         ) {
             Image(
-                painter = painterResource(id = R.drawable.back),
+                painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "",
                 modifier = Modifier
                     .size(140.dp)
@@ -93,7 +101,7 @@ fun WordQuizScreen(
                     .align(Alignment.Center)
             )
             Image(
-                painter = painterResource(id = R.drawable.frontnull),
+                painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "",
                 modifier = Modifier
                     .size(140.dp)
