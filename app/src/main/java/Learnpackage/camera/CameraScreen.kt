@@ -1,6 +1,7 @@
 package Learnpackage.camera
 
 import Learnpackage.QuizCategory
+import Learnpackage.QuizQuestion
 import ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -39,6 +41,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
+var findCategoryName = ""
+
 @Composable
 fun CameraScreen(
     navController: NavController,
@@ -50,7 +54,11 @@ fun CameraScreen(
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
-    var clickCount by remember { mutableStateOf(0) }
+    var clickCount by remember { mutableIntStateOf(0) }
+    val findCategory = findCategoryByQuestion(question)
+    val categoryname = findCategory?.javaClass?.simpleName ?: "Unknown"
+    findCategoryName = categoryname
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -96,7 +104,7 @@ fun CameraScreen(
                     .clickable { navController.navigate("camerax") }
 
             ){
-                Text("camera", modifier = Modifier.align(Alignment.Center))
+                Text(categoryname, modifier = Modifier.align(Alignment.Center))
             }
             Text(question.english,
                 modifier = Modifier
@@ -122,9 +130,7 @@ fun CameraScreen(
 
                     }
             )
-            Button(onClick = {
-
-            },
+            Button(onClick = { /*todo*/},
                     modifier = Modifier
                     .align(Alignment.BottomEnd) // Move button to bottom end
                 .size(width = 200.dp, height = 60.dp), // Bigger button
@@ -199,3 +205,10 @@ fun BackgroundScreen(category: QuizCategory?, navController: NavController) {
     }
 }
 
+fun findCategoryByQuestion(question: QuizQuestion): QuizCategory? {
+    return QuizCategory.allCategories.firstOrNull { category ->
+        category.days.any { day ->
+            day.questions.contains(question)
+        }
+    }
+}
