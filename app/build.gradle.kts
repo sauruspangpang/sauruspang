@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
-
 }
 
 android {
@@ -64,14 +63,15 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.3.0")
     implementation("com.google.mlkit:digital-ink-recognition:18.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
-
     implementation ("com.airbnb.android:lottie-compose:6.6.2")
+
 
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
     implementation("androidx.room:room-ktx:$room_version")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.8.7")
+
 
 
 

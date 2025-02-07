@@ -3,26 +3,16 @@ package Learnpackage.word
 import ProfilePackage.ProfileViewmodel
 import android.util.Log
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -30,16 +20,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
-import com.google.mlkit.vision.digitalink.DigitalInkRecognition
-import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModel
-import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
-import com.google.mlkit.vision.digitalink.DigitalInkRecognizer
-import com.google.mlkit.vision.digitalink.DigitalInkRecognizerOptions
-import com.google.mlkit.vision.digitalink.Ink
+import com.google.mlkit.vision.digitalink.*
+import com.ksj.sauruspang.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -61,13 +48,16 @@ fun WordInputScreen(
     val modelIdentifier = DigitalInkRecognitionModelIdentifier.fromLanguageTag("en-US")
         ?: throw IllegalStateException("No model found for the given language tag")
     val model = DigitalInkRecognitionModel.builder(modelIdentifier).build()
-    val rcognizedList = mutableListOf<String>()
+    val recognizedList = mutableListOf<String>()
     val targetWord = "APPLE"
+
+    // 모델 다운로드 실행
     LaunchedEffect(Unit) {
         downloadModel(model, remoteModelManager) { success ->
             isModelDownloaded = success
         }
     }
+
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -75,7 +65,15 @@ fun WordInputScreen(
             .fillMaxSize()
             .background(Color(0xFFFDD4AA))
     ) {
-        // Canvas for drawing
+        Image(
+            painter = painterResource(id = R.drawable.arrow),
+            contentDescription = "button to stagescreen",
+            modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    navController.popBackStack()
+                }
+        )
         Box(
             modifier = Modifier
                 .width(600.dp)
@@ -87,15 +85,15 @@ fun WordInputScreen(
                         onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
                         onDragEnd = { inkManager.endStroke() }
                     )
-                },
-
-            ) {
+                }
+        ) {
+            val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
             Canvas(modifier = Modifier.matchParentSize()) {
                 drawPath(inkManager.path, Color.Black, style = Stroke(width = 5f))
             }
         }
 
-        // Recognize button
+        // 버튼 Row
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -106,28 +104,24 @@ fun WordInputScreen(
                     if (isModelDownloaded) {
                         CoroutineScope(Dispatchers.IO).launch {
                             recognizedText = inkManager.recognizeInk().uppercase()
-                            // recognizedTest 첫번째와 두번째를 리스트에 넣기
-                            val recognizedList = recognizedText.split(",").take(2)
-                            rcognizedList.addAll(recognizedList)
-                            Log.e("recognizedList", rcognizedList.toString())
-                            val mismatchedIndexes1 = compareWords(targetWord, rcognizedList[0])
-                            val mismatchedIndexes2 = compareWords(targetWord, rcognizedList[1])
+                            val recognizedSplit = recognizedText.split(",").take(2)
+                            recognizedList.addAll(recognizedSplit)
+                            Log.e("recognizedList", recognizedList.toString())
 
+                            val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
+                            val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
 
-                            if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
-                                recognizedText = "정답입니다."
+                            recognizedText = if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
+                                "정답입니다."
                             } else {
-                                recognizedText = "틀렸습니다."
-
+                                "틀렸습니다."
                             }
                         }
                     } else {
                         recognizedText = "Model is not yet downloaded. Please try again later."
                     }
                 },
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(50.dp)
+                modifier = Modifier.width(120.dp).height(50.dp)
             ) {
                 Text("정답확인")
             }
@@ -136,22 +130,21 @@ fun WordInputScreen(
                     inkManager.clearCanvas()
                     recognizedText = "Recognition Result: "
                 },
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(50.dp)
+                modifier = Modifier.width(120.dp).height(50.dp)
             ) {
                 Text("다시쓰기")
             }
-
-            Text(
-                text = recognizedText,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.fillMaxWidth()
-            )
         }
+
+        // 결과 표시
+        Text(
+            text = recognizedText,
+            style = MaterialTheme.typography.bodyLarge,
+            modifier = Modifier.fillMaxWidth()
+        )
     }
 }
-
+//모델 다운로드 함수
 private fun downloadModel(
     model: DigitalInkRecognitionModel,
     remoteModelManager: RemoteModelManager,
@@ -168,8 +161,11 @@ private fun downloadModel(
         }
 }
 
+// InkManager 클래스 (실시간 그리기 지원)
 class InkManager {
-    var path by mutableStateOf(Path())
+    var path = Path()  // 상태 변수 제거
+    var shouldRedraw by mutableStateOf(false)  // Compose가 변경 감지하도록 추가
+
     private var inkBuilder = Ink.builder()
     private var strokeBuilder: Ink.Stroke.Builder? = null
     private val recognizer = createDigitalInkRecognizer()
@@ -179,11 +175,13 @@ class InkManager {
             addPoint(Ink.Point.create(offset.x, offset.y, System.currentTimeMillis()))
         }
         path.moveTo(offset.x, offset.y)
+        shouldRedraw = !shouldRedraw  // 화면을 다시 그리도록 상태 변경
     }
 
     fun addPointToStroke(offset: Offset) {
         strokeBuilder?.addPoint(Ink.Point.create(offset.x, offset.y, System.currentTimeMillis()))
         path.lineTo(offset.x, offset.y)
+        shouldRedraw = !shouldRedraw  // 화면을 다시 그리도록 상태 변경
     }
 
     fun endStroke() {
@@ -206,9 +204,11 @@ class InkManager {
     fun clearCanvas() {
         path = Path()
         inkBuilder = Ink.builder()
+        shouldRedraw = !shouldRedraw  // 화면을 다시 그리도록 상태 변경
     }
 }
 
+// ML Kit Digital Ink Recognizer 생성
 fun createDigitalInkRecognizer(): DigitalInkRecognizer {
     val modelIdentifier = DigitalInkRecognitionModelIdentifier.fromLanguageTag("en-US")
         ?: throw IllegalStateException("No model found for the given language tag")
@@ -220,11 +220,8 @@ fun createDigitalInkRecognizer(): DigitalInkRecognizer {
 // 글자 비교 함수
 fun compareWords(targetWord: String, recognizedWord: String): List<Int> {
     val mismatchedIndexes = mutableListOf<Int>()
-
-    // 제시어와 인식된 텍스트 길이가 같지 않으면, 더 짧은 길이까지만 비교
     val length = minOf(targetWord.length, recognizedWord.length)
 
-    // 각 문자 비교
     for (i in 0 until length) {
         if (targetWord[i] != recognizedWord[i]) {
             mismatchedIndexes.add(i)  // 틀린 인덱스를 추가
