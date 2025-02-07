@@ -49,7 +49,8 @@ fun CameraScreen(
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
+    camViewModel: CameraViewModel
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -64,6 +65,7 @@ fun CameraScreen(
             .fillMaxSize()
             .background(color = colorResource(R.color.background))
     ) {
+        camViewModel.clearImage()
         BackgroundScreen(category, navController)
         Box(
             modifier = Modifier

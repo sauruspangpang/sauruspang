@@ -54,7 +54,6 @@ fun CameraAnswerScreen(navController: NavController, viewModel: CameraViewModel 
                 .clickable { /*  todo  */ }
         )
         Column (modifier = Modifier.weight(1f)){
-//            CapturedImage(capturedImage)
             Row {
 
             }

@@ -129,7 +129,14 @@ fun NavSys(viewmodel: ProfileViewmodel) {
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            CameraScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+            CameraScreen(
+                navController,
+                categoryName,
+                dayIndex,
+                questionIndex,
+                viewmodel,
+                cameraViewModel
+            )
         }
     }
 }
