@@ -2,6 +2,7 @@ package Learnpackage.camera
 
 import Learnpackage.QuizCategory
 import ProfilePackage.ProfileViewmodel
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
@@ -42,7 +44,8 @@ fun LearnScreen(
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
+    sharedViewModel: SharedViewModel = viewModel()
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -122,6 +125,7 @@ fun LearnScreen(
                     fontSize = 75.sp
                 )
             )
+            sharedViewModel.sharedValue = "camera/$categoryName/$dayIndex/${questionIndex}"
             Image(
                 painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
@@ -135,7 +139,8 @@ fun LearnScreen(
 //                        }
 //
 //                    }
-                    .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") }
+                    .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}")
+                        }
             )
         }
     }

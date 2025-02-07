@@ -7,6 +7,7 @@ import Learnpackage.camera.QuizScreen
 import Learnpackage.StageScreen
 import Learnpackage.camera.CameraAnswerScreen
 import Learnpackage.camera.CameraViewModel
+import Learnpackage.camera.SharedViewModel
 import Learnpackage.camera.ShowCameraPreviewScreen
 import Learnpackage.word.WordInputScreen
 import Learnpackage.word.WordQuizScreen
@@ -75,6 +76,7 @@ class MainActivity : ComponentActivity() {
 fun NavSys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
+    val sharedViewModel: SharedViewModel = viewModel()
     NavHost(navController = navController,
         if (ProfileViewmodel().profiles.isEmpty()) "main" else "profile",
         enterTransition = { EnterTransition.None },
@@ -92,7 +94,7 @@ fun NavSys(viewmodel: ProfileViewmodel) {
             ShowCameraPreviewScreen(navController, cameraViewModel)
         }
         composable("answer") {
-            CameraAnswerScreen(navController, cameraViewModel)
+            CameraAnswerScreen(navController, cameraViewModel, sharedViewModel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
@@ -114,7 +116,7 @@ fun NavSys(viewmodel: ProfileViewmodel) {
             if (categoryName !in listOf("과일", "동물", "색")) {
                 WordQuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
             } else {
-                LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+                LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel, sharedViewModel)
             }
         }
 

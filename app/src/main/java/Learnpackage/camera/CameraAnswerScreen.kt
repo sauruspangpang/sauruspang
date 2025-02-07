@@ -1,6 +1,7 @@
 package Learnpackage.camera
 
 import android.graphics.Bitmap
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,8 +36,12 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @Composable
-fun CameraAnswerScreen(navController: NavController, viewModel: CameraViewModel = viewModel()) {
+fun CameraAnswerScreen(navController: NavController, viewModel: CameraViewModel = viewModel(), sharedViewModel: SharedViewModel = viewModel()) {
     val capturedImage = viewModel.capturedImage
+    val sharedvModel = sharedViewModel.sharedValue
+    BackHandler {
+        navController.popBackStack(sharedvModel.toString(),true)
+    }
     Column (
         modifier = Modifier
             .fillMaxSize()
@@ -66,7 +71,7 @@ fun CameraAnswerScreen(navController: NavController, viewModel: CameraViewModel 
                 .fillMaxHeight()
                 .padding(10.dp)
                 .weight(1f)
-                .clickable { /*  todo  */ }
+                .clickable { /*  todo  */  }
         )
     }
 }

@@ -17,3 +17,11 @@ class CameraViewModel : ViewModel() {
         capturedImage.value = null
     }
 }
+
+class SharedViewModel : ViewModel() {
+    var sharedValue: String? = null // 저장할 값
+
+    fun clearValue(){
+        sharedValue = null
+    }
+}
