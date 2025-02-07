@@ -69,10 +69,9 @@ dependencies {
     implementation ("androidx.camera:camera-camera2:${cameraxVersion}")
     implementation ("androidx.camera:camera-view:${cameraxVersion}")
     implementation ("androidx.camera:camera-lifecycle:$cameraxVersion")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
     implementation ("androidx.fragment:fragment-ktx:1.8.5")
     implementation ("androidx.activity:activity-ktx:1.10.0")
-
-    implementation("com.squareup.okhttp3:okhttp:4.12.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
