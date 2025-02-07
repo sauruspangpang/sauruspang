@@ -39,7 +39,7 @@ class MainActivity : ComponentActivity() {
 fun NaySys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
     NavHost(navController = navController,
-        startDestination =  if (viewmodel.profiles.isEmpty()) "main" else "home",
+        startDestination =  if (viewmodel.profiles.isEmpty()) "main" else "profile",
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }) {
         composable("main") {

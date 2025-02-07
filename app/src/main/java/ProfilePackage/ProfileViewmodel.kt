@@ -8,6 +8,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data class Profile(
@@ -21,6 +22,10 @@ class ProfileViewmodel(application: Application) : AndroidViewModel(application)
     var profiles = mutableStateListOf<Profile>()
     private val userDao = AppDatabase.getDatabase(application).userDao()
 
+    init {
+        loadProfilesFromDatabase()
+    }
+
     fun addProfile(name: String, birth: String, userprofile: Int, selectedImage: Int) {
         profiles.add(Profile(name, birth, userprofile, selectedImage))
         saveProfileToDatabase(name, birth, selectedImage)
@@ -29,7 +34,17 @@ class ProfileViewmodel(application: Application) : AndroidViewModel(application)
     private fun saveProfileToDatabase(name: String, birth: String, selectedImage: Int) {
         viewModelScope.launch(Dispatchers.IO) {
             val user = User(name = name, birth = birth, selectedImage = selectedImage)
-            userDao.insertAll(user)
+            userDao.insert(user)
+        }
+    }
+
+    private fun loadProfilesFromDatabase() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val users = userDao.getAll().first()
+            profiles.clear()
+            profiles.addAll(users.map { user ->
+                Profile(user.name ?: "", user.birth ?: "", user.uid, user.selectedImage ?: 0)
+            })
         }
     }
 }

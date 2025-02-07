@@ -8,19 +8,12 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM user")
+    @Query("SELECT * FROM User")
     fun getAll(): Flow<List<User>>
 
-//    @Query("SELECT * FROM user WHERE uid IN (:userIds)")
-//    fun loadAllByIds(userIds: IntArray): List<User>
-
-//    @Query("SELECT * FROM user WHERE Name LIKE :first AND " +
-//            "Email LIKE :last LIMIT 1")
-//    fun findByName(first: String, last: String): User
-
     @Insert
-    fun insertAll(vararg users: User)
+    suspend fun insert(user: User)
 
     @Delete
-    fun delete(user: User)
+    suspend fun delete(user: User)
 }
