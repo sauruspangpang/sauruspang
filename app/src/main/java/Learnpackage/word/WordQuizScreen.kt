@@ -1,5 +1,6 @@
 package Learnpackage.word
 
+import Learnpackage.QuizCategory
 import ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,6 +39,9 @@ fun WordQuizScreen(
     questionIndex: Int,
     viewModel: ProfileViewmodel
 ) {
+    val category = QuizCategory.allCategories.find { it.name == categoryName }
+    val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
+    val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
 
     Scaffold(
@@ -53,7 +57,11 @@ fun WordQuizScreen(
                             contentDescription = "",
                             modifier = Modifier
                                 .size(50.dp)
-                                .clickable { navController.popBackStack() }
+                                .clickable {
+                                    category?.name?.let { categoryName ->
+                                        navController.navigate("stage/$categoryName")
+                                    }
+                                }
                         )
                         LinearProgressIndicator(
                             progress = { progress },
