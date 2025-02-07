@@ -48,6 +48,15 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
+                painter = painterResource(id = R.drawable.arrow),
+                contentDescription = "button to stagescreen",
+                modifier = Modifier
+                    .size(50.dp)
+                    .clickable {
+                        navController.navigate("home")
+                    }
+            )
+            Image(
                 painter = painterResource(id = R.drawable.ellipse_1),
                 contentDescription = "",
             )

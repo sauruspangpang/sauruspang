@@ -80,9 +80,9 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
             modifier = Modifier
                 .horizontalScroll(rememberScrollState())
         ) {
-            
+
             QuizCategory.allCategories.forEach { category ->
-                CategoryBox(category,navController)
+                CategoryBox(category, navController)
             }
 
         }
@@ -98,7 +98,7 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxHeight()
-            .clickable {navController.navigate("stage/${category.name}")  }
+            .clickable { navController.navigate("stage/${category.name}") }
 
     ) {
         Image(
@@ -107,7 +107,7 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
             modifier = Modifier
                 .size(180.dp)
                 .align(Alignment.Center)
-               // .clickable { navController.navigate("stage") }
+            // .clickable { navController.navigate("stage") }
         )
         Image(
             painter = painterResource(id = category.thumbnail),
