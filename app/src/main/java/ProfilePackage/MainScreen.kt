@@ -58,7 +58,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
         Text(
-            text = "아이 프로필 생성하기",
+            text = "새로운 아이 프로필 만들기",
             fontSize = 32.sp,
             fontWeight = FontWeight.ExtraBold,
             modifier = Modifier
@@ -112,7 +112,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 }
                         ) {
                             Text(
-                                text = "생성하기",
+                                text = "만들기",
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFFFFFFFF) // 글자색 (흰색)
