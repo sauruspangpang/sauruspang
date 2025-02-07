@@ -49,7 +49,7 @@ fun WordQuizScreen(
                             .fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.arrow),
+                            painter = painterResource(id = R.drawable.image_backhome),
                             contentDescription = "",
                             modifier = Modifier
                                 .size(50.dp)
@@ -79,7 +79,7 @@ fun WordQuizScreen(
 
         ) {
             Image(
-                painter = painterResource(id = R.drawable.back),
+                painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "",
                 modifier = Modifier
                     .size(140.dp)
@@ -93,7 +93,7 @@ fun WordQuizScreen(
                     .align(Alignment.Center)
             )
             Image(
-                painter = painterResource(id = R.drawable.frontnull),
+                painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "",
                 modifier = Modifier
                     .size(140.dp)

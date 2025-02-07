@@ -63,5 +63,10 @@ dependencies {
     implementation("com.google.mlkit:digital-ink-recognition:18.1.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
 
+    implementation ("com.airbnb.android:lottie-compose:6.6.2")
+
+
+
+
 
 }
