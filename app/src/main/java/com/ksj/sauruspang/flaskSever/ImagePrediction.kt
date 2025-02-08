@@ -25,7 +25,7 @@ sealed class ImageInput {
 
 object ImagePrediction {
 
-    private const val SERVER_URL = "http://192.168.45.54:6945/predict"
+    private const val SERVER_URL = "https://starfish-evolved-molly.ngrok-free.app/predict"
     private val client by lazy { OkHttpClient.Builder().build() }
 
     // 서버에서 예측된 prediction_result을 누적 저장할 리스트
