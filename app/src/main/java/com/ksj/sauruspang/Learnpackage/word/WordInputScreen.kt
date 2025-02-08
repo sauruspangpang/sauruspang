@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.vision.digitalink.*
+import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +50,10 @@ fun WordInputScreen(
         ?: throw IllegalStateException("No model found for the given language tag")
     val model = DigitalInkRecognitionModel.builder(modelIdentifier).build()
     val recognizedList = mutableListOf<String>()
-    val targetWord = "APPLE"
+    val category = QuizCategory.allCategories.find { it.name == categoryName }
+    val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
+    val question = questions[questionIndex]
+    val targetWord = question.english.uppercase()
 
     // 모델 다운로드 실행
     LaunchedEffect(Unit) {
@@ -58,13 +62,8 @@ fun WordInputScreen(
         }
     }
 
-    Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFDD4AA))
-    ) {
+
+    Box(modifier = Modifier.fillMaxWidth()) {
         Image(
             painter = painterResource(id = R.drawable.arrow),
             contentDescription = "button to stagescreen",
@@ -74,76 +73,83 @@ fun WordInputScreen(
                     navController.popBackStack()
                 }
         )
-        Box(
-            modifier = Modifier
-                .width(600.dp)
-                .height(200.dp)
-                .background(Color.LightGray)
-                .pointerInput(Unit) {
-                    detectDragGestures(
-                        onDragStart = { offset -> inkManager.startStroke(offset) },
-                        onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
-                        onDragEnd = { inkManager.endStroke() }
-                    )
-                }
-        ) {
-            val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
-            Canvas(modifier = Modifier.matchParentSize()) {
-                drawPath(inkManager.path, Color.Black, style = Stroke(width = 5f))
+    }
+    Box(
+        modifier = Modifier
+            .width(600.dp)
+            .height(200.dp)
+            .background(Color.LightGray)
+            .pointerInput(Unit) {
+                detectDragGestures(
+                    onDragStart = { offset -> inkManager.startStroke(offset) },
+                    onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
+                    onDragEnd = { inkManager.endStroke() }
+                )
             }
+    ) {
+        val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
+        Canvas(modifier = Modifier.matchParentSize()) {
+            drawPath(inkManager.path, Color.Black, style = Stroke(width = 5f))
         }
+    }
 
-        // 버튼 Row
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = {
-                    if (isModelDownloaded) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            recognizedText = inkManager.recognizeInk().uppercase()
-                            val recognizedSplit = recognizedText.split(",").take(2)
-                            recognizedList.addAll(recognizedSplit)
-                            Log.e("recognizedList", recognizedList.toString())
+    // 버튼 Row
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button(
+            onClick = {
+                if (isModelDownloaded) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        recognizedText = inkManager.recognizeInk().uppercase()
+                        val recognizedSplit = recognizedText.split(",").take(2)
+                        recognizedList.addAll(recognizedSplit)
+                        Log.e("recognizedList", recognizedList.toString())
 
-                            val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
-                            val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
+                        val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
+                        val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
 
-                            recognizedText = if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
+                        recognizedText =
+                            if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
                                 "정답입니다."
                             } else {
                                 "틀렸습니다."
                             }
-                        }
-                    } else {
-                        recognizedText = "Model is not yet downloaded. Please try again later."
                     }
-                },
-                modifier = Modifier.width(120.dp).height(50.dp)
-            ) {
-                Text("정답확인")
-            }
-            Button(
-                onClick = {
-                    inkManager.clearCanvas()
-                    recognizedText = "Recognition Result: "
-                },
-                modifier = Modifier.width(120.dp).height(50.dp)
-            ) {
-                Text("다시쓰기")
-            }
+                } else {
+                    recognizedText = "Model is not yet downloaded. Please try again later."
+                }
+            },
+            modifier = Modifier
+                .width(120.dp)
+                .height(50.dp)
+        ) {
+            Text("정답확인")
         }
-
-        // 결과 표시
-        Text(
-            text = recognizedText,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.fillMaxWidth()
-        )
+        Button(
+            onClick = {
+                inkManager.clearCanvas()
+                recognizedText = "Recognition Result: "
+            },
+            modifier = Modifier
+                .width(120.dp)
+                .height(50.dp)
+        ) {
+            Text("다시쓰기")
+        }
     }
+
+    // 결과 표시
+    Text(
+        text = recognizedText,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.fillMaxWidth()
+    )
 }
+
+
 //모델 다운로드 함수
 private fun downloadModel(
     model: DigitalInkRecognitionModel,

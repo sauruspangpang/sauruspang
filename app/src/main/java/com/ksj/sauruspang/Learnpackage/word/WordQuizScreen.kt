@@ -92,9 +92,16 @@ fun WordQuizScreen(
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterStart)
+                    .clickable {
+                        if (questionIndex > 0) {
+                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                        } else {
+                            navController.popBackStack()
+                        }
+                    }
             )
             Image(
-                painter = painterResource(id = R.drawable.book),
+                painter = painterResource(question.imageId),
                 contentDescription = "",
                 modifier = Modifier
                     .size(200.dp)
