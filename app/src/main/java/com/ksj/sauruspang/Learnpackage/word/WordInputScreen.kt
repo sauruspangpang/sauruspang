@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -68,7 +69,7 @@ fun WordInputScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(WindowInsets.statusBars.asPaddingValues())
+            .background(color = Color(0xFFFDD4AA))
     ) {
         Box(
             modifier = Modifier
@@ -103,7 +104,7 @@ fun WordInputScreen(
                 modifier = Modifier
                     .width(600.dp)
                     .height(200.dp)
-                    .background(Color.LightGray)
+                    .background(Color.White)
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset -> inkManager.startStroke(offset) },
@@ -123,7 +124,7 @@ fun WordInputScreen(
                 )
                 val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
                 Canvas(modifier = Modifier.matchParentSize()) {
-                    drawPath(inkManager.path, Color.Black, style = Stroke(width = 5f))
+                    drawPath(inkManager.path, Color.Red, style = Stroke(width = 25f))
                 }
             }
             Image(
@@ -141,10 +142,20 @@ fun WordInputScreen(
         ) {
             Image(
                 painter = painterResource(question.imageId),
-                contentDescription = "next question",
+                contentDescription = "Question Image",
                 modifier = Modifier
                     .size(140.dp)
             )
+            Text(
+                text = recognizedText,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                ),
+                modifier = Modifier.padding(10.dp)
+            )
+            // 정답 확인 버튼
             Button(
                 onClick = {
                     if (isModelDownloaded) {
@@ -156,12 +167,12 @@ fun WordInputScreen(
 
                             val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
                             val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
-
+                            // 글자 비교 후 결과 표시
                             recognizedText =
                                 if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
                                     "정답입니다."
                                 } else {
-                                    "틀렸습니다."
+                                    "틀린 글자: ${targetWord[mismatchedIndexes1[0]]}, ${targetWord[mismatchedIndexes2[0]]}"
                                 }
                         }
                     } else {
@@ -170,7 +181,8 @@ fun WordInputScreen(
                 },
                 modifier = Modifier
                     .width(120.dp)
-                    .height(50.dp)
+                    .height(50.dp),
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text("정답확인")
             }
@@ -187,12 +199,6 @@ fun WordInputScreen(
             }
         }
 
-        // 결과 표시
-        Text(
-            text = recognizedText,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
 
