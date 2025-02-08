@@ -94,7 +94,7 @@ fun WordQuizScreen(
                     .align(Alignment.CenterStart)
                     .clickable {
                         if (questionIndex > 0) {
-                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
                         } else {
                             navController.popBackStack()
                         }
