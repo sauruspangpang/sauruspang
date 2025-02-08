@@ -173,6 +173,7 @@ fun WordInputScreen(
                                     "정답입니다."
                                 } else {
                                     "틀린 글자: ${targetWord[mismatchedIndexes1[0]]}, ${targetWord[mismatchedIndexes2[0]]}"
+                                    // 근데 왜 제대로 안나오지.. 흠..
                                 }
                         }
                     } else {
