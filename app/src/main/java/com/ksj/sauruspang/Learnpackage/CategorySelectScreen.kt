@@ -124,6 +124,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
                     contentDescription = "",
                     modifier = Modifier
                         .size(70.dp)
+                        .clickable { navController.navigate("pictorial") }
 
                 )
 

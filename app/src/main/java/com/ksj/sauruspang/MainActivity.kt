@@ -21,6 +21,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 
 class MainActivity : ComponentActivity() {
@@ -50,6 +51,9 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         }
         composable("home") {
             HomeScreen(navController, viewmodel)
+        }
+        composable("pictorial") {
+            PictorialBookScreen(navController, viewmodel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""

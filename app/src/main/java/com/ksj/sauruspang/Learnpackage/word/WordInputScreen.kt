@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +22,10 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
@@ -62,93 +66,142 @@ fun WordInputScreen(
         }
     }
 
-
-    Box(modifier = Modifier.fillMaxWidth()) {
-        Image(
-            painter = painterResource(id = R.drawable.arrow),
-            contentDescription = "button to stagescreen",
-            modifier = Modifier
-                .size(50.dp)
-                .clickable {
-                    navController.popBackStack()
-                }
-        )
-    }
-    Box(
+    Column(
         modifier = Modifier
-            .width(600.dp)
-            .height(200.dp)
-            .background(Color.LightGray)
-            .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = { offset -> inkManager.startStroke(offset) },
-                    onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
-                    onDragEnd = { inkManager.endStroke() }
-                )
-            }
+            .fillMaxSize()
+            .background(color = Color(0xFFFDD4AA))
     ) {
-        val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
-        Canvas(modifier = Modifier.matchParentSize()) {
-            drawPath(inkManager.path, Color.Black, style = Stroke(width = 5f))
-        }
-    }
-
-    // 버튼 Row
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Button(
-            onClick = {
-                if (isModelDownloaded) {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        recognizedText = inkManager.recognizeInk().uppercase()
-                        val recognizedSplit = recognizedText.split(",").take(2)
-                        recognizedList.addAll(recognizedSplit)
-                        Log.e("recognizedList", recognizedList.toString())
-
-                        val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
-                        val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
-
-                        recognizedText =
-                            if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
-                                "정답입니다."
-                            } else {
-                                "틀렸습니다."
-                            }
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.arrow),
+                contentDescription = "button to stagescreen",
+                modifier = Modifier
+                    .size(50.dp)
+                    .clickable {
+                        navController.popBackStack()
                     }
-                } else {
-                    recognizedText = "Model is not yet downloaded. Please try again later."
+            )
+        }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Image(
+                    painter = painterResource(id = R.drawable.back),
+                    contentDescription = "previous question",
+                    modifier = Modifier
+                        .size(140.dp)
+                        .clickable(enabled = questionIndex > 0) {
+                            if (questionIndex > 0) {
+                                navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                            } else {
+                                navController.popBackStack()
+                            }
+                        }
+                )
+            Box(
+                modifier = Modifier
+                    .width(600.dp)
+                    .height(200.dp)
+                    .background(Color.White)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> inkManager.startStroke(offset) },
+                            onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
+                            onDragEnd = { inkManager.endStroke() }
+                        )
+                    },
+
+                ) {
+                Text(
+                    text = "${question.english}",
+                    style = TextStyle(
+                        fontSize = 120.sp, fontWeight = FontWeight.Bold,
+                        color = Color.Black.copy(alpha = 0.2f)
+                    ),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+                val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
+                Canvas(modifier = Modifier.matchParentSize()) {
+                    drawPath(inkManager.path, Color.Red, style = Stroke(width = 25f))
                 }
-            },
-            modifier = Modifier
-                .width(120.dp)
-                .height(50.dp)
-        ) {
-            Text("정답확인")
+            }
+            Image(
+                painter = painterResource(id = R.drawable.frontnull),
+                contentDescription = "next question",
+                modifier = Modifier
+                    .size(140.dp)
+                    .clickable { navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") }
+            )
         }
-        Button(
-            onClick = {
-                inkManager.clearCanvas()
-                recognizedText = "Recognition Result: "
-            },
-            modifier = Modifier
-                .width(120.dp)
-                .height(50.dp)
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("다시쓰기")
+            Image(
+                painter = painterResource(question.imageId),
+                contentDescription = "Question Image",
+                modifier = Modifier
+                    .size(140.dp)
+            )
+            Text(
+                text = recognizedText,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                ),
+                modifier = Modifier.padding(10.dp)
+            )
+            // 정답 확인 버튼
+            Button(
+                onClick = {
+                    if (isModelDownloaded) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            recognizedText = inkManager.recognizeInk().uppercase()
+                            val recognizedSplit = recognizedText.split(",").take(2)
+                            recognizedList.addAll(recognizedSplit)
+                            Log.e("recognizedList", recognizedList.toString())
+
+                            val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
+                            val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
+                            // 글자 비교 후 결과 표시
+                            recognizedText =
+                                if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
+                                    "정답입니다."
+                                } else {
+                                    "틀린 글자: ${targetWord[mismatchedIndexes1[0]]}, ${targetWord[mismatchedIndexes2[0]]}"
+                                    // 근데 왜 제대로 안나오지.. 흠..
+                                }
+                        }
+                    } else {
+                        recognizedText = "Model is not yet downloaded. Please try again later."
+                    }
+                },
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(50.dp),
+                shape = RoundedCornerShape(10.dp)
+            ) {
+                Text("정답확인")
+            }
+            Button(
+                onClick = {
+                    inkManager.clearCanvas()
+                    recognizedText = "Recognition Result: "
+                },
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(50.dp)
+            ) {
+                Text("다시쓰기")
+            }
         }
+
     }
-
-    // 결과 표시
-    Text(
-        text = recognizedText,
-        style = MaterialTheme.typography.bodyLarge,
-        modifier = Modifier.fillMaxWidth()
-    )
 }
-
 
 //모델 다운로드 함수
 private fun downloadModel(
