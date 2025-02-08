@@ -92,3 +92,11 @@ fun NaySys(viewmodel: ProfileViewmodel) {
 
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    SauruspangTheme {
+        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel())
+    }
+}
