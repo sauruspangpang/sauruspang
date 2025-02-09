@@ -41,7 +41,7 @@ object ImagePrediction {
     fun uploadImageToServer(
         context: Context,
         imageInput: ImageInput,
-        selectedModel: String, // TODO String 또는 Model enum 사용 가능
+        selectedModel: String,
         onResult: (List<String>) -> Unit
     ) {
         // (1) 새로운 업로드 요청마다 리스트 초기화
@@ -65,14 +65,10 @@ object ImagePrediction {
                         filename = imageFile.name,
                         body = imageFile.asRequestBody("image/jpeg".toMediaTypeOrNull())
                     )
-                    .addFormDataPart(
-                        name = "model",
-                        value = selectedModel // TODO selectedModel == 모델 선택
-                    )
                     .build()
 
                 val request = Request.Builder()
-                    .url(SERVER_URL)
+                    .url("$SERVER_URL?model=$selectedModel")
                     .post(requestBody)
                     .build()
 
