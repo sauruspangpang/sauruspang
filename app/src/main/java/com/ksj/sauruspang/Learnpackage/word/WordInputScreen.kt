@@ -115,7 +115,7 @@ fun WordInputScreen(
 
                 ) {
                 Text(
-                    text = "${question.english}",
+                    text = question.english,
                     style = TextStyle(
                         fontSize = 120.sp, fontWeight = FontWeight.Bold,
                         color = Color.Black.copy(alpha = 0.2f)

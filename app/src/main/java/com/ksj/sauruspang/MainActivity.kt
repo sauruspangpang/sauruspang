@@ -53,7 +53,7 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             HomeScreen(navController, viewmodel)
         }
         composable("pictorial") {
-            PictorialBookScreen(navController, viewmodel)
+            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
