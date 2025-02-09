@@ -83,7 +83,7 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Image(
-                        painter = painterResource(profile.selectedImage),
+                        painter = painterResource(id = profile.selectedImage),
                         contentDescription = "profile image",
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
