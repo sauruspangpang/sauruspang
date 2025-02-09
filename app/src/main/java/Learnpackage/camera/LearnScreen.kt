@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,11 +39,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -76,9 +80,7 @@ fun LearnScreen(
 
 
     fun listen(text: String, locale: Locale) {
-        if (tts != null) {
-            tts.language = Locale.US
-        }
+        tts?.language = locale
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
@@ -87,20 +89,23 @@ fun LearnScreen(
     val speechRecognizer = remember { SpeechRecognizer.createSpeechRecognizer(context) }
     val speechIntent = remember {
         Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
-            putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.US)
+            putExtra(
+                RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
         }
     }
     var spokenText by remember { mutableStateOf("") }
-    var isCorrect by remember { mutableStateOf(false) }
+    var correctCount by remember { mutableIntStateOf(0) }
 
     val recognitionListener = object : RecognitionListener {
         override fun onResults(results: Bundle?) {
             val detectedMatches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
             val spoken = detectedMatches?.firstOrNull()?.lowercase(Locale.ROOT) ?: ""
             spokenText = spoken
-
-            isCorrect = spoken == question.english.lowercase(Locale.ROOT)
+            if (spoken == question.english.lowercase(Locale.ROOT)) {
+                correctCount++
+            }
         }
 
         override fun onReadyForSpeech(params: Bundle?) {}
@@ -114,53 +119,41 @@ fun LearnScreen(
     }
     var hasPermission by remember { mutableStateOf(false) }
 
-    RequestMicrophonePermission(
-        onPermissionGranted = {
-            hasPermission = true
-        }
-    )
     speechRecognizer.setRecognitionListener(recognitionListener)
-    RequestMicrophonePermission(
-        onPermissionGranted = {
-            hasPermission = true
-        }
-    )
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Box(
+    RequestMicrophonePermission(onPermissionGranted = {
+        hasPermission = true
+    })
+    Scaffold(topBar = {
+        TopAppBar(
+            title = {
+                Box(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Image(painter = painterResource(id = R.drawable.image_backhome),
+                        contentDescription = "",
                         modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.image_backhome),
-                            contentDescription = "",
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clickable {
-                                    category?.name?.let { categoryName ->
-                                        navController.navigate("stage/$categoryName")
-                                    }
+                            .size(50.dp)
+                            .clickable {
+                                category?.name?.let { categoryName ->
+                                    navController.navigate("stage/$categoryName")
                                 }
-                        )
+                            })
 
-                        LinearProgressIndicator(
-                            progress = { progress },
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .height(20.dp)
-                                .align(Alignment.Center)
-                        )
-                    }
-                },
+                    LinearProgressIndicator(
+                        progress = { progress },
+                        modifier = Modifier
+                            .fillMaxWidth(0.5f)
+                            .height(20.dp)
+                            .align(Alignment.Center)
+                    )
+                }
+            },
 
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFDD4AA)
-                )
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color(0xFFFDD4AA)
             )
-        }
-    ) { padding ->
+        )
+    }) { padding ->
         Box(
             modifier = Modifier
                 .padding(padding)
@@ -168,8 +161,7 @@ fun LearnScreen(
                 .background(Color(0xFFFDD4AA))
 
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.image_backarrow),
+            Image(painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier
                     .size(140.dp)
@@ -180,19 +172,16 @@ fun LearnScreen(
                         } else {
                             navController.popBackStack()
                         }
-                    }
-            )
+                    })
             Row(
                 horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .align(Alignment.Center)
-            ){
+                modifier = Modifier.align(Alignment.Center)
+            ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
 
-                ){
-                    Image(
-                        painter = painterResource(id = question.imageId),
+                    ) {
+                    Image(painter = painterResource(id = question.imageId),
                         contentDescription = "question image",
                         modifier = Modifier
                             .size(180.dp)
@@ -200,70 +189,72 @@ fun LearnScreen(
 
 
                     )
-                    Text(question.korean,
+                    Text(
+                        question.korean,
 //                    modifier = Modifier
 //                        .align(Alignment.BottomCenter)
 //                        .offset(y=-(20).dp),
                         modifier = Modifier.clickable { listen(question.korean, Locale.KOREAN) },
                         style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 50.sp
+                            fontWeight = FontWeight.Bold, fontSize = 50.sp
                         )
                     )
-                    Text(question.english,
+                    Text(
+                        question.english,
                         modifier = Modifier.clickable { listen(question.english, Locale.US) },
                         style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 60.sp
+                            fontWeight = FontWeight.Bold, fontSize = 60.sp
                         )
                     )
-                    Image(
-                        painter = painterResource(id = R.drawable.listen),
+                    Image(painter = painterResource(id = R.drawable.listen),
                         contentDescription = "listen button",
                         modifier = Modifier
                             .size(30.dp)
-                            .clickable { listen(question.english, Locale.US) }
-                    )
+                            .clickable { listen(question.english, Locale.US) })
 
 
                 }
                 Spacer(modifier = Modifier.size(80.dp))
-                Column(){
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Spacer(modifier = Modifier.size(70.dp))
-                    Button(onClick={speechRecognizer.startListening(speechIntent)}) {
-                        Text("SPEAK")
+                    Box(
+                        modifier = Modifier
+                            .size(65.dp)
+                            .clip(RoundedCornerShape(8.dp)) // Rounded corners
+                            .background(Color(0xFF77E4D2))
+                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
+                            .clickable { speechRecognizer.startListening(speechIntent) }
+                    ) {
+                        Image(
+                            painter = painterResource(id = R.drawable.speakbutton),
+                            contentDescription = "Speak button",
+                            modifier = Modifier
+                                .size(60.dp)
+                                .padding(8.dp) // Inner padding,
+                        )
                     }
                     Text("detected: $spokenText", fontSize = 20.sp)
-                    Row(){
-                        Image(
-                            painter = painterResource(id = question.imageId),
-                            contentDescription = "listen button",
-                            modifier = Modifier
-                                .size(30.dp)
-                        )
-                        Image(
-                            painter = painterResource(id = question.imageId),
-                            contentDescription = "listen button",
-                            alpha = 0.4F,
-                            modifier = Modifier
-                                .size(30.dp)
-                        )
-                        Image(
-                            painter = painterResource(id = question.imageId),
-                            contentDescription = "listen button",
-                            modifier = Modifier
-                                .size(30.dp),
-                            alpha = 0.4F,
-                        )
+                    Row() {
+                        Row {
+                            repeat(3) { index ->
+                                Image(
+                                    painter = painterResource(id = question.imageId),
+                                    contentDescription = "listen button",
+                                    modifier = Modifier.size(30.dp),
+                                    alpha = if (index < correctCount) 1.0f else 0.4f
+                                )
+                                //index 0 = image1, index1 = image2, index2 = image3
+                            }
+                        }
+
                     }
 
                 }
 
             }
-
-
-            Image(
-                painter = painterResource(id = R.drawable.image_frontarrow),
+            Image(painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
@@ -275,12 +266,11 @@ fun LearnScreen(
 //                        }
 //
 //                    }
-                    .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") }
-            )
+                    .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") })
         }
     }
-
 }
+
 
 @Composable
 fun RequestMicrophonePermission(onPermissionGranted: () -> Unit) {
@@ -300,8 +290,9 @@ fun RequestMicrophonePermission(onPermissionGranted: () -> Unit) {
 
 // Check if the permission is already granted
     LaunchedEffect(Unit) {
-        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.RECORD_AUDIO) ==
-            PackageManager.PERMISSION_GRANTED
+        if (ContextCompat.checkSelfPermission(
+                context, android.Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
         ) {
             onPermissionGranted()
         } else {
@@ -311,8 +302,7 @@ fun RequestMicrophonePermission(onPermissionGranted: () -> Unit) {
 
     // Show rationale dialog if needed
     if (showRationale) {
-        AlertDialog(
-            onDismissRequest = { /* Handle dialog dismissal */ },
+        AlertDialog(onDismissRequest = { /* Handle dialog dismissal */ },
             title = { Text("Microphone Permission Required") },
             text = { Text("This app requires microphone access to function properly.") },
             confirmButton = {
@@ -326,7 +316,6 @@ fun RequestMicrophonePermission(onPermissionGranted: () -> Unit) {
                 TextButton(onClick = { /* Handle dismiss */ }) {
                     Text("Cancel")
                 }
-            }
-        )
+            })
     }
 }
