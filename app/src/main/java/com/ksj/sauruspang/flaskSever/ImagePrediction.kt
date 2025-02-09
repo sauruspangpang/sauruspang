@@ -44,18 +44,15 @@ object ImagePrediction {
         selectedModel: String,
         onResult: (List<String>) -> Unit
     ) {
-        // (1) 새로운 업로드 요청마다 리스트 초기화
+        // 새로운 요청마다 결과 리스트 초기화
         predictionResults.clear()
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                // imageInput에 따라 임시 파일 생성
+                // 이미지 입력 타입에 따라 임시 파일 생성
                 val imageFile = when (imageInput) {
                     is ImageInput.UriInput -> createTempFileFromUri(context, imageInput.uri!!)
-                    is ImageInput.BitmapInput -> createTempFileFromBitmap(
-                        context,
-                        imageInput.bitmap!!
-                    )
+                    is ImageInput.BitmapInput -> createTempFileFromBitmap(context, imageInput.bitmap!!)
                 }
 
                 val requestBody = MultipartBody.Builder()
@@ -67,29 +64,27 @@ object ImagePrediction {
                     )
                     .build()
 
+                // 모델 선택은 URL의 쿼리 스트링으로 전달
                 val request = Request.Builder()
                     .url("$SERVER_URL?model=$selectedModel")
                     .post(requestBody)
                     .build()
 
-                val response = client.newCall(request).execute()
-                val responseBody = response.body?.string()
-
-                if (response.isSuccessful && responseBody != null) {
-                    Log.d("Flask", "서버 응답: $responseBody")
-                    parseJsonAndStore(responseBody)
-                } else {
-                    Log.e("Flask", "서버 에러: code=${response.code}, body=$responseBody")
+                client.newCall(request).execute().use { response ->
+                    val responseBody = response.body?.string()
+                    if (response.isSuccessful && responseBody != null) {
+                        Log.d("Flask", "서버 응답: $responseBody")
+                        parseJsonAndStore(responseBody)
+                    } else {
+                        Log.e("Flask", "서버 에러: code=${response.code}, body=$responseBody")
+                    }
                 }
-
-                response.close()
-
             } catch (e: Exception) {
                 e.printStackTrace()
                 Log.e("Flask", "전송 실패: ${e.message}")
             }
 
-            // 서버 응답 파싱을 마친 뒤, 최신 리스트를 콜백으로 전달
+            // 응답 파싱 후 결과 리스트 콜백 전달
             onResult(predictionResults.toList())
         }
     }
@@ -102,78 +97,60 @@ object ImagePrediction {
             val jsonObj = JSONObject(responseBody)
             val type = jsonObj.optString("type", "")
             val success = jsonObj.optBoolean("success", false)
-
-            // 로깅
             Log.d("Flask", "Parsed success=$success, type=$type")
 
             if (!success) {
-                // 실패 응답이면 early return
                 Log.e("Flask", "Server returned error or success=false")
                 return
             }
 
-            if (type == "classification") {
-                // 분류 모델
-                val predictionResult = jsonObj.optString("prediction_result", "")
-                val confidence = jsonObj.optDouble("confidence", 0.0)
-
-                // 로그
-                Log.d(
-                    "Flask",
-                    "Classification: prediction_result=$predictionResult, conf=$confidence"
-                )
-
-                // 저장
-                if (predictionResult.isNotEmpty()) {
-                    addIfNotDuplicate(predictionResult)
-                }
-
-            } else if (type == "detection") {
-                // 객체 감지 모델
-                val detectionsArray = jsonObj.optJSONArray("detections")
-
-                // detectionsArray 순회
-                if (detectionsArray != null) {
-                    for (i in 0 until detectionsArray.length()) {
-                        val detObj = detectionsArray.getJSONObject(i)
-                        val predictionResult = detObj.optString("prediction_result", "")
-                        val conf = detObj.optDouble("confidence", 0.0)
-                        // bounding_box_area 등도 필요하면 파싱 가능
-
-                        // 로그
-                        Log.d(
-                            "Flask",
-                            "Detection #$i => prediction_result=$predictionResult, conf=$conf"
-                        )
-
-                        // 원하는 방식으로 저장
-                        if (predictionResult.isNotEmpty()) {
-                            addIfNotDuplicate(predictionResult)
+            when (type) {
+                "classification" -> {
+                    jsonObj.optJSONArray("predictions")?.let { predictionsArray ->
+                        for (i in 0 until predictionsArray.length()) {
+                            val predObj = predictionsArray.getJSONObject(i)
+                            val predictionResult = predObj.optString("prediction_result", "")
+                            val confidence = predObj.optDouble("confidence", 0.0)
+                            Log.d("Flask", "Classification #$i => prediction_result=$predictionResult, conf=$confidence")
+                            if (predictionResult.isNotEmpty()) {
+                                addIfNotDuplicate(predictionResult)
+                            }
                         }
                     }
                 }
-            } else {
-                // 다른 타입일 경우
-                Log.w("Flask", "Unknown type=$type, no prediction_result added.")
+                "detection" -> {
+                    jsonObj.optJSONArray("detections")?.let { detectionsArray ->
+                        for (i in 0 until detectionsArray.length()) {
+                            val detObj = detectionsArray.getJSONObject(i)
+                            val predictionResult = detObj.optString("prediction_result", "")
+                            val conf = detObj.optDouble("confidence", 0.0)
+                            Log.d("Flask", "Detection #$i => prediction_result=$predictionResult, conf=$conf")
+                            if (predictionResult.isNotEmpty()) {
+                                addIfNotDuplicate(predictionResult)
+                            }
+                        }
+                    }
+                }
+                else -> {
+                    Log.w("Flask", "Unknown type=$type, no prediction_result added.")
+                }
             }
 
-            // 최종 리스트 로그
             Log.d("Flask", "predictionResults 리스트 => $predictionResults")
-
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e("Flask", "JSON parse error: ${e.message}")
         }
     }
 
-    // 중복 예측값 제거
+    // 중복 예측값이 없을 때만 리스트에 추가
     private fun addIfNotDuplicate(newClass: String) {
         if (!predictionResults.contains(newClass)) {
             predictionResults.add(newClass)
         }
     }
 
-    // 이미지 타입 Uri -> .jpg
+    // 이미지 타입 Uri -> .jpg 파일 생성
     private fun createTempFileFromUri(context: Context, uri: Uri): File {
         val inputStream = context.contentResolver.openInputStream(uri)
             ?: throw IllegalStateException("Cannot open input stream from $uri")
@@ -182,16 +159,16 @@ object ImagePrediction {
         return tempFile
     }
 
-    // 이미지 타입 Bitmap -> .jpg
+    // 이미지 타입 Bitmap -> .jpg 파일 생성
     private fun createTempFileFromBitmap(context: Context, bitmap: Bitmap): File {
         val tempFile = File.createTempFile("upload_", ".jpg", context.cacheDir)
         FileOutputStream(tempFile).use { output ->
-            // JPEG 형식으로 압축 (품질 90%)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, output)
         }
         return tempFile
     }
 
+    // InputStream의 내용을 파일에 복사
     private fun copyStreamToFile(inputStream: InputStream, file: File) {
         FileOutputStream(file).use { output ->
             inputStream.copyTo(output)
