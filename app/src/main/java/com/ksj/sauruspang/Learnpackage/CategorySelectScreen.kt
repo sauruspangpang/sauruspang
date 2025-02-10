@@ -131,7 +131,6 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
                     painter = painterResource(id = R.drawable.image_photobook),
                     contentDescription = "",
                     modifier = Modifier
-                        .size(70.dp)
                         .clickable { navController.navigate("pictorial") }
 
                 )
@@ -186,6 +185,8 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                 .background(Color(0xFFFFFFFF)) // 배경색 적용
                 .clickable { navController.navigate("stage/${category.name}") }
                 .padding(top = 30.dp, start = 30.dp, end = 30.dp)
+                .height(150.dp)
+                .width(110.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally, // 가운데 정렬
@@ -196,11 +197,12 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                 Image(
                     painter = painterResource(id = category.thumbnail),
                     contentDescription = "category thumbnail",
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier.align(Alignment.CenterHorizontally).scale(1.2f)
                 )
                 Spacer(modifier = Modifier.height(20.dp)) // 20dp 간격 추가
                 Text(
                     category.name,
+                    fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(20.dp)) // 20dp 간격 추가

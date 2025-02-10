@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -40,7 +41,7 @@ import com.ksj.sauruspang.R
 @Composable
 fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.day_wallpaper),
             contentDescription = null,
@@ -54,7 +55,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(30.dp),
+                    .padding(horizontal = 30.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -66,64 +67,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                             navController.navigate("home")
                         }
                 )
-                Box(
-                    contentAlignment = Alignment.BottomCenter,
-                    modifier = Modifier
-                        .offset(y = (-30).dp)
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.image_woodboard),
-                        contentDescription = "",
-
-                        )
-                    Row(
-                        modifier = Modifier
-                            .padding(horizontal = 30.dp), // 좌우 여백 추가
-                        verticalAlignment = Alignment.CenterVertically // 내부 요소도 중앙 정렬
-                    ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.ellipse_1),
-                            contentDescription = "",
-                            Modifier.scale(0.8f)
-                        )
-                        Column(
-                            modifier = Modifier
-                                .padding(bottom = 20.dp), // 내부 요소 패딩
-                            verticalArrangement = Arrangement.SpaceBetween, // 내부 요소 정렬
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                "Hello 박민준",
-                                style = TextStyle(
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically // 이미지와 텍스트를 같은 높이로 정렬
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.image_starpoint),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(36.dp) // 원하는 크기로 조정
-                                )
-                                Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
-                                Text(
-                                    "245",
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                    }
-                }
-                Spacer(Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.image_photobook),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(70.dp)
-                )
+                ProfileBox()
             }
             Row(
                 modifier = Modifier
@@ -134,10 +78,62 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                     ZigzagRow(days, categoryName, navController)
                 }
             }
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }
 
+@Composable
+fun ProfileBox() {
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        Image(
+            painter = painterResource(R.drawable.image_woodboard),
+            contentDescription = "",
+            )
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 30.dp), // 좌우 여백 추가
+            verticalAlignment = Alignment.CenterVertically // 내부 요소도 중앙 정렬
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ellipse_1),
+                contentDescription = "",
+                Modifier.scale(0.8f)
+            )
+            Column(
+                modifier = Modifier
+                    .padding(bottom = 20.dp), // 내부 요소 패딩
+                verticalArrangement = Arrangement.SpaceBetween, // 내부 요소 정렬
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    "Hello 박민준",
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically // 이미지와 텍스트를 같은 높이로 정렬
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.image_starpoint),
+                        contentDescription = "",
+                        modifier = Modifier.size(36.dp) // 원하는 크기로 조정
+                    )
+                    Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
+                    Text(
+                        "245",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}
 
 
 @Composable
@@ -149,7 +145,7 @@ fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavContr
     ) {
         days.forEachIndexed { index, day ->
             DayBox(
-                dayIndex = day.dayNumber-1,
+                dayIndex = day.dayNumber - 1,
                 isTop = index % 2 == 0,
                 categoryName = categoryName,
                 navController = navController
@@ -164,14 +160,17 @@ fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: N
         modifier = Modifier
             .offset(y = if (isTop) (-20).dp else 80.dp)
             .size(width = 140.dp, height = 90.dp)
-            .background(Color.White)
             .clickable {
                 navController.navigate("learn/$categoryName/$dayIndex")
             },
         contentAlignment = Alignment.Center
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.image_whiteboard),
+            contentDescription = "null",
+        )
         Text(
-            "Day ${dayIndex+1}",
+            "Day ${dayIndex + 1}",
             style = TextStyle(fontSize = 40.sp)
         )
     }
