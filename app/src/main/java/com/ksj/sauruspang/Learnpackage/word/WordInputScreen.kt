@@ -32,10 +32,13 @@ import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.vision.digitalink.*
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.R
+import com.ksj.sauruspang.util.DialogCorrect
+import com.ksj.sauruspang.util.DialogRetry
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,11 +56,18 @@ fun WordInputScreen(
     val modelIdentifier = DigitalInkRecognitionModelIdentifier.fromLanguageTag("en-US")
         ?: throw IllegalStateException("No model found for the given language tag")
     val model = DigitalInkRecognitionModel.builder(modelIdentifier).build()
-    val recognizedList = mutableListOf<String>()
+//    val recognizedList = mutableListOf<String>()
+    var recognizedList by remember { mutableStateOf(listOf<String>()) }
+
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
     val targetWord = question.english.uppercase()
+
+    var showCorrectDialog by remember { mutableStateOf(false) }
+    var showRetryDialog by remember { mutableStateOf(false) }
+    var wrongLettersInfo by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
 
     // 모델 다운로드 실행
     LaunchedEffect(Unit) {
@@ -87,19 +97,19 @@ fun WordInputScreen(
             )
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Image(
-                    painter = painterResource(id = R.drawable.back),
-                    contentDescription = "previous question",
-                    modifier = Modifier
-                        .size(140.dp)
-                        .clickable(enabled = questionIndex > 0) {
-                            if (questionIndex > 0) {
-                                navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
-                            } else {
-                                navController.popBackStack()
-                            }
+            Image(
+                painter = painterResource(id = R.drawable.back),
+                contentDescription = "previous question",
+                modifier = Modifier
+                    .size(140.dp)
+                    .clickable(enabled = questionIndex > 0) {
+                        if (questionIndex > 0) {
+                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                        } else {
+                            navController.popBackStack()
                         }
-                )
+                    }
+            )
             Box(
                 modifier = Modifier
                     .width(600.dp)
@@ -159,22 +169,39 @@ fun WordInputScreen(
             Button(
                 onClick = {
                     if (isModelDownloaded) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            recognizedText = inkManager.recognizeInk().uppercase()
-                            val recognizedSplit = recognizedText.split(",").take(2)
-                            recognizedList.addAll(recognizedSplit)
+                        coroutineScope.launch {
+                            // recognizedText와 리스트 초기화
+                            val result = withContext(Dispatchers.IO) {
+                                inkManager.recognizeInk().uppercase()
+                            }
+                            // Main 스레드에서 상태 업데이트
+                            recognizedText = result
+
+                            // 안전하게 결과 분리
+                            val recognizedSplit = result.split(",").take(2)
+                            if (recognizedSplit.size < 2) {
+                                // 인식 결과가 부족할 경우 추가 처리
+                                recognizedText = "인식 결과가 부족합니다. 다시 시도해 주세요."
+                                return@launch
+                            }
+                            recognizedList = recognizedSplit
                             Log.e("recognizedList", recognizedList.toString())
 
                             val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
                             val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
-                            // 글자 비교 후 결과 표시
-                            recognizedText =
-                                if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
-                                    "정답입니다."
-                                } else {
-                                    "틀린 글자: ${targetWord[mismatchedIndexes1[0]]}, ${targetWord[mismatchedIndexes2[0]]}"
-                                    // 근데 왜 제대로 안나오지.. 흠..
-                                }
+
+                            // 다이얼로그를 띄우기 위한 상태 업데이트 (정답 조건: 한 후보라도 완벽 일치)
+                            if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
+                                recognizedText = "정답입니다."
+                                showCorrectDialog = true
+                            } else {
+                                // 틀린 글자 정보를 안전하게 생성
+                                wrongLettersInfo = "틀린 글자: " +
+                                        "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
+                                        "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
+                                recognizedText = wrongLettersInfo
+                                showRetryDialog = true
+                            }
                         }
                     } else {
                         recognizedText = "Model is not yet downloaded. Please try again later."
@@ -187,6 +214,7 @@ fun WordInputScreen(
             ) {
                 Text("정답확인")
             }
+
             Button(
                 onClick = {
                     inkManager.clearCanvas()
@@ -200,8 +228,29 @@ fun WordInputScreen(
             }
         }
 
+        // 최상위 레벨에서 상태에 따라 다이얼로그 표시
+        if (showCorrectDialog) {
+            DialogCorrect(
+                message = "정답입니다.",
+                onDismiss = { showCorrectDialog = false }
+            )
+        }
+
+        if (showRetryDialog) {
+            DialogRetry(
+                wrongLetters = wrongLettersInfo,
+                onDismiss = { showRetryDialog = false },
+                onRetry = {
+                    // 다시쓰기 동작 수행 (예: 캔버스 초기화)
+                    inkManager.clearCanvas()
+                    recognizedText = "Recognition Result: "
+                    showRetryDialog = false
+                }
+            )
+        }
     }
 }
+
 
 //모델 다운로드 함수
 private fun downloadModel(
