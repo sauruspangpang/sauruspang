@@ -22,6 +22,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
+import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
+import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
+import com.ksj.sauruspang.Learnpackage.camera.SharedViewModel
+import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 
 class MainActivity : ComponentActivity() {
@@ -39,8 +43,11 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun NaySys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
+    val cameraViewModel: CameraViewModel = viewModel()
+    val sharedViewModel: SharedViewModel = viewModel()
+
     NavHost(navController = navController,
-        startDestination =  if (viewmodel.profiles.isEmpty()) "main" else "profile",
+        startDestination = if (viewmodel.profiles.isEmpty()) "main" else "profile",
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }) {
         composable("main") {
@@ -51,6 +58,12 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         }
         composable("home") {
             HomeScreen(navController, viewmodel)
+        }
+        composable("camerax") {
+            ShowCameraPreviewScreen(navController, cameraViewModel)
+        }
+        composable("answer") {
+            CameraAnswerScreen(navController, cameraViewModel, sharedViewModel)
         }
         composable("pictorial") {
             PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel)
@@ -76,7 +89,7 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
                 WordQuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
             } else {
-                LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+                LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel, sharedViewModel)
             }
         }
 
@@ -91,9 +104,15 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            CameraScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+            CameraScreen(
+                navController,
+                categoryName,
+                dayIndex,
+                questionIndex,
+                viewmodel,
+                cameraViewModel
+            )
         }
-
     }
 }
 
@@ -101,6 +120,12 @@ fun NaySys(viewmodel: ProfileViewmodel) {
 @Composable
 fun DefaultPreview() {
     SauruspangTheme {
-        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel())
+        WordInputScreen(
+            navController = rememberNavController(),
+            categoryName = "직업",
+            dayIndex = 0,
+            questionIndex = 0,
+            viewModel = viewModel()
+        )
     }
 }
