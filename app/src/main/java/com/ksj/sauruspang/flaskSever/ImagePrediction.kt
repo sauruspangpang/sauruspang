@@ -24,7 +24,6 @@ sealed class ImageInput {
 }
 
 object ImagePrediction {
-
     private const val SERVER_URL = "https://starfish-evolved-molly.ngrok-free.app/predict"
     private val client by lazy { OkHttpClient.Builder().build() }
 
