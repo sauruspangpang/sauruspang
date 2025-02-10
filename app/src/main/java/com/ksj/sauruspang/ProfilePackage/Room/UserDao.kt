@@ -17,6 +17,6 @@ interface UserDao {
     @Delete
     suspend fun delete(user: User)
 
-    @Query("UPDATE User SET dayCount = :newDayCount WHERE category = :categoryName")
-    suspend fun updateDayCount(categoryName: String, newDayCount: Int)
+    @Query("UPDATE User SET dayCount = :newDayCount WHERE quizCategory = :quizCategory")
+    suspend fun updateDayCount(quizCategory: String, newDayCount: Int)
 }

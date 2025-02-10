@@ -44,7 +44,10 @@ import com.ksj.sauruspang.R
 
 @Composable
 fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel) {
-    val category = QuizCategory.allCategories.find { it.name == categoryName }
+//    val category = QuizCategory.allCategories.find { it.name == categoryName }
+    val quizCategory = QuizCategory.allCategories.find { it.name == categoryName }
+    val days = quizCategory?.days ?: emptyList()
+
     Box(modifier = Modifier.fillMaxSize()){
         Image(
             painter = painterResource(R.drawable.day_wallpaper),
@@ -138,14 +141,15 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                 Button(onClick = {
                     // 버튼 클릭 시 프로필 별로 dayCount 증가
                     // dayCount 값을 올바르게 증가시키기 위해 increaseDayCount 호출
-                    viewModel.increaseDayCount(categoryName)
+                    viewModel.increaseDayCount("아이")
 
                     // 로그로 현재 프로필을 확인
                     Log.e("DayCount", viewModel.profiles.toString())
                 }) {
                     Text("데이 증가")
+
                 }
-                category?.days?.let { days ->
+                Column {
                     ZigzagRow(days, categoryName, navController, viewModel)
                 }
             }
@@ -164,7 +168,7 @@ fun ZigzagRow(
     // 상태 관리: List<Profile>을 UI에서 사용
     val profiles = viewModel.profiles // 이미 State로 관리되고 있으므로 collectAsState() 필요 없음
 
-    val profile = profiles.find { it.category == categoryName }
+    val profile = profiles.find { it.quizCategory == categoryName }
     // dayCount를 가져옴
     val dayCount by remember { derivedStateOf { profile?.dayCount ?: 1 } }
 

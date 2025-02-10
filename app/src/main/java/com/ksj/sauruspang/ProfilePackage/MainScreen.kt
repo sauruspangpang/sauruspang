@@ -95,11 +95,11 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 .background(
                                     Color(0xFF0022B2),
                                     shape = RoundedCornerShape(12.dp)
-                                ) // 배경색 및 둥근 모서리
+                                )
                                 .shadow(
-                                    elevation = 8.dp, // 그림자 강도
-                                    shape = RoundedCornerShape(12.dp), // 그림자 모양
-                                    spotColor = Color(0xFF505050) // 그림자 색상
+                                    elevation = 8.dp,
+                                    shape = RoundedCornerShape(12.dp),
+                                    spotColor = Color(0xFF505050)
                                 )
                                 .clickable {
                                     if (name.isNotEmpty() && birth.isNotEmpty()) {
@@ -112,16 +112,16 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                             "아이",
                                             1
                                         )
+                                        navController.navigate("profile")
                                     }
-                                    navController.navigate("profile")
                                 }
                         ) {
                             Text(
                                 text = "만들기",
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFFFFFF) // 글자색 (흰색)
-                                , modifier = Modifier.padding(16.dp)
+                                color = Color(0xFFFFFFFF),
+                                modifier = Modifier.padding(16.dp)
                             )
                         }
                     }
