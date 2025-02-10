@@ -1,28 +1,19 @@
-package Learnpackage.camera
+package com.ksj.sauruspang.Learnpackage.word
 
-import Learnpackage.QuizCategory
-import ProfilePackage.ProfileViewmodel
+import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -34,16 +25,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuizScreen(
+fun WordQuizScreen(
     navController: NavController,
     categoryName: String,
     dayIndex: Int,
@@ -54,6 +43,7 @@ fun QuizScreen(
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -63,8 +53,8 @@ fun QuizScreen(
                             .fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.arrow),
-                            contentDescription = "button to stagescreen",
+                            painter = painterResource(id = R.drawable.image_backhome),
+                            contentDescription = "",
                             modifier = Modifier
                                 .size(50.dp)
                                 .clickable {
@@ -73,7 +63,6 @@ fun QuizScreen(
                                     }
                                 }
                         )
-
                         LinearProgressIndicator(
                             progress = { progress },
                             modifier = Modifier
@@ -98,78 +87,36 @@ fun QuizScreen(
 
         ) {
             Image(
-                painter = painterResource(id = R.drawable.back),
-                contentDescription = "previous question",
+                painter = painterResource(id = R.drawable.image_backarrow),
+                contentDescription = "",
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterStart)
-                    .clickable(enabled = questionIndex > 0) {
+                    .clickable {
                         if (questionIndex > 0) {
-                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
                         } else {
                             navController.popBackStack()
                         }
                     }
             )
-            Box(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .width(700.dp)
-                    .align(Alignment.Center)
-            ) {
-                Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Column(
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Spacer(modifier = Modifier.size(30.dp))
-                        Image(
-                            painter = painterResource(id = question.imageId),
-                            contentDescription = "question image",
-                            modifier = Modifier
-                                .size(200.dp)
-
-                        )
-                        Text(
-                            question.korean,
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 45.sp
-                            )
-                        )
-                    }
-                    Spacer(modifier = Modifier.size(50.dp))
-                    Column(
-                        modifier = Modifier
-                            .offset(x = 30.dp)
-                    ) {
-                        Spacer(modifier = Modifier.size(50.dp))
-
-                        Button(onClick = {}) { Text("apple") }
-                    }
-
-                }
-
-            }
-
             Image(
-                painter = painterResource(id = R.drawable.frontnull),
-                contentDescription = "next question",
+                painter = painterResource(question.imageId),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(200.dp)
+                    .align(Alignment.Center)
+            )
+            Image(
+                painter = painterResource(id = R.drawable.image_frontarrow),
+                contentDescription = "",
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-//                    .clickable(enabled = questionIndex < questions.size - 1)
-//                    {
-//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-//                        }
-//
-//                    }
-                    .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") }
+                    .clickable { navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex}") }
             )
         }
     }
 
 }
+

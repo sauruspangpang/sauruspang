@@ -1,4 +1,4 @@
-package Learnpackage
+package com.ksj.sauruspang.Learnpackage
 
 import com.ksj.sauruspang.R
 
@@ -14,8 +14,8 @@ data class QuizQuestion(
 
 
 sealed class QuizCategory(val name: String, val thumbnail :Int, val days: List<QuizDay>) {
-    object Fruits : QuizCategory("과일",
-        R.drawable.fruit,
+    object Fruits : QuizCategory("과일과 야채",
+        R.drawable.fruitsvegies_category,
         listOf(
         QuizDay(1, listOf(
             QuizQuestion(R.drawable.fruitvegies_apple, "사과", "Apple"),
@@ -60,12 +60,12 @@ sealed class QuizCategory(val name: String, val thumbnail :Int, val days: List<Q
         listOf(
             QuizDay(1, listOf(
                 QuizQuestion(R.drawable.jobs_teacher, "선생님", "Teacher"),
-                QuizQuestion(R.drawable.jobs_police, "경찰관", "Police Officer"),
+                QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
                 QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
             ))
         ))
 
     companion object {
-        val allCategories = listOf(Fruits, Animals, Colors,Jobs)
+        val allCategories = listOf(Fruits, Animals, Colors, Jobs)
     }
 }

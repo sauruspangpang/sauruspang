@@ -1,7 +1,5 @@
 package Learnpackage.camera
 
-import Learnpackage.QuizCategory
-import ProfilePackage.ProfileViewmodel
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -58,6 +56,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberPermissionState
+import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import java.util.Locale
 import java.util.jar.Manifest

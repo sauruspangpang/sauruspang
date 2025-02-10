@@ -1,6 +1,6 @@
-package Learnpackage.word
+package com.ksj.sauruspang.Learnpackage.word
 
-import ProfilePackage.ProfileViewmodel
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -21,11 +22,15 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
 import com.google.mlkit.vision.digitalink.*
+import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -49,7 +54,10 @@ fun WordInputScreen(
         ?: throw IllegalStateException("No model found for the given language tag")
     val model = DigitalInkRecognitionModel.builder(modelIdentifier).build()
     val recognizedList = mutableListOf<String>()
-    val targetWord = "APPLE"
+    val category = QuizCategory.allCategories.find { it.name == categoryName }
+    val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
+    val question = questions[questionIndex]
+    val targetWord = question.english.uppercase()
 
     // 모델 다운로드 실행
     LaunchedEffect(Unit) {
@@ -59,46 +67,95 @@ fun WordInputScreen(
     }
 
     Column(
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFDD4AA))
+            .background(color = Color(0xFFFDD4AA))
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.arrow),
-            contentDescription = "button to stagescreen",
-            modifier = Modifier
-                .size(50.dp)
-                .clickable {
-                    navController.popBackStack()
-                }
-        )
         Box(
             modifier = Modifier
-                .width(600.dp)
-                .height(200.dp)
-                .background(Color.LightGray)
-                .pointerInput(Unit) {
-                    detectDragGestures(
-                        onDragStart = { offset -> inkManager.startStroke(offset) },
-                        onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
-                        onDragEnd = { inkManager.endStroke() }
-                    )
-                }
+                .fillMaxWidth()
+                .padding(10.dp)
         ) {
-            val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
-            Canvas(modifier = Modifier.matchParentSize()) {
-                drawPath(inkManager.path, Color.Black, style = Stroke(width = 5f))
-            }
+            Image(
+                painter = painterResource(id = R.drawable.arrow),
+                contentDescription = "button to stagescreen",
+                modifier = Modifier
+                    .size(50.dp)
+                    .clickable {
+                        navController.popBackStack()
+                    }
+            )
         }
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Image(
+                    painter = painterResource(id = R.drawable.back),
+                    contentDescription = "previous question",
+                    modifier = Modifier
+                        .size(140.dp)
+                        .clickable(enabled = questionIndex > 0) {
+                            if (questionIndex > 0) {
+                                navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                            } else {
+                                navController.popBackStack()
+                            }
+                        }
+                )
+            Box(
+                modifier = Modifier
+                    .width(600.dp)
+                    .height(200.dp)
+                    .background(Color.White)
+                    .pointerInput(Unit) {
+                        detectDragGestures(
+                            onDragStart = { offset -> inkManager.startStroke(offset) },
+                            onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
+                            onDragEnd = { inkManager.endStroke() }
+                        )
+                    },
 
-        // 버튼 Row
+                ) {
+                Text(
+                    text = question.english,
+                    style = TextStyle(
+                        fontSize = 120.sp, fontWeight = FontWeight.Bold,
+                        color = Color.Black.copy(alpha = 0.2f)
+                    ),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+                val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
+                Canvas(modifier = Modifier.matchParentSize()) {
+                    drawPath(inkManager.path, Color.Red, style = Stroke(width = 25f))
+                }
+            }
+            Image(
+                painter = painterResource(id = R.drawable.frontnull),
+                contentDescription = "next question",
+                modifier = Modifier
+                    .size(140.dp)
+                    .clickable { navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") }
+            )
+        }
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Image(
+                painter = painterResource(question.imageId),
+                contentDescription = "Question Image",
+                modifier = Modifier
+                    .size(140.dp)
+            )
+            Text(
+                text = recognizedText,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                ),
+                modifier = Modifier.padding(10.dp)
+            )
+            // 정답 확인 버튼
             Button(
                 onClick = {
                     if (isModelDownloaded) {
@@ -110,18 +167,23 @@ fun WordInputScreen(
 
                             val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
                             val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
-
-                            recognizedText = if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
-                                "정답입니다."
-                            } else {
-                                "틀렸습니다."
-                            }
+                            // 글자 비교 후 결과 표시
+                            recognizedText =
+                                if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
+                                    "정답입니다."
+                                } else {
+                                    "틀린 글자: ${targetWord[mismatchedIndexes1[0]]}, ${targetWord[mismatchedIndexes2[0]]}"
+                                    // 근데 왜 제대로 안나오지.. 흠..
+                                }
                         }
                     } else {
                         recognizedText = "Model is not yet downloaded. Please try again later."
                     }
                 },
-                modifier = Modifier.width(120.dp).height(50.dp)
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(50.dp),
+                shape = RoundedCornerShape(10.dp)
             ) {
                 Text("정답확인")
             }
@@ -130,20 +192,17 @@ fun WordInputScreen(
                     inkManager.clearCanvas()
                     recognizedText = "Recognition Result: "
                 },
-                modifier = Modifier.width(120.dp).height(50.dp)
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(50.dp)
             ) {
                 Text("다시쓰기")
             }
         }
 
-        // 결과 표시
-        Text(
-            text = recognizedText,
-            style = MaterialTheme.typography.bodyLarge,
-            modifier = Modifier.fillMaxWidth()
-        )
     }
 }
+
 //모델 다운로드 함수
 private fun downloadModel(
     model: DigitalInkRecognitionModel,
@@ -160,6 +219,7 @@ private fun downloadModel(
             onDownloadComplete(false)
         }
 }
+
 
 // InkManager 클래스 (실시간 그리기 지원)
 class InkManager {
