@@ -8,7 +8,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import java.io.File
 
-@Database(entities = [User::class], version = 5, exportSchema = false)
+@Database(entities = [User::class], version = 6, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
@@ -22,31 +22,32 @@ abstract class AppDatabase : RoomDatabase() {
                     context,
                     AppDatabase::class.java, "sauruspang.db"
                 )
-                    .addMigrations(MIGRATION_4_5)
+                    .addMigrations(MIGRATION_5_6)
                     .build().also { instance = it }
             }
         }
 
-        val MIGRATION_4_5 = object : Migration(4, 5) {
+        val MIGRATION_5_6 = object : Migration(5, 6) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     """
-                    CREATE TABLE IF NOT EXISTS User_new (
-                        uid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-                        name TEXT,
-                        birth TEXT,
-                        selected_image INTEGER,
-                        category TEXT,
-                        quizCategory TEXT
-                    )
-                    """.trimIndent()
+            CREATE TABLE User_new (
+            uid INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            birth TEXT,
+            selected_image INTEGER,
+            category TEXT,
+            quizCategory TEXT,
+            dayCount INTEGER
+            )
+            """.trimIndent()
                 )
 
                 database.execSQL(
                     """
-                    INSERT INTO User_new (uid, name, birth, selected_image, category, quizCategory)
-                    SELECT uid, name, birth, selected_image, category, '' FROM User
-                    """.trimIndent()
+            INSERT INTO User_new (uid, name, birth, selected_image, category, quizCategory, dayCount)
+            SELECT uid, name, birth, selected_image, category, quizCategory, dayCount FROM User
+            """.trimIndent()
                 )
 
                 database.execSQL("DROP TABLE User")
@@ -55,38 +56,3 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
-
-//        val MIGRATION_2_3 = object : Migration(2, 3) {
-//            override fun migrate(database: SupportSQLiteDatabase) {
-//                // 새 컬럼 selected_image_path, catalog_image_path를 추가
-//                database.execSQL(
-//                    """
-//            CREATE TABLE IF NOT EXISTS User_new (
-//                uid INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-//                name TEXT,
-//                birth TEXT,
-//                selected_image_path TEXT,
-//                catalog_image_path TEXT
-//            )
-//        """.trimIndent()
-//                )
-//
-//                // 기존 데이터를 새로운 테이블로 이동 (selectedImage -> selected_image_path, catalogImage -> catalog_image_path)
-//                database.execSQL(
-//                    """
-//            INSERT INTO User_new (uid, name, birth, selected_image_path, catalog_image_path)
-//            SELECT uid, name, birth, selectedImage, catalogImage FROM User
-//        """.trimIndent()
-//                )
-//
-//                // 기존 테이블 삭제 후 새 테이블로 변경
-//                database.execSQL("DROP TABLE User")
-//                database.execSQL("ALTER TABLE User_new RENAME TO User")
-//            }
-//        }
-//    }
-//}
-
-
-
-

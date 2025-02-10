@@ -1,5 +1,6 @@
 package com.ksj.sauruspang.Learnpackage.word
 
+import android.util.Log
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
@@ -11,9 +12,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -100,6 +103,7 @@ fun WordQuizScreen(
                         }
                     }
             )
+
             Image(
                 painter = painterResource(question.imageId),
                 contentDescription = "",

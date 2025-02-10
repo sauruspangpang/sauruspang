@@ -11,6 +11,8 @@ data class User(
     val birth: String?,
     @ColumnInfo(name = "selected_image") val selectedImage: Int?,
     val category: String?,
-    val quizCategory: String? // 새로운 필드 추가
-
+    val quizCategory: String?, // 새로운 필드 추가
+//    val quizScore: Int?, // 새로운 필드 추가
+    val dayCount: Int?, // 새로운 필드 추가
+//    val userprofile: Int?
 )

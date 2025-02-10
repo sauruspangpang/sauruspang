@@ -1,5 +1,6 @@
 package com.ksj.sauruspang.Learnpackage
 
+import android.util.Log
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,8 +21,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -130,8 +135,18 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                     .fillMaxHeight()
                     .horizontalScroll(rememberScrollState())
             ) {
+                Button(onClick = {
+                    // 버튼 클릭 시 프로필 별로 dayCount 증가
+                    // dayCount 값을 올바르게 증가시키기 위해 increaseDayCount 호출
+                    viewModel.increaseDayCount(categoryName)
+
+                    // 로그로 현재 프로필을 확인
+                    Log.e("DayCount", viewModel.profiles.toString())
+                }) {
+                    Text("데이 증가")
+                }
                 category?.days?.let { days ->
-                    ZigzagRow(days, categoryName, navController)
+                    ZigzagRow(days, categoryName, navController, viewModel)
                 }
             }
         }
@@ -139,24 +154,41 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
 }
 
 
-
 @Composable
-fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController) {
-    Row(
-        modifier = Modifier
-            .padding(30.dp)
+fun ZigzagRow(
+    days: List<QuizDay>,
+    categoryName: String,
+    navController: NavController,
+    viewModel: ProfileViewmodel
+) {
+    // 상태 관리: List<Profile>을 UI에서 사용
+    val profiles = viewModel.profiles // 이미 State로 관리되고 있으므로 collectAsState() 필요 없음
 
+    val profile = profiles.find { it.category == categoryName }
+    // dayCount를 가져옴
+    val dayCount by remember { derivedStateOf { profile?.dayCount ?: 1 } }
+
+    Row(
+        modifier = Modifier.padding(30.dp)
     ) {
         days.forEachIndexed { index, day ->
-            DayBox(
-                dayIndex = day.dayNumber-1,
-                isTop = index % 2 == 0,
-                categoryName = categoryName,
-                navController = navController
-            )
+            if (day.dayNumber - 1 < dayCount) { // dayCount보다 작은 일차만 표시
+                DayBox(
+                    dayIndex = day.dayNumber - 1,
+                    isTop = index % 2 == 0,
+                    categoryName = categoryName,
+                    navController = navController
+                )
+            }
         }
     }
 }
+
+
+
+
+
+
 
 @Composable
 fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: NavController) {
