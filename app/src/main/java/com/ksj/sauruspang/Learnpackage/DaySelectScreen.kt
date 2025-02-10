@@ -59,10 +59,11 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.image_backhome),
+                    painter = painterResource(id = R.drawable.image_home),
                     contentDescription = "button to stagescreen",
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(80.dp)
+                        .offset(y = (-5).dp)
                         .clickable {
                             navController.navigate("home")
                         }

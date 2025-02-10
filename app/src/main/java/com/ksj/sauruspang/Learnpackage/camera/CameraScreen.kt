@@ -57,10 +57,10 @@ fun CameraScreen(
 
         ) {
             Image(
-                painter = painterResource(id = R.drawable.image_backhome),
+                painter = painterResource(id = R.drawable.image_map),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(50.dp)
+                    .size(60.dp)
                     .clickable {
                         category?.name?.let { categoryName ->
                             navController.navigate("stage/$categoryName")

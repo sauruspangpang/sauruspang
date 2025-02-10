@@ -61,10 +61,10 @@ fun QuizScreen(
                             .fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.arrow),
+                            painter = painterResource(id = R.drawable.image_map),
                             contentDescription = "button to stagescreen",
                             modifier = Modifier
-                                .size(50.dp)
+                                .size(60.dp)
                                 .clickable {
                                     category?.name?.let { categoryName ->
                                         navController.navigate("stage/$categoryName")

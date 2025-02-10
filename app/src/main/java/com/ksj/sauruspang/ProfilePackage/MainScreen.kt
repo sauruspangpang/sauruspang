@@ -60,6 +60,16 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
+        Image(
+            painter = painterResource(id = R.drawable.image_backhome),
+            contentDescription = "button to stagescreen",
+            modifier = Modifier
+                .size(50.dp)
+                .clickable {
+                    navController.navigate("profile")
+                }
+                .align(Alignment.TopStart)
+        )
         Box(
             contentAlignment = Alignment.TopCenter,
             modifier = Modifier
