@@ -100,28 +100,26 @@ fun CameraScreen(
                             clickCount = 0 // Reset click count after navigating back
                         }
                     }
-
             )
             Box(
                 modifier = Modifier
-                    .size(height=200.dp,width=450.dp)
+                    .size(height = 200.dp, width = 450.dp)
                     .align(Alignment.Center)
                     .offset(y = (-15).dp)
                     .background(Color.LightGray)
-
-            ){
+            ) {
                 Text("camera", modifier = Modifier.align(Alignment.Center))
             }
-            Text(question.english,
+            Text(
+                question.english,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y=-(20).dp),
+                    .offset(y = -(20).dp),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 75.sp
                 )
             )
-
             Image(
                 painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
@@ -133,21 +131,17 @@ fun CameraScreen(
                         navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
                             popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
                         }
-
                     }
             )
-            Button(onClick = {
-
-            },
-                    modifier = Modifier
+            Button(
+                onClick = {},
+                modifier = Modifier
                     .align(Alignment.BottomEnd) // Move button to bottom end
-                .size(width = 200.dp, height = 60.dp), // Bigger button
+                    .size(width = 200.dp, height = 60.dp), // Bigger button
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
-            ){
+            ) {
                 Text("넘어가기")
             }
-
         }
     }
-
 }

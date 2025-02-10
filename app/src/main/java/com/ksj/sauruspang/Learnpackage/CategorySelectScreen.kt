@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -30,7 +29,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -87,7 +85,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
 
                 )
             }
-Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             Row() {
                 val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
@@ -113,10 +111,8 @@ Spacer(modifier = Modifier.height(30.dp))
 
                 }
             }
-
         }
     }
-
 }
 
 

@@ -8,18 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -40,8 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 @Composable
@@ -103,7 +95,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             )
             Spacer(modifier = Modifier.width(20.dp))
             Row {
-                Column (modifier = Modifier.offset(y = 40.dp)){
+                Column(modifier = Modifier.offset(y = 40.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         TextField(
                             value = name,
@@ -152,7 +144,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                         DynamicImageLoding { selectedImage = it }
                     }
                 }
-
             }
         }
     }
@@ -172,9 +163,7 @@ fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
                     .clip(RoundedCornerShape(16.dp))
                     .clickable {
                         onImageSelected(resourceId)
-
                     }
-
             )
         }
     }

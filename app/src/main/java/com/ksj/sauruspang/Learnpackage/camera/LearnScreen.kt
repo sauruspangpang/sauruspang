@@ -42,7 +42,7 @@ fun LearnScreen(
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -67,7 +67,6 @@ fun LearnScreen(
                                     }
                                 }
                         )
-
                         LinearProgressIndicator(
                             progress = { progress },
                             modifier = Modifier
@@ -128,16 +127,8 @@ fun LearnScreen(
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-//                    .clickable(enabled = questionIndex < questions.size - 1)
-//                    {
-//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-//                        }
-//
-//                    }
                     .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") }
             )
         }
     }
-
 }

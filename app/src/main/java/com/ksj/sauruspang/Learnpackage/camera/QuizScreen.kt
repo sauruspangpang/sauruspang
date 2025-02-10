@@ -152,13 +152,6 @@ fun QuizScreen(
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-//                    .clickable(enabled = questionIndex < questions.size - 1)
-//                    {
-//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-//                        }
-//
-//                    }
                     .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") }
             )
         }
