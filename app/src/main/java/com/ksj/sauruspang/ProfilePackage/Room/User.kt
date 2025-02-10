@@ -9,5 +9,8 @@ data class User(
     @PrimaryKey(autoGenerate = true) val uid: Int = 0,
     val name: String?,
     val birth: String?,
-    @ColumnInfo(name = "selected_image") val selectedImage: Int?
+    @ColumnInfo(name = "selected_image") val selectedImage: Int?,
+    val category: String?,
+    val quizCategory: String? // 새로운 필드 추가
+
 )

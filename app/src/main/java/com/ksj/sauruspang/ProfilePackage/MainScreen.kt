@@ -107,7 +107,9 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                             name,
                                             birth,
                                             userProfile++,
-                                            selectedImage
+                                            selectedImage,
+                                            "아이",
+                                            "미정"
                                         )
                                     }
                                     navController.navigate("profile")

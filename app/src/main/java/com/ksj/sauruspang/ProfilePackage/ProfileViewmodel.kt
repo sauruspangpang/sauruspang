@@ -15,7 +15,9 @@ data class Profile(
     var name: String,
     var birth: String,
     var userprofile: Int,
-    var selectedImage : Int
+    var selectedImage : Int,
+    var category : String,
+    var quizCategory: String
 )
 
 class ProfileViewmodel(application: Application) : AndroidViewModel(application) {
@@ -26,14 +28,14 @@ class ProfileViewmodel(application: Application) : AndroidViewModel(application)
         loadProfilesFromDatabase()
     }
 
-    fun addProfile(name: String, birth: String, userprofile: Int, selectedImage: Int) {
-        profiles.add(Profile(name, birth, userprofile, selectedImage))
-        saveProfileToDatabase(name, birth, selectedImage)
+    fun addProfile(name: String, birth: String, userprofile: Int, selectedImage: Int, category: String, quizCategory: String) {
+        profiles.add(Profile(name, birth, userprofile, selectedImage, category, quizCategory))
+        saveProfileToDatabase(name, birth, selectedImage, category, quizCategory)
     }
 
-    private fun saveProfileToDatabase(name: String, birth: String, selectedImage: Int) {
+    private fun saveProfileToDatabase(name: String, birth: String, selectedImage: Int, category: String, quizCategory: String) {
         viewModelScope.launch(Dispatchers.IO) {
-            val user = User(name = name, birth = birth, selectedImage = selectedImage)
+            val user = User(name = name, birth = birth, selectedImage = selectedImage, category = category, quizCategory = quizCategory)
             userDao.insert(user)
         }
     }
@@ -43,7 +45,7 @@ class ProfileViewmodel(application: Application) : AndroidViewModel(application)
             val users = userDao.getAll().first()
             profiles.clear()
             profiles.addAll(users.map { user ->
-                Profile(user.name ?: "", user.birth ?: "", user.uid, user.selectedImage ?: 0)
+                Profile(user.name ?: "", user.birth ?: "", user.uid, user.selectedImage ?: 0, user.category ?: "", user.quizCategory ?: "")
             })
         }
     }

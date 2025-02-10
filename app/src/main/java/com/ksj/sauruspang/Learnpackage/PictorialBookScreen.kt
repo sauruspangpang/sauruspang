@@ -28,6 +28,7 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -60,22 +61,21 @@ import java.io.OutputStream
 fun PictorialBookScreen(
     navController: NavController,
     categoryName: String,
-//    dayIndex: Int,
-//    questionIndex: Int,
     viewModel: ProfileViewmodel
 ) {
-//    val category = QuizCategory.allCategories.find { it.name == categoryName }
+    val currentProfile = viewModel.profiles.find { it.category == categoryName }
     val categories = allCategories.map { it.name }
     var selectedCategory by remember {
-        mutableStateOf(categories.find { it == categoryName } ?: "과일과 야채")
+        mutableStateOf(currentProfile?.quizCategory ?: categories.first())
     }
     var selectedIndex = categories.indexOf(selectedCategory).coerceAtLeast(0)
+
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.choosecategory_wallpaper),
             contentDescription = "배경 이미지",
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
@@ -95,35 +95,25 @@ fun PictorialBookScreen(
                 )
                 ScrollableTabRow(
                     selectedTabIndex = selectedIndex,
-//                    modifier = Modifier.width(IntrinsicSize.Min), // 내용에 맞게 너비 조절
                     edgePadding = 0.dp,
                     modifier = Modifier.wrapContentWidth(),
                     containerColor = Color.Transparent,
                     contentColor = Color.Black
-
                 ) {
                     categories.forEachIndexed { index, category ->
                         Tab(
                             selected = selectedIndex == index,
-                            onClick = { selectedCategory = category }
+                            onClick = {
+                                selectedCategory = category
+                                selectedIndex = index
+                            }
                         ) {
                             Text(category, modifier = Modifier.padding(16.dp))
                         }
                     }
                 }
-
-                // 선택된 카테고리에 맞는 사진 표시
                 PhotoGrid(selectedCategory)
             }
-//                CustomTabRow(
-//                    categories = categories,
-//                    selectedIndex = selectedIndex,
-//                    onCategorySelected = { index ->
-//                        selectedIndex = index
-//                        selectedCategory = categories[index] // 선택한 카테고리 반영
-//                    }
-//                )
-//            }
         }
     }
 }
@@ -150,50 +140,14 @@ fun PhotoGrid(category: String) {
     }
 }
 
-fun savePhoto(context: Context, bitmap: Bitmap, category: String): Uri? {
-    val contentResolver = context.contentResolver
-    val imageCollection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-    } else {
-        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    }
-
-    val contentValues = ContentValues().apply {
-        put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_${System.currentTimeMillis()}.jpg") // 파일명
-        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg") // 파일 타입
-        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$category/") // 저장 경로 (앨범명)
-        put(MediaStore.Images.Media.IS_PENDING, 1) // 저장 중 상태
-    }
-
-    return try {
-        val imageUri = contentResolver.insert(imageCollection, contentValues)
-        imageUri?.let { uri ->
-            val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
-            outputStream?.use { stream ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream) // 이미지 저장
-            }
-            contentValues.clear()
-            contentValues.put(MediaStore.Images.Media.IS_PENDING, 0) // 저장 완료
-            contentResolver.update(uri, contentValues, null, null)
-        }
-        imageUri
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
-
-
 fun loadPhotos(context: Context, category: String): List<Uri> {
     val photos = mutableListOf<Uri>()
 
-    // 기기 내 저장된 이미지 URI를 가져오기 위한 쿼리 설정
     val projection = arrayOf(MediaStore.Images.Media._ID)
     val selection = "${MediaStore.Images.Media.BUCKET_DISPLAY_NAME} = ?"
-    val selectionArgs = arrayOf(category) // 특정 폴더(앨범) 이름을 기준으로 필터링
+    val selectionArgs = arrayOf(category)
     val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
 
-    // MediaStore에서 사진 데이터 가져오기
     val queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
     val cursor: Cursor? =
         context.contentResolver.query(queryUri, projection, selection, selectionArgs, sortOrder)
@@ -210,33 +164,85 @@ fun loadPhotos(context: Context, category: String): List<Uri> {
 
     return photos
 }
+//}
+//                CustomTabRow(
+//                    categories = categories,
+//                    selectedIndex = selectedIndex,
+//                    onCategorySelected = { index ->
+//                        selectedIndex = index
+//                        selectedCategory = categories[index] // 선택한 카테고리 반영
+//                    }
+//                )
+//            }
+//        }
+//    }
+//}
+//
 
 
-// ScrollableTabRow 말고 다른거 쓸때 사용하는 CustomTabRow
-@Composable
-fun CustomTabRow(
-    categories: List<String>,
-    selectedIndex: Int,
-    onCategorySelected: (Int) -> Unit
-) {
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        items(categories.size) { index ->
-            val category = categories[index]
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .clickable { onCategorySelected(index) }
-                    .background(if (selectedIndex == index) Color.LightGray else Color.Transparent)
-            ) {
-                Text(
-                    text = category,
-                    modifier = Modifier.padding(16.dp),
-                    color = if (selectedIndex == index) Color.Black else Color.DarkGray
-                )
-            }
-        }
-    }
-}
+//    fun savePhoto(context: Context, bitmap: Bitmap, category: String): Uri? {
+//        val contentResolver = context.contentResolver
+//        val imageCollection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+//            MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+//        } else {
+//            MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+//        }
+//
+//        val contentValues = ContentValues().apply {
+//            put(
+//                MediaStore.Images.Media.DISPLAY_NAME,
+//                "IMG_${System.currentTimeMillis()}.jpg"
+//            ) // 파일명
+//            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg") // 파일 타입
+//            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$category/") // 저장 경로 (앨범명)
+//            put(MediaStore.Images.Media.IS_PENDING, 1) // 저장 중 상태
+//        }
+//
+//        return try {
+//            val imageUri = contentResolver.insert(imageCollection, contentValues)
+//            imageUri?.let { uri ->
+//                val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
+//                outputStream?.use { stream ->
+//                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream) // 이미지 저장
+//                }
+//                contentValues.clear()
+//                contentValues.put(MediaStore.Images.Media.IS_PENDING, 0) // 저장 완료
+//                contentResolver.update(uri, contentValues, null, null)
+//            }
+//            imageUri
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//            null
+//        }
+//    }
+
+
+//    // ScrollableTabRow 말고 다른거 쓸때 사용하는 CustomTabRow
+//    @Composable
+//    fun CustomTabRow(
+//        categories: List<String>,
+//        selectedIndex: Int,
+//        onCategorySelected: (Int) -> Unit
+//    ) {
+//        LazyRow(
+//            modifier = Modifier.fillMaxWidth(),
+//            horizontalArrangement = Arrangement.Start
+//        ) {
+//            items(categories.size) { index ->
+//                val category = categories[index]
+//                Box(
+//                    modifier = Modifier
+//                        .padding(horizontal = 8.dp, vertical = 4.dp)
+//                        .clickable { onCategorySelected(index) }
+//                        .background(if (selectedIndex == index) Color.LightGray else Color.Transparent)
+//                ) {
+//                    Text(
+//                        text = category,
+//                        modifier = Modifier.padding(16.dp),
+//                        color = if (selectedIndex == index) Color.Black else Color.DarkGray
+//                    )
+//                }
+//            }
+//        }
+//    }
+
