@@ -94,6 +94,13 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             CameraScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
 
+        // QuizScreen 이동을 위한 경로 추가
+        composable("quiz/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
+            val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
+            QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+        }
     }
 }
 
