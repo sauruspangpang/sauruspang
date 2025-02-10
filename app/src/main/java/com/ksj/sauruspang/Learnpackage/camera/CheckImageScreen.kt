@@ -39,7 +39,7 @@ import com.ksj.sauruspang.flaskSever.ImagePrediction
 
 // 이미지 표시하는 Compose 함수
 @Composable
-fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewModel = viewModel()) {
+fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewModel = viewModel(), resultListViewModel: DetectedResultListViewModel = viewModel()) {
     val capturedImage = viewModel.capturedImage
     var predictionResultListState by remember { mutableStateOf(listOf<String>()) }
     val context = LocalContext.current
@@ -79,6 +79,7 @@ fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewM
                                     selectedModel = findCategoryName
                                 ){ updatedList ->
                                     predictionResultListState = updatedList
+                                    resultListViewModel.detectedResultList = predictionResultListState
                                 }
                                 navController.navigate("answer") }
                             .background(color = Color.Green)

@@ -18,10 +18,19 @@ class CameraViewModel : ViewModel() {
     }
 }
 
-class SharedViewModel : ViewModel() {
+class SharedRouteViewModel : ViewModel() {
     var sharedValue: String? = null // 저장할 값
 
     fun clearValue(){
         sharedValue = null
+    }
+}
+
+class DetectedResultListViewModel : ViewModel(){
+    var detectedResultList: List<String>? = null
+    var answerWord: String? = null
+
+    fun clearValue(){
+        detectedResultList = null
     }
 }
