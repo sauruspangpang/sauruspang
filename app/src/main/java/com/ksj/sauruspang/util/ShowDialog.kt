@@ -66,3 +66,30 @@ fun DialogRetry(
         }
     }
 }
+
+@Composable
+fun LearnRetry(
+    onDismiss: () -> Unit,
+    onRetry: () -> Unit
+) {
+    Dialog(onDismissRequest = { onDismiss() }) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = Color.White,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = "오답입니다.")
+                Spacer(modifier = Modifier.height(16.dp))
+                // 다이얼로그에서 두 가지 액션이 필요한 경우 두 개의 버튼을 배치할 수 있습니다.
+                Button(onClick = onRetry) {
+                    Text("다시말하기")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(onClick = onDismiss) {
+                    Text("닫기")
+                }
+            }
+        }
+    }
+}

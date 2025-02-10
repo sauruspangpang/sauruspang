@@ -4,6 +4,7 @@ import com.ksj.sauruspang.ProfilePackage.Room.AppDatabase
 import com.ksj.sauruspang.ProfilePackage.Room.User
 import android.app.Application
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -47,4 +48,27 @@ class ProfileViewmodel(application: Application) : AndroidViewModel(application)
             })
         }
     }
+    private val _correctCounts = mutableStateMapOf<String, Int>() // Map to store counts per question
+    private val _quizSolvedMap = mutableStateMapOf<String, Boolean>()
+
+    fun increaseCorrectCount(questionId: String) {
+        _correctCounts[questionId] = (_correctCounts[questionId] ?: 0) + 1
+    }
+
+    fun getCorrectCount(questionId: String): Int {
+        return _correctCounts[questionId] ?: 0
+    }
+
+    // Function to get whether the quiz question is solved
+    fun isQuizSolved(questionId: String): Boolean {
+        return _quizSolvedMap[questionId] ?: false
+    }
+
+    // Function to set the quiz question as solved
+    fun markQuizAsSolved(questionId: String) {
+        _quizSolvedMap[questionId] = true
+    }
+
+
+
 }

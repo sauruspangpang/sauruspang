@@ -35,18 +35,23 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -61,6 +66,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
+import com.ksj.sauruspang.util.DialogCorrect
+import com.ksj.sauruspang.util.DialogRetry
 import java.util.Locale
 import java.util.jar.Manifest
 
@@ -75,6 +82,7 @@ fun LearnScreen(
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel
 ) {
+
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
@@ -98,8 +106,35 @@ fun LearnScreen(
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
         }
     }
+    var showCorrectDialog by remember { mutableStateOf(false) }
+    var showRetryDialog by remember { mutableStateOf(false) }
+
+
+    val coroutineScope = rememberCoroutineScope()
+
+    if (showCorrectDialog) {
+        DialogCorrect(
+            message = "정답입니다.",
+            onDismiss = { showCorrectDialog = false }
+        )
+    }
+
+    if (showRetryDialog) {
+        DialogRetry(
+            onDismiss = { showRetryDialog = false },
+            onRetry = {
+                // 다시쓰기 동작 수행 (예: 캔버스 초기화)
+                // recognizedText = "Recognition Result: "
+                showRetryDialog = false
+            }
+        )
+    }
     var spokenText by remember { mutableStateOf("") }
-    var correctCount by remember { mutableIntStateOf(0) }
+//    var correctCount by rememberSaveable { mutableIntStateOf(0) }
+//    var completedQuestion by rememberSaveable { mutableStateOf(false) }
+    val questionId = "$categoryName-$dayIndex-$questionIndex"
+    val correctCount by remember { derivedStateOf { viewModel.getCorrectCount(questionId) } }
+    val completedQuestion by remember { derivedStateOf { correctCount > 2 } }
 
     val recognitionListener = object : RecognitionListener {
         override fun onResults(results: Bundle?) {
@@ -107,7 +142,10 @@ fun LearnScreen(
             val spoken = detectedMatches?.firstOrNull()?.lowercase(Locale.ROOT) ?: ""
             spokenText = spoken
             if (spoken == question.english.lowercase(Locale.ROOT)) {
-                correctCount++
+                viewModel.increaseCorrectCount(questionId)
+                showCorrectDialog = true
+            } else {
+                showRetryDialog = true
             }
         }
 
@@ -126,6 +164,15 @@ fun LearnScreen(
     RequestMicrophonePermission(onPermissionGranted = {
         hasPermission = true
     })
+
+
+
+
+
+
+
+
+
     Scaffold(topBar = {
         TopAppBar(
             title = {
@@ -283,7 +330,13 @@ fun LearnScreen(
 //                        }
 //
 //                    }
-                    .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") })
+                    .clickable(enabled = completedQuestion)
+                    { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") },
+                colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)
+
+            )
+
+
         }
     }
 }
