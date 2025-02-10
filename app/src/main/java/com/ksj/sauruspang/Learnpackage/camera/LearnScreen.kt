@@ -45,7 +45,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -77,6 +79,7 @@ fun LearnScreen(
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
+    var showPopup by remember { mutableStateOf(false) }
 
 
     fun listen(text: String, locale: Locale) {
@@ -220,11 +223,24 @@ fun LearnScreen(
                 ) {
                     Spacer(modifier = Modifier.size(70.dp))
                     Box(
+//                        modifier = Modifier
+//                            .size(90.dp)
+//                            .clip(RoundedCornerShape(8.dp)) // Rounded corners
+//                            .background(Color(0xFF77E4D2))
+//                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
+//                            .clickable { speechRecognizer.startListening(speechIntent) }
                         modifier = Modifier
-                            .size(65.dp)
-                            .clip(RoundedCornerShape(8.dp)) // Rounded corners
-                            .background(Color(0xFF77E4D2))
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
+                            .size(90.dp)
+                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(16.dp))
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color(0xFF77E4D2),
+                                        Color(0xFF4ECDC4)
+                                    )
+                                ),
+                                shape = RoundedCornerShape(16.dp)
+                            )
                             .clickable { speechRecognizer.startListening(speechIntent) }
                     ) {
                         Image(
@@ -232,7 +248,8 @@ fun LearnScreen(
                             contentDescription = "Speak button",
                             modifier = Modifier
                                 .size(60.dp)
-                                .padding(8.dp) // Inner padding,
+                                .padding(8.dp),
+                            contentScale = ContentScale.Fit
                         )
                     }
                     Text("detected: $spokenText", fontSize = 20.sp)
