@@ -31,9 +31,9 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,6 +43,7 @@ fun LearnScreen(
     dayIndex: Int,
     questionIndex: Int,
     viewModel: ProfileViewmodel,
+    sharedRouteViewModel: SharedRouteViewModel = viewModel()
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -57,16 +58,17 @@ fun LearnScreen(
                             .fillMaxWidth()
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.image_map),
+                            painter = painterResource(id = R.drawable.image_backhome),
                             contentDescription = "",
                             modifier = Modifier
-                                .size(60.dp)
+                                .size(50.dp)
                                 .clickable {
                                     category?.name?.let { categoryName ->
                                         navController.navigate("stage/$categoryName")
                                     }
                                 }
                         )
+
                         LinearProgressIndicator(
                             progress = { progress },
                             modifier = Modifier
@@ -121,14 +123,23 @@ fun LearnScreen(
                     fontSize = 75.sp
                 )
             )
+            sharedRouteViewModel.sharedValue = "camera/$categoryName/$dayIndex/${questionIndex}"
             Image(
                 painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
+//                    .clickable(enabled = questionIndex < questions.size - 1)
+//                    {
+//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
+//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+//                        }
+//
+//                    }
                     .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") }
             )
         }
     }
+
 }
