@@ -66,8 +66,9 @@ import com.google.accompanist.permissions.rememberPermissionState
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
-import com.ksj.sauruspang.util.DialogCorrect
-import com.ksj.sauruspang.util.DialogRetry
+
+import com.ksj.sauruspang.util.LearnCorrect
+import com.ksj.sauruspang.util.LearnRetry
 import java.util.Locale
 import java.util.jar.Manifest
 
@@ -113,14 +114,14 @@ fun LearnScreen(
     val coroutineScope = rememberCoroutineScope()
 
     if (showCorrectDialog) {
-        DialogCorrect(
+        LearnCorrect(
             message = "정답입니다.",
             onDismiss = { showCorrectDialog = false }
         )
     }
 
     if (showRetryDialog) {
-        DialogRetry(
+        LearnRetry(
             onDismiss = { showRetryDialog = false },
             onRetry = {
                 // 다시쓰기 동작 수행 (예: 캔버스 초기화)

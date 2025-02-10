@@ -68,6 +68,29 @@ fun DialogRetry(
 }
 
 @Composable
+fun LearnCorrect(
+    message: String = "정답입니다!",
+    onDismiss: () -> Unit
+) {
+    Dialog(onDismissRequest = { onDismiss() }) {
+        // 다이얼로그 UI 스타일을 적용하기 위해 Surface를 사용합니다.
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = Color.White,
+            modifier = Modifier.padding(16.dp)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = message)
+                Spacer(modifier = Modifier.height(16.dp))
+                Button(onClick = onDismiss) {
+                    Text("확인")
+                }
+            }
+        }
+    }
+}
+
+@Composable
 fun LearnRetry(
     onDismiss: () -> Unit,
     onRetry: () -> Unit

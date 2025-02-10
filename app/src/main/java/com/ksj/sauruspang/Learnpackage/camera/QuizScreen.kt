@@ -47,8 +47,9 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
-import com.ksj.sauruspang.util.DialogCorrect
-import com.ksj.sauruspang.util.DialogRetry
+
+import com.ksj.sauruspang.util.LearnCorrect
+import com.ksj.sauruspang.util.LearnRetry
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,13 +74,13 @@ fun QuizScreen(
     val answerOptions = remember { questions.map { it.english }.shuffled() }
 
     if (showCorrectDialog) {
-        DialogCorrect(
+        LearnCorrect(
             message = "정답입니다.",
             onDismiss = { showCorrectDialog = false }
         )
     }
     if (showRetryDialog) {
-        DialogRetry(
+        LearnRetry(
             onDismiss = { showRetryDialog = false },
             onRetry = {
                 // 다시쓰기 동작 수행 (예: 캔버스 초기화)
