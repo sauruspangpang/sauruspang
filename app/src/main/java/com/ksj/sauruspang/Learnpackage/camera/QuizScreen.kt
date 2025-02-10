@@ -107,17 +107,19 @@ fun QuizScreen(
                 }
         )
         Image(
-            painter = painterResource(id = R.drawable.back),
+            painter = painterResource(id = R.drawable.image_backarrow),
             contentDescription = "previous question",
             modifier = Modifier
                 .size(140.dp)
                 .align(Alignment.CenterStart)
-                .clickable(enabled = questionIndex > 0) {
-                    if (questionIndex > 0) {
-                        navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
-                    } else {
-                        navController.popBackStack()
-                    }
+                .clickable {
+                    navController.navigate(
+                        if (questionIndex > 0) {
+                            "quiz/$categoryName/$dayIndex/${questionIndex - 1}"
+                        } else {
+                            "camera/$categoryName/$dayIndex/${questions.size - 1}"
+                        }
+                    )
                 }
         )
         Box(
@@ -127,8 +129,9 @@ fun QuizScreen(
                 .align(Alignment.Center)
         ) {
             Row(
-                modifier = Modifier.fillMaxSize()
-                    .offset(y=(-10).dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .offset(y = (-10).dp),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -155,7 +158,7 @@ fun QuizScreen(
                 Spacer(modifier = Modifier.size(50.dp))
                 Column(
                     modifier = Modifier
-                        .offset(x = 30.dp, y= (-20).dp),
+                        .offset(x = 30.dp, y = (-20).dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     Spacer(modifier = Modifier.size(50.dp))
@@ -163,13 +166,12 @@ fun QuizScreen(
                     answerOptions.forEach { answer ->
                         Button(
                             onClick = {
-                                if(answer==question.english){
+                                if (answer == question.english) {
                                     viewModel.markQuizAsSolved(questionId)
                                     showCorrectDialog = true
-                                }else{
-                                    showRetryDialog= true
+                                } else {
+                                    showRetryDialog = true
                                 }
-
 
 
                             },
@@ -187,7 +189,7 @@ fun QuizScreen(
         }
 
         Image(
-            painter = painterResource(id = R.drawable.frontnull),
+            painter = painterResource(id = R.drawable.image_frontarrow),
             contentDescription = "next question",
             modifier = Modifier
                 .size(140.dp)
@@ -199,8 +201,16 @@ fun QuizScreen(
 //                        }
 //
 //                    }
-                .clickable(enabled = solvedQuestion) { navController.navigate("quiz/{categoryName}/{dayIndex}/{questionIndex+1}") },
-            colorFilter = if(solvedQuestion)null else ColorFilter.tint(Color.Gray)
+                .clickable(enabled = solvedQuestion) {
+                    if (questionIndex == questions.size - 1) {
+                        navController.navigate("congrats")
+
+                    } else {
+                        navController.navigate("quiz/$categoryName/$dayIndex/${questionIndex + 1}")
+                    }
+                },
+
+            colorFilter = if (solvedQuestion) null else ColorFilter.tint(Color.Gray)
         )
     }
 

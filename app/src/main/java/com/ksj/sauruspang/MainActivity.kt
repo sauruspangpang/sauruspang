@@ -23,6 +23,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
+import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 import java.util.Locale
 
@@ -112,7 +113,9 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
-
+        composable("congrats") {
+            CongratScreen(navController, viewmodel)
+        }
 
 
 

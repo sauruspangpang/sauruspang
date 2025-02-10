@@ -78,7 +78,7 @@ fun CameraScreen(
                 )
             )
             Image(
-                painter = painterResource(id = R.drawable.back),
+                painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier
                     .size(140.dp)
@@ -123,7 +123,7 @@ fun CameraScreen(
             )
 
             Image(
-                painter = painterResource(id = R.drawable.frontnull),
+                painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
