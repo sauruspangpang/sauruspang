@@ -111,7 +111,8 @@ fun NaySys(viewmodel: ProfileViewmodel) {
                 dayIndex,
                 questionIndex,
                 viewmodel,
-                cameraViewModel
+                cameraViewModel,
+                sharedRouteViewModel
             )
         }
     }

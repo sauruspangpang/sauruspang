@@ -50,7 +50,8 @@ fun CameraScreen(
     dayIndex: Int,
     questionIndex: Int,
     viewModel: ProfileViewmodel,
-    camViewModel: CameraViewModel
+    camViewModel: CameraViewModel,
+    sharedRouteViewModel: SharedRouteViewModel
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -110,19 +111,32 @@ fun CameraScreen(
             )
             Box(
                 modifier = Modifier
-                    .size(height=200.dp,width=450.dp)
+                    .size(height = 200.dp, width = 450.dp)
                     .align(Alignment.Center)
                     .offset(y = (-15).dp)
                     .background(Color.LightGray)
-                    .clickable { navController.navigate("camerax") }
+                    .clickable {
+                        navController.navigate("camerax")
+                        sharedRouteViewModel.sharedCategory = category
+                        sharedRouteViewModel.sharedClickCount = clickCount
+                        sharedRouteViewModel.sharedFront =
+                            "learn/$categoryName/$dayIndex/${questionIndex + 1}"
+                        sharedRouteViewModel.sharedPopUp = "learn/$categoryName/$dayIndex/0"
+                        sharedRouteViewModel.sharedQuestionIndex = questionIndex
+                        sharedRouteViewModel.sharedQuestion = question
+                        sharedRouteViewModel.sharedQuestions = questions
+                        sharedRouteViewModel.sharedBack = "learn/$categoryName/$dayIndex/${questionIndex - 1}"
+                        sharedRouteViewModel.sharedCategoryName = categoryName
+                    }
 
-            ){
+            ) {
                 Text(categoryname, modifier = Modifier.align(Alignment.Center))
             }
-            Text(question.english,
+            Text(
+                question.english,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y=-(20).dp),
+                    .offset(y = -(20).dp),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 75.sp
@@ -143,12 +157,13 @@ fun CameraScreen(
 
                     }
             )
-            Button(onClick = { /*todo*/},
+            Button(
+                onClick = { /*todo*/ },
                 modifier = Modifier
                     .align(Alignment.BottomEnd) // Move button to bottom end
                     .size(width = 200.dp, height = 60.dp), // Bigger button
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
-            ){
+            ) {
                 Text("넘어가기")
             }
 
