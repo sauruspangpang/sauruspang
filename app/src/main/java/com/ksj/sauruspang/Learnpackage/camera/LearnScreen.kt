@@ -125,6 +125,7 @@ fun LearnScreen(
                     fontSize = 75.sp
                 )
             )
+            sharedViewModel.sharedValue = "camera/$categoryName/$dayIndex/${questionIndex}"
             Image(
                 painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
