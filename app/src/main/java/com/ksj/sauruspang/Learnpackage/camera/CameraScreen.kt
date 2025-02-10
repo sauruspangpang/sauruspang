@@ -58,7 +58,18 @@ fun CameraScreen(
     var clickCount by remember { mutableIntStateOf(0) }
     val findCategory = findCategoryByQuestion(question)
     val categoryname = findCategory?.javaClass?.simpleName ?: "Unknown"
+    var hasPermission by remember { mutableStateOf(false) }
     findCategoryName = categoryname
+
+    if (hasPermission) {
+        CameraPreviewScreen { bitmap ->
+            // 캡처된 이미지를 처리하는 코드
+        }
+    } else {
+        RequestCameraPermission {
+            hasPermission = true
+        }
+    }
 
     Box(
         modifier = Modifier

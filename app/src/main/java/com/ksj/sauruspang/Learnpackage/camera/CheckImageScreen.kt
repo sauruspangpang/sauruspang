@@ -1,6 +1,10 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
+import android.Manifest
 import android.graphics.Bitmap
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,8 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
-import com.ksj.sauruspang.flaskServer.ImageInput
-import com.ksj.sauruspang.flaskServer.ImagePrediction
+import com.ksj.sauruspang.flaskSever.ImageInput
+import com.ksj.sauruspang.flaskSever.ImagePrediction
 
 // 이미지 표시하는 Compose 함수
 @Composable
@@ -97,4 +102,23 @@ fun CapturedImage(capturedImage: MutableState<Bitmap?>){
 
 fun getBitmapFromState(bitmapState: MutableState<Bitmap?>): Bitmap? {
     return bitmapState.value  // nullable 상태 그대로 반환
+}
+
+@Composable
+fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
+    val context = LocalContext.current
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+            if (isGranted) {
+                onPermissionGranted()
+            } else {
+                Toast.makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+            }
+        }
+    )
+
+    LaunchedEffect(Unit) {
+        permissionLauncher.launch(Manifest.permission.CAMERA)
+    }
 }
