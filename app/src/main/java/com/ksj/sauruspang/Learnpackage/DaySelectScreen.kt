@@ -55,7 +55,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 30.dp),
+                    .padding(start = 30.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -83,57 +83,6 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
     }
 }
 
-@Composable
-fun ProfileBox() {
-    Box(
-        contentAlignment = Alignment.BottomCenter,
-    ) {
-        Image(
-            painter = painterResource(R.drawable.image_woodboard),
-            contentDescription = "",
-            )
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 30.dp), // 좌우 여백 추가
-            verticalAlignment = Alignment.CenterVertically // 내부 요소도 중앙 정렬
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ellipse_1),
-                contentDescription = "",
-                Modifier.scale(0.8f)
-            )
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 20.dp), // 내부 요소 패딩
-                verticalArrangement = Arrangement.SpaceBetween, // 내부 요소 정렬
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(
-                    "Hello 박민준",
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically // 이미지와 텍스트를 같은 높이로 정렬
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.image_starpoint),
-                        contentDescription = "",
-                        modifier = Modifier.size(36.dp) // 원하는 크기로 조정
-                    )
-                    Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
-                    Text(
-                        "245",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
-                    )
-                }
-            }
-        }
-    }
-}
 
 
 @Composable

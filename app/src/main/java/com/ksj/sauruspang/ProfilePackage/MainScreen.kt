@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.systemBars
@@ -59,13 +60,23 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
-        Text(
-            text = "새로운 아이 프로필 만들기",
-            fontSize = 32.sp,
-            fontWeight = FontWeight.ExtraBold,
+        Box(
+            contentAlignment = Alignment.TopCenter,
             modifier = Modifier
-                .padding(20.dp)
-        )
+                .align(Alignment.TopCenter)
+                .offset(y = 15.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.image_banner),
+                contentDescription = "banner",
+            )
+            Text(
+                text = "아이 프로필 만들기",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.offset(y = 10.dp)
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxSize(),
@@ -77,17 +88,17 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                 contentDescription = "background",
                 modifier = Modifier
                     .padding(10.dp)
-                    .size(200.dp)
+                    .size(180.dp)
                     .clip(RoundedCornerShape(16.dp))
             )
             Spacer(modifier = Modifier.width(20.dp))
             Row {
-                Column {
+                Column (modifier = Modifier.offset(y = 40.dp)){
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         TextField(
                             value = name,
                             onValueChange = { name = it },
-                            modifier = Modifier.padding(10.dp)
+                            modifier = Modifier.padding(bottom = 10.dp)
                         )
                         Spacer(modifier = Modifier.width(60.dp))
                         Box(
@@ -125,7 +136,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                     TextField(
                         value = birth,
                         onValueChange = { birth = it },
-                        modifier = Modifier.padding(10.dp)
+                        modifier = Modifier.padding(bottom = 10.dp)
                     )
                     Row {
                         DynamicImageLoding { selectedImage = it }
