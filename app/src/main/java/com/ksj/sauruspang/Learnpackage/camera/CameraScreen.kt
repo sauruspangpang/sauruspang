@@ -50,7 +50,8 @@ fun CameraScreen(
     dayIndex: Int,
     questionIndex: Int,
     viewModel: ProfileViewmodel,
-    camViewModel: CameraViewModel
+    camViewModel: CameraViewModel,
+    detectedResultListViewModel: DetectedResultListViewModel
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -70,6 +71,8 @@ fun CameraScreen(
             hasPermission = true
         }
     }
+
+    detectedResultListViewModel.answerWord = question.english
 
     Box(
         modifier = Modifier

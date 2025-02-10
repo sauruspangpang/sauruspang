@@ -53,6 +53,9 @@ import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.ksj.sauruspang.Learnpackage.QuizCategory.Companion.allCategories
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
+import com.ksj.sauruspang.ProfilePackage.Room.AppDatabase
+import com.ksj.sauruspang.ProfilePackage.Room.User
+import com.ksj.sauruspang.ProfilePackage.UserViewModel
 import com.ksj.sauruspang.R
 import java.io.OutputStream
 
@@ -62,7 +65,8 @@ fun PictorialBookScreen(
     categoryName: String,
 //    dayIndex: Int,
 //    questionIndex: Int,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
+    userViewModel: UserViewModel
 ) {
 //    val category = QuizCategory.allCategories.find { it.name == categoryName }
     val categories = allCategories.map { it.name }
@@ -113,130 +117,27 @@ fun PictorialBookScreen(
                 }
 
                 // 선택된 카테고리에 맞는 사진 표시
-                PhotoGrid(selectedCategory)
-            }
-//                CustomTabRow(
-//                    categories = categories,
-//                    selectedIndex = selectedIndex,
-//                    onCategorySelected = { index ->
-//                        selectedIndex = index
-//                        selectedCategory = categories[index] // 선택한 카테고리 반영
-//                    }
-//                )
-//            }
-        }
-    }
-}
-
-@Composable
-fun PhotoGrid(category: String) {
-    val context = LocalContext.current
-    val photos = remember { loadPhotos(context, category) }
-
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp),
-        modifier = Modifier.padding(8.dp)
-    ) {
-        items(photos) { photoUri ->
-            Image(
-                painter = rememberAsyncImagePainter(photoUri),
-                contentDescription = "User Photo",
-                modifier = Modifier
-                    .size(128.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.Gray)
-            )
-        }
-    }
-}
-
-fun savePhoto(context: Context, bitmap: Bitmap, category: String): Uri? {
-    val contentResolver = context.contentResolver
-    val imageCollection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        MediaStore.Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
-    } else {
-        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    }
-
-    val contentValues = ContentValues().apply {
-        put(MediaStore.Images.Media.DISPLAY_NAME, "IMG_${System.currentTimeMillis()}.jpg") // 파일명
-        put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg") // 파일 타입
-        put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$category/") // 저장 경로 (앨범명)
-        put(MediaStore.Images.Media.IS_PENDING, 1) // 저장 중 상태
-    }
-
-    return try {
-        val imageUri = contentResolver.insert(imageCollection, contentValues)
-        imageUri?.let { uri ->
-            val outputStream: OutputStream? = contentResolver.openOutputStream(uri)
-            outputStream?.use { stream ->
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream) // 이미지 저장
-            }
-            contentValues.clear()
-            contentValues.put(MediaStore.Images.Media.IS_PENDING, 0) // 저장 완료
-            contentResolver.update(uri, contentValues, null, null)
-        }
-        imageUri
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
-
-
-fun loadPhotos(context: Context, category: String): List<Uri> {
-    val photos = mutableListOf<Uri>()
-
-    // 기기 내 저장된 이미지 URI를 가져오기 위한 쿼리 설정
-    val projection = arrayOf(MediaStore.Images.Media._ID)
-    val selection = "${MediaStore.Images.Media.BUCKET_DISPLAY_NAME} = ?"
-    val selectionArgs = arrayOf(category) // 특정 폴더(앨범) 이름을 기준으로 필터링
-    val sortOrder = "${MediaStore.Images.Media.DATE_ADDED} DESC"
-
-    // MediaStore에서 사진 데이터 가져오기
-    val queryUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-    val cursor: Cursor? =
-        context.contentResolver.query(queryUri, projection, selection, selectionArgs, sortOrder)
-
-    cursor?.use {
-        val idColumn = it.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
-        while (it.moveToNext()) {
-            val id = it.getLong(idColumn)
-            val photoUri =
-                Uri.withAppendedPath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, id.toString())
-            photos.add(photoUri)
-        }
-    }
-
-    return photos
-}
-
-
-// ScrollableTabRow 말고 다른거 쓸때 사용하는 CustomTabRow
-@Composable
-fun CustomTabRow(
-    categories: List<String>,
-    selectedIndex: Int,
-    onCategorySelected: (Int) -> Unit
-) {
-    LazyRow(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.Start
-    ) {
-        items(categories.size) { index ->
-            val category = categories[index]
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .clickable { onCategorySelected(index) }
-                    .background(if (selectedIndex == index) Color.LightGray else Color.Transparent)
-            ) {
-                Text(
-                    text = category,
-                    modifier = Modifier.padding(16.dp),
-                    color = if (selectedIndex == index) Color.Black else Color.DarkGray
-                )
+                PhotoGrid(selectedCategory, userViewModel)
             }
         }
     }
 }
+
+    @Composable
+    fun PhotoGrid(category: String, viewModel: UserViewModel) {
+        val context = LocalContext.current
+        var clearImage : List<String>
+        var clearWords : List<String>
+        fun getUserUid(context: Context): Int {
+            val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+            return sharedPreferences.getInt("user_uid", -1)  // 기본값 -1, 만약 없으면
+        }
+        val uid = getUserUid(context)
+        viewModel.loadUser(uid){ user: User? ->
+            if (user != null){
+                clearImage = user.clearedImage!!
+                clearWords = user.clearedWords!!
+            }
+        }
+
+    }

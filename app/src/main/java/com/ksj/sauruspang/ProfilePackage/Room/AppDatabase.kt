@@ -4,11 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import java.io.File
 
 @Database(entities = [User::class], version = 3, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
@@ -37,7 +39,8 @@ abstract class AppDatabase : RoomDatabase() {
                 name TEXT,
                 birth TEXT,
                 selected_image_path TEXT,
-                catalog_image_path TEXT
+                cleared_image BLOB,
+                cleared_words TEXT,
             )
         """.trimIndent()
                 )
@@ -45,8 +48,8 @@ abstract class AppDatabase : RoomDatabase() {
                 // 기존 데이터를 새로운 테이블로 이동 (selectedImage -> selected_image_path, catalogImage -> catalog_image_path)
                 database.execSQL(
                     """
-            INSERT INTO User_new (uid, name, birth, selected_image_path, catalog_image_path)
-            SELECT uid, name, birth, selectedImage, catalogImage FROM User
+            INSERT INTO User_new (uid, name, birth, cleared_image, cleared_words)
+            SELECT uid, name, birth, selectedImage, cleared_image, cleared_words FROM User
         """.trimIndent()
                 )
 

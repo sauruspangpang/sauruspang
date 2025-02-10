@@ -26,6 +26,7 @@ import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
 import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
+import com.ksj.sauruspang.ProfilePackage.UserViewModel
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 
 class MainActivity : ComponentActivity() {
@@ -45,14 +46,15 @@ fun NaySys(viewmodel: ProfileViewmodel) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
-    val detectedResultListViewModel : DetectedResultListViewModel = viewModel()
+    val detectedResultListViewModel: DetectedResultListViewModel = viewModel()
+    val userViewModel: UserViewModel = viewModel()
 
     NavHost(navController = navController,
         startDestination = if (viewmodel.profiles.isEmpty()) "main" else "profile",
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }) {
         composable("main") {
-            MainScreen(navController, viewmodel)
+            MainScreen(navController, viewmodel, userViewModel)
         }
         composable("profile") {
             ProfilePage(navController, viewmodel)
@@ -61,13 +63,18 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             HomeScreen(navController, viewmodel)
         }
         composable("camerax") {
-            ShowCameraPreviewScreen(navController, cameraViewModel, detectedResultListViewModel)
+            ShowCameraPreviewScreen(
+                navController,
+                viewmodel,
+                cameraViewModel,
+                detectedResultListViewModel
+            )
         }
         composable("answer") {
             CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel)
         }
         composable("pictorial") {
-            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel)
+            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel, userViewModel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
@@ -90,7 +97,14 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
                 WordQuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
             } else {
-                LearnScreen(navController, categoryName, dayIndex, questionIndex, viewmodel, sharedRouteViewModel)
+                LearnScreen(
+                    navController,
+                    categoryName,
+                    dayIndex,
+                    questionIndex,
+                    viewmodel,
+                    sharedRouteViewModel
+                )
             }
         }
 
@@ -111,7 +125,8 @@ fun NaySys(viewmodel: ProfileViewmodel) {
                 dayIndex,
                 questionIndex,
                 viewmodel,
-                cameraViewModel
+                cameraViewModel,
+                detectedResultListViewModel
             )
         }
     }
