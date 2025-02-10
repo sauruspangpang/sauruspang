@@ -187,15 +187,21 @@ fun WordInputScreen(
                             recognizedList = recognizedSplit
                             Log.e("recognizedList", recognizedList.toString())
 
-                            val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
-                            val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
+                            val candidate1 = recognizedList[0]
+                            val candidate2 = recognizedList[1]
 
-                            // 다이얼로그를 띄우기 위한 상태 업데이트 (정답 조건: 한 후보라도 완벽 일치)
-                            if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
+                            val mismatchedIndexes1 = compareWords(targetWord, candidate1)
+                            val mismatchedIndexes2 = compareWords(targetWord, candidate2)
+
+                            // 두 후보가 targetWord와 길이가 같고 모두 일치해야 정답으로 판단
+                            // 정답 조건식 변경 가능 (candidate1 == targetWord || candidate2 == targetWord)
+                            if ((candidate1.length == targetWord.length && mismatchedIndexes1.isEmpty()) ||
+                                (candidate2.length == targetWord.length && mismatchedIndexes2.isEmpty())
+                            ) {
                                 recognizedText = "정답입니다."
                                 showCorrectDialog = true
                             } else {
-                                // 틀린 글자 정보를 안전하게 생성
+                                // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
                                 wrongLettersInfo = "틀린 글자: " +
                                         "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
                                         "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
