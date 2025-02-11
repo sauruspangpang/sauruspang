@@ -34,19 +34,19 @@ class SharedRouteViewModel : ViewModel() {
     var sharedPopUp: String = ""
     var sharedQuestionIndex: Int = 0
     var sharedQuestions: List<QuizQuestion> = emptyList()
-    var sharedQuestion: QuizQuestion = QuizQuestion(1,"","")
+    var sharedQuestion: QuizQuestion = QuizQuestion(1, "", "")
     var sharedBack: String = ""
     var sharedCategoryName: String = ""
 
-    fun clearValue(){
+    fun clearValue() {
         sharedValue = null
     }
 }
 
-class DetectedResultListViewModel : ViewModel(){
+class DetectedResultListViewModel : ViewModel() {
     var detectedResultList: List<String>? = null
 
-    fun clearValue(){
+    fun clearValue() {
         detectedResultList = null
     }
 }

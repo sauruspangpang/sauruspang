@@ -116,12 +116,19 @@ fun PictorialBookScreen(
                     .height(400.dp),
                 horizontalArrangement = Arrangement.Start
             ) {
-                for (index in 0..indexValue-1){
-                    Column (modifier = Modifier.border(width = 2.dp, Color.Black, RoundedCornerShape(16.dp))
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally){
+                for (index in 0..indexValue - 1) {
+                    Column(
+                        modifier = Modifier
+                            .border(
+                                width = 2.dp,
+                                Color.Black,
+                                RoundedCornerShape(16.dp)
+                            )
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
                         Image(
                             bitmap = cameraViewModel.correctImageList[index].asImageBitmap(),
                             contentDescription = "Captured Image",
@@ -129,10 +136,12 @@ fun PictorialBookScreen(
                                 .fillMaxWidth()
                                 .height(200.dp)
                         )
-                        Text(cameraViewModel.correctWordList[index],
+                        Text(
+                            cameraViewModel.correctWordList[index],
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center)
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }

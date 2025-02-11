@@ -111,7 +111,6 @@ fun ImageProxy.toBitmap(): Bitmap {
 }
 
 
-
 suspend fun Context.getCameraProvider(): ProcessCameraProvider =
     suspendCancellableCoroutine { continuation ->
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
