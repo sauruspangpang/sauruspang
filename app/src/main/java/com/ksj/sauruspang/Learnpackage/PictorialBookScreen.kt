@@ -8,11 +8,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -132,31 +134,47 @@ fun PictorialBookScreen(
                 horizontalArrangement = Arrangement.Start
             ) {
                 for (index in 0..<indexValue) {
-                    Column(
+                    Box(
                         modifier = Modifier
-                            .border(
-                                width = 2.dp,
-                                Color.Black,
-                                RoundedCornerShape(16.dp)
-                            )
-                            .fillMaxWidth()
-                            .wrapContentHeight()
-                            .weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                            .width(300.dp)
+                            .fillMaxHeight(),
+                        contentAlignment = Alignment.Center
                     ) {
                         Image(
-                            bitmap = imageList[index].asImageBitmap(),
-                            contentDescription = "Captured Image",
+                            painter = painterResource(R.drawable.image_sketchbook),
+                            contentDescription = "스케치북 배경",
+                            contentScale = ContentScale.Fit,
                             modifier = Modifier
-                                .fillMaxWidth()
+                                .fillMaxSize()
+                                .width(250.dp)
+                                .wrapContentHeight()
+                        )
+                        Column(
+                            modifier = Modifier
                                 .height(200.dp)
-                        )
-                        Text(
-                            wordList[index],
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            textAlign = TextAlign.Center
-                        )
+                                .width(200.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            Image(
+                                bitmap = imageList[index].asImageBitmap(),
+                                contentDescription = "Captured Image",
+                                contentScale = ContentScale.Fit,
+                                modifier = Modifier
+                                    .weight(3f)
+                                    .padding(15.dp)
+                                    .fillMaxSize()
+                            )
+                            Text(
+                                wordList[index],
+                                fontSize = 40.sp,
+                                fontWeight = FontWeight.Bold,
+                                textAlign = TextAlign.Center,
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .width(250.dp)
+                                    .fillMaxSize()
+                            )
+                        }
                     }
                 }
             }
