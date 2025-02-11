@@ -1,15 +1,12 @@
 package com.ksj.sauruspang.Learnpackage.word
 
-import Learnpackage.camera.RequestMicrophonePermission
 import android.content.Intent
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
-import android.system.Os.listen
-import com.ksj.sauruspang.Learnpackage.QuizCategory
-import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -52,6 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
+import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.PermissionViewModel
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
@@ -67,12 +67,14 @@ fun WordQuizScreen(
     questionIndex: Int,
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
-    scoreViewModel: ScoreViewModel
+    scoreViewModel: ScoreViewModel,
+    permissionViewModel: PermissionViewModel
 
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
+    val hasPermission by permissionViewModel.micPermissionGranted
 
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
 
@@ -145,12 +147,12 @@ fun WordQuizScreen(
         override fun onPartialResults(partialResults: Bundle?) {}
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
-    var hasPermission by remember { mutableStateOf(false) }
+//    var hasPermission by remember { mutableStateOf(false) }
 
     speechRecognizer.setRecognitionListener(recognitionListener)
-    RequestMicrophonePermission(onPermissionGranted = {
-        hasPermission = true
-    })
+//    RequestMicrophonePermission(onPermissionGranted = {
+//        hasPermission = true
+//    })
 
     Scaffold(
         topBar = {
@@ -271,7 +273,14 @@ fun WordQuizScreen(
                                 ),
                                 shape = RoundedCornerShape(16.dp)
                             )
-                            .clickable { speechRecognizer.startListening(speechIntent) }
+                            .clickable {
+                                if (!hasPermission) {
+                                    Toast
+                                        .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
+                                        .show()
+                                } else
+                                    speechRecognizer.startListening(speechIntent)
+                            }
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.animal_cat),

@@ -7,6 +7,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -58,11 +59,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
+import com.ksj.sauruspang.PermissionViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
@@ -80,7 +83,8 @@ fun LearnScreen(
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
     sharedRouteViewModel: SharedRouteViewModel,
-    scoreViewModel: ScoreViewModel
+    scoreViewModel: ScoreViewModel,
+    permissionViewModel: PermissionViewModel
 ) {
 
     val category = QuizCategory.allCategories.find { it.name == categoryName }
@@ -88,7 +92,7 @@ fun LearnScreen(
     val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
     var showPopup by remember { mutableStateOf(false) }
-
+    val hasPermission by permissionViewModel.micPermissionGranted
 
     fun listen(text: String, locale: Locale) {
         tts?.language = locale
@@ -159,12 +163,16 @@ fun LearnScreen(
         override fun onPartialResults(partialResults: Bundle?) {}
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
-    var hasPermission by remember { mutableStateOf(false) }
+//    var hasPermission by remember { mutableStateOf(false) }
+
 
     speechRecognizer.setRecognitionListener(recognitionListener)
-    RequestMicrophonePermission(onPermissionGranted = {
-        hasPermission = true
-    })
+    // Request microphone permission
+
+
+//    RequestMicrophonePermission(onPermissionGranted = {
+//        hasPermission = true
+//    })
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
@@ -302,7 +310,14 @@ fun LearnScreen(
                                 ),
                                 shape = RoundedCornerShape(16.dp)
                             )
-                            .clickable { speechRecognizer.startListening(speechIntent) }
+                            .clickable {
+                                if (!hasPermission) {
+                                    Toast
+                                        .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
+                                        .show()
+                                } else
+                                    speechRecognizer.startListening(speechIntent)
+                            }
 
                     ) {
                         // Glossy effect overlay
@@ -373,50 +388,51 @@ fun LearnScreen(
 }
 
 
-@Composable
-fun RequestMicrophonePermission(onPermissionGranted: () -> Unit) {
-    val context = LocalContext.current
-    var showRationale by remember { mutableStateOf(false) }
-
-    // Permission launcher
-    val requestPermissionLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        if (isGranted) {
-            onPermissionGranted()
-        } else {
-            showRationale = true
-        }
-    }
-
-// Check if the permission is already granted
-    LaunchedEffect(Unit) {
-        if (ContextCompat.checkSelfPermission(
-                context, android.Manifest.permission.RECORD_AUDIO
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            onPermissionGranted()
-        } else {
-            showRationale = true
-        }
-    }
-
-    // Show rationale dialog if needed
-    if (showRationale) {
-        AlertDialog(onDismissRequest = { /* Handle dialog dismissal */ },
-            title = { Text("Microphone Permission Required") },
-            text = { Text("This app requires microphone access to function properly.") },
-            confirmButton = {
-                TextButton(onClick = {
-                    requestPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
-                }) {
-                    Text("Grant Permission")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { /* Handle dismiss */ }) {
-                    Text("Cancel")
-                }
-            })
-    }
-}
+//@Composable
+//fun RequestMicrophonePermission(onPermissionGranted: () -> Unit) {
+//    val context = LocalContext.current
+//    var showRationale by remember { mutableStateOf(false) }
+//
+//    // Permission launcher
+//    val requestPermissionLauncher = rememberLauncherForActivityResult(
+//        ActivityResultContracts.RequestPermission()
+//    ) { isGranted ->
+//        if (isGranted) {
+//            onPermissionGranted()
+//        } else {
+//            showRationale = true
+//        }
+//    }
+//
+//// Check if the permission is already granted
+//    LaunchedEffect(Unit) {
+//        if (ContextCompat.checkSelfPermission(
+//                context, android.Manifest.permission.RECORD_AUDIO
+//            ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            onPermissionGranted()
+//        } else {
+//            showRationale = true
+//        }
+//    }
+//
+//    // Show rationale dialog if needed
+//    if (showRationale) {
+//        AlertDialog(onDismissRequest = { /* Handle dialog dismissal */ },
+//            title = { Text("Microphone Permission Required") },
+//            text = { Text("This app requires microphone access to function properly.") },
+//            confirmButton = {
+//                TextButton(onClick = {
+//                    requestPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+//                    showRationale = false
+//                }) {
+//                    Text("Grant Permission")
+//                }
+//            },
+//            dismissButton = {
+//                TextButton(onClick = { showRationale = false }) {
+//                    Text("Cancel")
+//                }
+//            })
+//    }
+//}

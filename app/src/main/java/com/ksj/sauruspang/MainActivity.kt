@@ -1,16 +1,25 @@
 package com.ksj.sauruspang
 
 import Learnpackage.camera.LearnScreen
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -52,6 +61,8 @@ class MainActivity : ComponentActivity() {
         val viewModel = ProfileViewmodel(application)
         setContent {
             val scoreViewModel: ScoreViewModel = viewModel()
+            val permissionViewModel: PermissionViewModel = viewModel()
+            RequestMicPermission(permissionViewModel)
             HideSystemBars()
             SauruspangTheme {
                 NaySys(viewModel,tts, scoreViewModel)
@@ -71,7 +82,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
     val detectedResultListViewModel : DetectedResultListViewModel = viewModel()
     val gPTCameraViewModel: GPTCameraViewModel = viewModel()
-
+    val permissionViewModel: PermissionViewModel = viewModel()
 
 
     NavHost(navController = navController,
@@ -121,7 +132,8 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             // Check if the category is not Fruits, Animals, or Colors
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
-                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel, scoreViewModel)
+                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel, scoreViewModel, permissionViewModel)
+
             } else {
                 LearnScreen(
                     navController,
@@ -131,7 +143,8 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
                     tts,
                     viewmodel,
                     sharedRouteViewModel,
-                    scoreViewModel
+                    scoreViewModel,
+                    permissionViewModel
                 )
             }
         }
