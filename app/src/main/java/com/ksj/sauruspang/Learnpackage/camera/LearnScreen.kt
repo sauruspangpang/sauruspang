@@ -406,12 +406,13 @@ fun RequestMicrophonePermission(onPermissionGranted: () -> Unit) {
             confirmButton = {
                 TextButton(onClick = {
                     requestPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+                    showRationale = false
                 }) {
                     Text("Grant Permission")
                 }
             },
             dismissButton = {
-                TextButton(onClick = { /* Handle dismiss */ }) {
+                TextButton(onClick = { showRationale = false }) {
                     Text("Cancel")
                 }
             })
