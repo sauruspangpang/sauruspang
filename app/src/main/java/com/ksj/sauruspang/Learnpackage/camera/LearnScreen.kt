@@ -17,11 +17,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,6 +51,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -157,6 +161,10 @@ fun LearnScreen(
     RequestMicrophonePermission(onPermissionGranted = {
         hasPermission = true
     })
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+
     Scaffold(topBar = {
         TopAppBar(
             title = {
@@ -166,7 +174,7 @@ fun LearnScreen(
                     Image(painter = painterResource(id = R.drawable.image_backhome),
                         contentDescription = "",
                         modifier = Modifier
-                            .size(50.dp)
+                            .size(screenWidth * 0.07f)
                             .clickable {
                                 category?.name?.let { categoryName ->
                                     navController.navigate("stage/$categoryName")
@@ -198,7 +206,7 @@ fun LearnScreen(
             Image(painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier
-                    .size(140.dp)
+                    .size(screenWidth * 0.15f)
                     .align(Alignment.CenterStart)
                     .clickable(enabled = questionIndex > 0) {
                         if (questionIndex > 0) {
@@ -218,45 +226,67 @@ fun LearnScreen(
                     Image(painter = painterResource(id = question.imageId),
                         contentDescription = "question image",
                         modifier = Modifier
-                            .size(180.dp)
+                            .size(screenWidth * 0.2f)
                             .clickable { listen(question.english, Locale.US) }
-
-
                     )
-                    Text(
-                        question.korean,
-//                    modifier = Modifier
-//                        .align(Alignment.BottomCenter)
-//                        .offset(y=-(20).dp),
-                        modifier = Modifier.clickable { listen(question.korean, Locale.KOREAN) },
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 50.sp
+                    Spacer(modifier = Modifier.height(screenHeight * 0.02f))
+
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            question.korean,
+                            modifier = Modifier.clickable {
+                                listen(
+                                    question.korean,
+                                    Locale.KOREAN
+                                )
+                            },
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold, fontSize = 50.sp
+                            )
                         )
-                    )
-                    Text(
-                        question.english,
-                        modifier = Modifier.clickable { listen(question.english, Locale.US) },
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 60.sp
+                        Image(
+                            painter = painterResource(id = R.drawable.listen_btn),
+                            contentDescription = "listen button",
+                            modifier = Modifier
+                                .size(screenWidth * 0.07f)
+                                .padding(start = screenWidth * 0.02f)
+                                .clickable { listen(question.korean, Locale.KOREAN) }
                         )
-                    )
-                    Image(painter = painterResource(id = R.drawable.listen_btn),
-                        contentDescription = "listen button",
-                        modifier = Modifier
-                            .size(30.dp)
-                            .clickable { listen(question.english, Locale.US) })
+                    }
 
-
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            question.english,
+                            modifier = Modifier.clickable { listen(question.english, Locale.US) },
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold, fontSize = 60.sp
+                            )
+                        )
+                        Image(painter = painterResource(id = R.drawable.listen_btn),
+                            contentDescription = "listen button",
+                            modifier = Modifier
+                                .size(screenWidth * 0.07f)
+                                .padding(start = screenWidth * 0.02f)
+                                .clickable { listen(question.english, Locale.US) })
+                    }
                 }
-                Spacer(modifier = Modifier.size(90.dp))
+                Spacer(modifier = Modifier.width(screenWidth * 0.08f))
                 Column(
+                    modifier = Modifier.fillMaxHeight(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.size(100.dp))
+                    Spacer(modifier = Modifier.height(screenHeight * 0.23f))
                     Box(
                         modifier = Modifier
-                            .size(130.dp)
-                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(16.dp)) // Increased shadow for more visibility
+                            .size(screenWidth * 0.12f)
+                            .shadow(
+                                elevation = 10.dp,
+                                shape = RoundedCornerShape(16.dp)
+                            ) // Increased shadow for more visibility
 
                             .background(
                                 brush = Brush.verticalGradient(
@@ -289,25 +319,25 @@ fun LearnScreen(
                         Image(
                             painter = painterResource(id = R.drawable.speakbutton),
                             contentDescription = "Speak button",
-                            modifier = Modifier.fillMaxSize().padding(8.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
                             contentScale = ContentScale.Fit // Ensures it fills the box
                         )
                     }
-                    Spacer(modifier=Modifier.size(15.dp))
-                    Row() {
-                        Row {
-                            repeat(3) { index ->
-                                Image(
-                                    painter = painterResource(id = question.imageId),
-                                    contentDescription = "listen button",
-                                    modifier = Modifier.size(50.dp),
-                                    alpha = if (index < correctCount) 1.0f else 0.4f
-                                )
-                                //index 0 = image1, index1 = image2, index2 = image3
-                            }
+                    Spacer(modifier = Modifier.height(screenHeight * 0.05f))
+                    Row {
+                        repeat(3) { index ->
+                            Image(
+                                painter = painterResource(id = question.imageId),
+                                contentDescription = "listen button",
+                                modifier = Modifier.size(screenWidth * 0.055f),
+                                alpha = if (index < correctCount) 1.0f else 0.4f
+                            )
+                            //index 0 = image1, index1 = image2, index2 = image3
                         }
-
                     }
+
 
                 }
 
@@ -316,8 +346,9 @@ fun LearnScreen(
                 painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
-                    .size(140.dp)
+                    .size(screenWidth * 0.155f)
                     .align(Alignment.CenterEnd)
+                    .offset(x = -(screenWidth * 0.03f))
 //                    .clickable(enabled = questionIndex < questions.size - 1)
 //                    {
 //                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {

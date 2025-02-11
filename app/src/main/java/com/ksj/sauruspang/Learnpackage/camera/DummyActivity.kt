@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
@@ -38,6 +41,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -77,6 +81,10 @@ fun DummyScreen(
     dayIndex: Int,
     questionIndex: Int,
 ) {
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
+
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
@@ -92,7 +100,7 @@ fun DummyScreen(
                     Image(painter = painterResource(id = R.drawable.image_backhome),
                         contentDescription = "",
                         modifier = Modifier
-                            .size(50.dp)
+                            .size(screenWidth * 0.07f)
                             .clickable {
                                 category?.name?.let { categoryName ->
                                     navController.navigate("stage/$categoryName")
@@ -103,7 +111,8 @@ fun DummyScreen(
                         progress = { progress },
                         modifier = Modifier
                             .fillMaxWidth(0.5f)
-                            .height(20.dp)
+                            // .height(20.dp)
+                            .height(screenHeight * 0.04f)
                             .align(Alignment.Center)
                     )
                 }
@@ -124,8 +133,10 @@ fun DummyScreen(
             Image(painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier
-                    .size(140.dp)
+                    //  .size(140.dp)
+                    .size(screenWidth * 0.15f)
                     .align(Alignment.CenterStart)
+                    .offset(x = screenWidth * 0.03f)
                     .clickable(enabled = questionIndex > 0) {
                         if (questionIndex > 0) {
                             navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
@@ -141,47 +152,64 @@ fun DummyScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
 
                     ) {
+
                     Image(
                         painter = painterResource(id = question.imageId),
                         contentDescription = "question image",
-                        modifier = Modifier
-                            .size(180.dp)
-
-
+                        modifier = Modifier.size(screenWidth * 0.2f)
                     )
-                    Text(
-                        question.korean,
-//                    modifier = Modifier
-//                        .align(Alignment.BottomCenter)
-//                        .offset(y=-(20).dp),
+                    Spacer(modifier = Modifier.height(screenHeight * 0.02f))
 
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 45.sp
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            question.korean,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold, fontSize = 45.sp
+                            )
                         )
-                    )
-                    Text(
-                        question.english,
-
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 55.sp
+                        Image(
+                            painter = painterResource(id = R.drawable.listen_btn),
+                            contentDescription = "listen button",
+                            modifier = Modifier
+                                .size(screenWidth * 0.07f)
+                                .padding(start = screenWidth * 0.02f)
                         )
-                    )
-                    Image(
-                        painter = painterResource(id = R.drawable.listen_btn),
-                        contentDescription = "listen button",
-                        modifier = Modifier
-                            .size(30.dp)
-                    )
+                    }
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            question.english,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold, fontSize = 45.sp
+                            )
+                        )
+                        Image(
+                            painter = painterResource(id = R.drawable.listen_btn),
+                            contentDescription = "listen button",
+                            modifier = Modifier
+                                .size(screenWidth * 0.07f)
+                                .padding(start = screenWidth * 0.02f)
+
+                        )
+                    }
+
                 }
-                Spacer(modifier = Modifier.size(90.dp))
+                Spacer(modifier = Modifier.width(screenWidth * 0.08f))
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.fillMaxHeight(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    Spacer(modifier = Modifier.size(100.dp))
+                    Spacer(modifier = Modifier.height(screenHeight * 0.23f))
                     Box(
                         modifier = Modifier
-                            .size(130.dp)
-                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(16.dp)) // Increased shadow for more visibility
+                            .size(screenWidth * 0.12f)
+                            .shadow(
+                                elevation = 10.dp,
+                                shape = RoundedCornerShape(16.dp)
+                            ) // Increased shadow for more visibility
 
                             .background(
                                 brush = Brush.verticalGradient(
@@ -212,25 +240,27 @@ fun DummyScreen(
                         Image(
                             painter = painterResource(id = R.drawable.speakbutton),
                             contentDescription = "Speak button",
-                            modifier = Modifier.fillMaxSize().padding(8.dp),
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(8.dp),
                             contentScale = ContentScale.Fit // Ensures it fills the box
                         )
                     }
-                    Spacer(modifier=Modifier.size(15.dp))
-                    Row() {
-                        Row {
-                            repeat(3) { index ->
-                                Image(
-                                    painter = painterResource(id = question.imageId),
-                                    contentDescription = "listen button",
-                                    modifier = Modifier.size(50.dp),
-                                    alpha = if (index < correctCount) 1.0f else 0.4f
-                                )
-                                //index 0 = image1, index1 = image2, index2 = image3
-                            }
-                        }
+                    Spacer(modifier = Modifier.height(screenHeight * 0.05f))
 
+                    Row {
+                        repeat(3) { index ->
+                            Image(
+                                painter = painterResource(id = question.imageId),
+                                contentDescription = "listen button",
+                                // modifier = Modifier.size(50.dp)
+                                modifier = Modifier.size(screenWidth * 0.055f),
+                                alpha = if (index < correctCount) 1.0f else 0.4f
+                            )
+                            //index 0 = image1, index1 = image2, index2 = image3
+                        }
                     }
+
 
                 }
             }
@@ -238,8 +268,10 @@ fun DummyScreen(
             Image(painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
-                    .size(140.dp)
+                    .size(screenWidth * 0.155f)
                     .align(Alignment.CenterEnd)
+                    .offset(x = -(screenWidth * 0.03f))
+
 //                    .clickable(enabled = questionIndex < questions.size - 1)
 //                    {
 //                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
@@ -258,6 +290,6 @@ fun DummyScreen(
 @Composable
 fun DummyScreenPreview() {
     SauruspangTheme {
-        DummyScreen(rememberNavController(), "과일과 야채", dayIndex = 0, questionIndex = 0)
+        DummyScreen(rememberNavController(), "과일과 야채", dayIndex = 0, questionIndex = 1)
     }
 }
