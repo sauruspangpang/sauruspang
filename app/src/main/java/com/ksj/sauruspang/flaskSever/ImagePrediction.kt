@@ -91,7 +91,7 @@ object ImagePrediction {
             }
 
             // 응답 파싱 후 결과 리스트 콜백 전달
-            onResult(predictionResults.toList())
+            onResult(predictionResults.toMutableList())
         }
     }
 

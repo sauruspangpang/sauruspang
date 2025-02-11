@@ -125,7 +125,8 @@ fun CameraScreen(
                         sharedRouteViewModel.sharedQuestionIndex = questionIndex
                         sharedRouteViewModel.sharedQuestion = question
                         sharedRouteViewModel.sharedQuestions = questions
-                        sharedRouteViewModel.sharedBack = "learn/$categoryName/$dayIndex/${questionIndex - 1}"
+                        sharedRouteViewModel.sharedBack =
+                            "learn/$categoryName/$dayIndex/${questionIndex - 1}"
                         sharedRouteViewModel.sharedCategoryName = categoryName
                     }
 
@@ -142,7 +143,7 @@ fun CameraScreen(
                     fontSize = 75.sp
                 )
             )
-
+            camViewModel.answerWord = question.english
             Image(
                 painter = painterResource(id = R.drawable.frontnull),
                 contentDescription = "next question",

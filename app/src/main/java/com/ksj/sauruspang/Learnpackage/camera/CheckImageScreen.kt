@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,9 +40,12 @@ import com.ksj.sauruspang.flaskSever.ImagePrediction
 
 // 이미지 표시하는 Compose 함수
 @Composable
-fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewModel = viewModel(), resultListViewModel: DetectedResultListViewModel = viewModel()) {
+fun ShowCameraPreviewScreen(
+    navController: NavController,
+    viewModel: CameraViewModel = viewModel(),
+    resultListViewModel: DetectedResultListViewModel = viewModel()
+) {
     val capturedImage = viewModel.capturedImage
-    var predictionResultListState by remember { mutableStateOf(listOf<String>()) }
     val context = LocalContext.current
     val bitmapCapturedImage = getBitmapFromState(capturedImage)
 
@@ -55,15 +59,17 @@ fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewM
             }
         } else {
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxSize()
                     .background(color = colorResource(R.color.background)),
                 contentAlignment = Alignment.BottomCenter
             ) {
                 CapturedImage(capturedImage)
-                Row (modifier = Modifier.height(60.dp)){
+                Row(modifier = Modifier.height(60.dp)) {
                     //버튼들 박스로 만들고 텍스트로 기능 적어두고 클릭어블로 기능넣기
                     Box(
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
                             .fillMaxSize()
                             .background(color = Color.Red)
                             .clickable { capturedImage.value = null }
@@ -71,17 +77,31 @@ fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewM
                         Text("다시 촬영", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     }
                     Box(
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier
+                            .weight(1f)
                             .clickable {
                                 ImagePrediction.uploadImageToServer(
                                     context = context,
                                     imageInput = ImageInput.BitmapInput(bitmapCapturedImage),
                                     selectedModel = findCategoryName
-                                ){ updatedList ->
-                                    predictionResultListState = updatedList
-                                    resultListViewModel.detectedResultList = predictionResultListState
+                                ) { updatedList ->
+                                    if (viewModel.answerWord
+                                            .lowercase()
+                                            .trim() in updatedList
+                                    ) {
+                                        if (viewModel.answerWord !in viewModel.correctWordList) {
+                                            viewModel.isCorrect = true
+                                            viewModel.correctWordList.add(viewModel.answerWord)
+                                            viewModel.correctImageList.add(
+                                                Bitmap.createBitmap(
+                                                    capturedImage.value!!
+                                                )
+                                            )
+                                        }
+                                    }
                                 }
-                                navController.navigate("answer") }
+                                navController.navigate("answer")
+                            }
                             .background(color = Color.Green)
                             .fillMaxSize()) {
                         Text("정답 확인", fontSize = 30.sp, fontWeight = FontWeight.Bold)
@@ -93,7 +113,7 @@ fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewM
 }
 
 @Composable
-fun CapturedImage(capturedImage: MutableState<Bitmap?>){
+fun CapturedImage(capturedImage: MutableState<Bitmap?>) {
     Image(
         bitmap = capturedImage.value!!.asImageBitmap(),
         contentDescription = "Captured Image",

@@ -1,5 +1,7 @@
 package com.ksj.sauruspang
 
+import android.content.Context
+import android.net.Uri
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
@@ -10,16 +12,31 @@ import com.ksj.sauruspang.ProfilePackage.MainScreen
 import com.ksj.sauruspang.ProfilePackage.ProfilePage
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.os.Bundle
+import android.provider.MediaStore
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.rememberAsyncImagePainter
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
@@ -67,7 +84,7 @@ fun NaySys(viewmodel: ProfileViewmodel) {
             CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel)
         }
         composable("pictorial") {
-            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel)
+            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel, cameraViewModel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
@@ -117,6 +134,7 @@ fun NaySys(viewmodel: ProfileViewmodel) {
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
