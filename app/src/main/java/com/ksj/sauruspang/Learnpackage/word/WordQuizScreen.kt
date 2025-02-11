@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
@@ -65,7 +66,8 @@ fun WordQuizScreen(
     dayIndex: Int,
     questionIndex: Int,
     tts: TextToSpeech?,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
+    scoreViewModel: ScoreViewModel
 
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
@@ -99,6 +101,7 @@ fun WordQuizScreen(
     if (showCorrectDialog) {
         LearnCorrect(
             message = "정답입니다.",
+            scoreViewModel=scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }

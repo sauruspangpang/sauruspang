@@ -50,7 +50,8 @@ import com.ksj.sauruspang.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
+fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreViewModel: ScoreViewModel) {
+    val score by scoreViewModel.correctAnswers
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.choosecategory_wallpaper),
@@ -70,7 +71,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.image_backhome),
-                    contentDescription = "button to stagescreen",
+                    contentDescription = "button to profile screen",
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
@@ -78,7 +79,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
                         }
                 )
 
-                ProfileBox()
+                ProfileBox(scoreViewModel)
                 Spacer(Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.image_photobook),
@@ -183,7 +184,7 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
 }
 
 @Composable
-fun ProfileBox() {
+fun ProfileBox(scoreViewModel: ScoreViewModel) {
     Box(
         contentAlignment = Alignment.BottomCenter,
     ) {
@@ -223,8 +224,9 @@ fun ProfileBox() {
                         modifier = Modifier.size(36.dp) // 원하는 크기로 조정
                     )
                     Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
+                    val score by scoreViewModel.correctAnswers
                     Text(
-                        "245",
+                        "${score*5}",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold
                     )

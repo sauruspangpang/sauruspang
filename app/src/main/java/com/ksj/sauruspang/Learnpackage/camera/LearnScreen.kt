@@ -61,6 +61,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
@@ -78,7 +79,8 @@ fun LearnScreen(
     questionIndex: Int,
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
-    sharedRouteViewModel: SharedRouteViewModel
+    sharedRouteViewModel: SharedRouteViewModel,
+    scoreViewModel: ScoreViewModel
 ) {
 
     val category = QuizCategory.allCategories.find { it.name == categoryName }
@@ -113,6 +115,7 @@ fun LearnScreen(
     if (showCorrectDialog) {
         LearnCorrect(
             message = "정답입니다.",
+            scoreViewModel= scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }

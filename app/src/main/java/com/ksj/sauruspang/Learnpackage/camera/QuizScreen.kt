@@ -45,6 +45,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 
@@ -58,7 +59,8 @@ fun QuizScreen(
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
+    scoreViewModel: ScoreViewModel
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -76,6 +78,7 @@ fun QuizScreen(
     if (showCorrectDialog) {
         LearnCorrect(
             message = "정답입니다.",
+            scoreViewModel = scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }

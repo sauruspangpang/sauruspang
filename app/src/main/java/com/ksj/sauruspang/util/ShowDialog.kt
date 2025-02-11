@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import kotlinx.coroutines.delay
 
 const val delayTimeMs = 2000L
@@ -61,10 +62,12 @@ fun LoadingDialog(message: String) {
 @Composable
 fun DialogCorrect(
     message: String = "정답입니다!",
+    scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
     // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
     LaunchedEffect(Unit) {
+        scoreViewModel.incrementScore()
         delay(delayTimeMs)
         onDismiss()
     }
@@ -138,21 +141,34 @@ fun DialogRetry(
 @Composable
 fun LearnCorrect(
     message: String = "정답입니다!",
+    scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
+    // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
+    LaunchedEffect(Unit) {
+        scoreViewModel.incrementScore()
+        delay(delayTimeMs)
+        onDismiss()
+    }
     Dialog(onDismissRequest = { onDismiss() }) {
-        // 다이얼로그 UI 스타일을 적용하기 위해 Surface를 사용합니다.
         Surface(
             shape = RoundedCornerShape(8.dp),
-            color = Color.White,
-            modifier = Modifier.padding(16.dp)
+            color = correctDialogColor,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(1f)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                // TODO 오답 이미지 또는 아이콘 변경 필요
+                Icon(
+                    imageVector = Icons.Filled.CheckCircle,
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(16.dp))
                 Text(text = message)
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(onClick = onDismiss) {
-                    Text("확인")
-                }
             }
         }
     }
@@ -188,10 +204,12 @@ fun LearnRetry(
 @Composable
 fun CaptureCorrect(
     message: String = "정답입니다!",
+    scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
     // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
     LaunchedEffect(Unit) {
+        scoreViewModel.incrementScore()
         delay(delayTimeMs)
         onDismiss()
     }

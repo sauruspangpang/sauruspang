@@ -20,6 +20,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
+import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
@@ -50,9 +51,10 @@ class MainActivity : ComponentActivity() {
         }
         val viewModel = ProfileViewmodel(application)
         setContent {
+            val scoreViewModel: ScoreViewModel = viewModel()
             HideSystemBars()
             SauruspangTheme {
-                NaySys(viewModel,tts)
+                NaySys(viewModel,tts, scoreViewModel)
             }
         }
     }
@@ -63,12 +65,13 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
+fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreViewModel) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
     val detectedResultListViewModel : DetectedResultListViewModel = viewModel()
     val gPTCameraViewModel: GPTCameraViewModel = viewModel()
+
 
 
     NavHost(navController = navController,
@@ -82,7 +85,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             ProfilePage(navController, viewmodel)
         }
         composable("home") {
-            HomeScreen(navController, viewmodel)
+            HomeScreen(navController, viewmodel, scoreViewModel)
         }
         composable("camerax") {
             ShowCameraPreviewScreen(
@@ -93,14 +96,14 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             )
         }
         composable("answer") {
-            CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel)
+            CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel, scoreViewModel)
         }
         composable("pictorial") {
             PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel, cameraViewModel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
-            StageScreen(navController, categoryName, viewmodel)
+            StageScreen(navController, categoryName, viewmodel,scoreViewModel)
             // Set the current category for later use
             CategoryDayManager.setCurrentCategoryName(categoryName)
         }
@@ -118,7 +121,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             // Check if the category is not Fruits, Animals, or Colors
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
-                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel)
+                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel, scoreViewModel)
             } else {
                 LearnScreen(
                     navController,
@@ -127,7 +130,8 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
                     questionIndex,
                     tts,
                     viewmodel,
-                    sharedRouteViewModel
+                    sharedRouteViewModel,
+                    scoreViewModel
                 )
             }
         }
@@ -136,7 +140,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            WordInputScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+            WordInputScreen(navController, categoryName, dayIndex, questionIndex, viewmodel,scoreViewModel)
         }
 
         composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
@@ -158,7 +162,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+            QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel,scoreViewModel)
         }
         composable("congrats/{categoryName}") { backStackEntry ->
 //            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
@@ -187,6 +191,6 @@ fun HideSystemBars() {
 @Composable
 fun DefaultPreview() {
     SauruspangTheme {
-        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel())
+        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel(), scoreViewModel = viewModel())
     }
 }

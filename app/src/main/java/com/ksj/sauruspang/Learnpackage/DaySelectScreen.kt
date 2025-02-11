@@ -30,7 +30,7 @@ import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
 @Composable
-fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel) {
+fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel, scoreViewModel: ScoreViewModel) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -56,7 +56,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                             navController.navigate("home")
                         }
                 )
-                ProfileBox()
+                ProfileBox(scoreViewModel =scoreViewModel )
             }
             Row(
                 modifier = Modifier

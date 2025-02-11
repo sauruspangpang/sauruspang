@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.CaptureCorrect
 import com.ksj.sauruspang.util.CaptureRetry
@@ -41,6 +42,8 @@ fun CameraAnswerScreen(
     navController: NavController,
     viewModel: CameraViewModel = viewModel(),
     sharedRouteViewModel: SharedRouteViewModel = viewModel(),
+    scoreViewModel: ScoreViewModel
+
 ) {
     val capturedImage = viewModel.capturedImage
     val sharedvModel = sharedRouteViewModel.sharedValue
@@ -73,6 +76,7 @@ fun CameraAnswerScreen(
         if (viewModel.isCorrect) {
             CaptureCorrect(
                 message = "정답입니다.",
+                scoreViewModel = scoreViewModel,
                 onDismiss = {
                     viewModel.isCorrect = false
                     showDialog = false

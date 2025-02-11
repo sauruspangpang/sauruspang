@@ -40,6 +40,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
@@ -50,6 +51,7 @@ import com.google.mlkit.vision.digitalink.DigitalInkRecognizer
 import com.google.mlkit.vision.digitalink.DigitalInkRecognizerOptions
 import com.google.mlkit.vision.digitalink.Ink
 import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.DialogCorrect
@@ -66,7 +68,8 @@ fun WordInputScreen(
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
+    scoreViewModel: ScoreViewModel
 ) {
     var hitNumber by remember { mutableStateOf(0) }
     val inkManager = remember { InkManager() }
@@ -83,6 +86,7 @@ fun WordInputScreen(
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
     val targetWord = question.english.uppercase()
+
 
     var showCorrectDialog by remember { mutableStateOf(false) }
     var showRetryDialog by remember { mutableStateOf(false) }
@@ -288,6 +292,7 @@ fun WordInputScreen(
         if (showCorrectDialog) {
             DialogCorrect(
                 message = "정답입니다.",
+                scoreViewModel = scoreViewModel,
                 onDismiss = { showCorrectDialog = false }
             )
         }
