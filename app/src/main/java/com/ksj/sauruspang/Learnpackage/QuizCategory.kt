@@ -6,7 +6,6 @@ data class QuizDay(
     val dayNumber: Int,
     val questions: List<QuizQuestion>
 )
-
 data class QuizQuestion(
     val imageId: Int,
     val korean: String,
@@ -15,6 +14,7 @@ data class QuizQuestion(
 
 
 sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<QuizDay>) {
+    var currentDay: Int = 1
 
     object Colors : QuizCategory(
         "색",
@@ -368,5 +368,33 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
 
     companion object {
         val allCategories = listOf(Fruits, Animals, Colors, Jobs, Transportation, Stationery, Clothes, Numbers, Body, Week, Months, Weather, Shapes, SolarSystem, Country, Food)
+    }
+}
+
+// CategoryDayManager를 QuizCategory 외부로 이동
+object CategoryDayManager {
+    private val categoryDays = mutableMapOf<String, Int>()
+    private var currentCategoryName: String? = null
+
+    init {
+        QuizCategory.allCategories.forEach { category ->
+            categoryDays[category.name] = 1
+        }
+    }
+
+    fun incrementDay(categoryName: String) {
+        categoryDays[categoryName] = categoryDays[categoryName]?.plus(1) ?: 1
+    }
+
+    fun getDay(categoryName: String): Int {
+        return categoryDays[categoryName] ?: 1
+    }
+
+    fun setCurrentCategoryName(categoryName: String) {
+        currentCategoryName = categoryName
+    }
+
+    fun getCurrentCategoryName(): String? {
+        return currentCategoryName
     }
 }

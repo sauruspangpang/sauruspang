@@ -16,10 +16,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -35,13 +38,10 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
         Image(
             painter = painterResource(R.drawable.day_wallpaper),
             contentDescription = null,
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -75,19 +75,20 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
 }
 
 
+
 @Composable
 fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController) {
+    val totalDays = CategoryDayManager.getDay(categoryName) // 카테고리별로 업데이트된 dayNumber 가져오기
     Row(
         modifier = Modifier
             .padding(30.dp)
-
     ) {
-        days.forEachIndexed { index, day ->
+        for (i in 0 until totalDays) {
             DayBox(
-                dayIndex = day.dayNumber - 1,
-                isTop = index % 2 == 0,
-                categoryName = categoryName,
-                navController = navController
+                dayIndex = i, // 현재 인덱스를 dayIndex로 전달
+                isTop = i % 2 == 0, // 박스를 위쪽에 배치할지 아래쪽에 배치할지 결정
+                categoryName = categoryName, // 카테고리 이름 전달
+                navController = navController // NavController 전달
             )
         }
     }

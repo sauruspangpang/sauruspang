@@ -3,6 +3,7 @@ package com.ksj.sauruspang.ProfilePackage
 import com.ksj.sauruspang.ProfilePackage.Room.AppDatabase
 import com.ksj.sauruspang.ProfilePackage.Room.User
 import android.app.Application
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
@@ -16,8 +17,11 @@ data class Profile(
     var name: String,
     var birth: String,
     var userprofile: Int,
-    var selectedImage : Int
+    var selectedImage : Int,
+    var hitNumber: Int = 0
 )
+
+
 
 class ProfileViewmodel(application: Application) : AndroidViewModel(application) {
     var profiles = mutableStateListOf<Profile>()

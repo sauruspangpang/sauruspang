@@ -68,6 +68,7 @@ fun WordInputScreen(
     questionIndex: Int,
     viewModel: ProfileViewmodel
 ) {
+    var hitNumber by remember { mutableStateOf(0) }
     val inkManager = remember { InkManager() }
     var recognizedText by remember { mutableStateOf("Recognition Result: ") }
     var isModelDownloaded by remember { mutableStateOf(false) }
@@ -120,7 +121,7 @@ fun WordInputScreen(
                 modifier = Modifier
                     .size(50.dp)
                     .clickable {
-                        navController.popBackStack()
+                        navController.navigate("stage/$categoryName")
                     }
             )
         }
@@ -132,9 +133,7 @@ fun WordInputScreen(
                     .size(140.dp)
                     .clickable(enabled = questionIndex > 0) {
                         if (questionIndex > 0) {
-                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
-                        } else {
-                            navController.popBackStack()
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
                         }
                     }
             )
@@ -173,10 +172,14 @@ fun WordInputScreen(
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
-                    .clickable(enabled = isCorrect) {
-                        navController.navigate(nextRoute)
-                        isCorrect = false
+                    .clickable(enabled = isCorrect || hitNumber > 0) {
+                        if(hitNumber > 0)
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}")
                     }
+//                    .clickable(enabled = isCorrect) {
+//                        navController.navigate(nextRoute)
+//                        isCorrect = false
+//                    }
             )
         }
         Row(
@@ -235,6 +238,7 @@ fun WordInputScreen(
                                 recognizedText = "정답입니다."  // TODO 로깅 텍스트
                                 showCorrectDialog = true
                                 isCorrect = true
+                                hitNumber++
                             } else {
                                 // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
                                 wrongLettersInfo = "틀린 글자: " +
@@ -300,8 +304,7 @@ fun WordInputScreen(
     }
 }
 
-
-//모델 다운로드 함수
+// 모델 다운로드 함수
 private fun downloadModel(
     model: DigitalInkRecognitionModel,
     remoteModelManager: RemoteModelManager,
@@ -317,7 +320,6 @@ private fun downloadModel(
             onDownloadComplete(false)
         }
 }
-
 
 // InkManager 클래스 (실시간 그리기 지원)
 class InkManager {
