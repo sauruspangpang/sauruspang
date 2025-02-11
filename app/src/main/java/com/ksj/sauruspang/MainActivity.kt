@@ -29,6 +29,8 @@ import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
 import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
 import com.ksj.sauruspang.Learnpackage.camera.RandomCameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.RandomPhotoTakerScreen
+import com.ksj.sauruspang.Learnpackage.camera.GPTCameraViewModel
+import com.ksj.sauruspang.Learnpackage.camera.GPTRandomPhotoTakerScreen
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
 import com.ksj.sauruspang.Learnpackage.camera.ShowRandomCameraPreviewScreen
@@ -69,6 +71,8 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
     val detectedResultListViewModel : DetectedResultListViewModel = viewModel()
+    val gPTCameraViewModel: GPTCameraViewModel = viewModel()
+
 
     NavHost(navController = navController,
         startDestination = if (viewmodel.profiles.isEmpty()) "main" else "profile",
@@ -165,13 +169,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             CongratScreen(navController, viewmodel, catgeoryName)
         }
         composable("randomPhotoTaker") {
-            RandomPhotoTakerScreen(navController, viewmodel, cameraViewModel)
-        }
-        composable("randomCamera") {
-            ShowRandomCameraPreviewScreen(navController, cameraViewModel, detectedResultListViewModel)
-        }
-        composable("randomCameraAnswer") {
-            RandomCameraAnswerScreen(navController, cameraViewModel)
+            GPTRandomPhotoTakerScreen(gPTCameraViewModel)
         }
 
     }
