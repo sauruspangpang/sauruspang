@@ -47,10 +47,11 @@ class MainActivity : ComponentActivity() {
         val viewModel = ProfileViewmodel(application)
         setContent {
             SauruspangTheme {
-                NaySys(viewModel,tts)
+                NaySys(viewModel, tts)
             }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         tts.shutdown() // Release resources when the activity is destroyed
@@ -58,11 +59,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
+fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
-    val detectedResultListViewModel : DetectedResultListViewModel = viewModel()
+    val detectedResultListViewModel: DetectedResultListViewModel = viewModel()
 
     NavHost(navController = navController,
         startDestination = if (viewmodel.profiles.isEmpty()) "main" else "profile",
@@ -146,7 +147,11 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             RandomPhotoTakerScreen(navController, viewmodel, cameraViewModel)
         }
         composable("randomCamera") {
-            ShowRandomCameraPreviewScreen(navController, cameraViewModel, detectedResultListViewModel)
+            ShowRandomCameraPreviewScreen(
+                navController,
+                cameraViewModel,
+                detectedResultListViewModel
+            )
         }
         composable("randomCameraAnswer") {
             RandomCameraAnswerScreen(navController, cameraViewModel)
@@ -159,6 +164,12 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
 @Composable
 fun DefaultPreview() {
     SauruspangTheme {
-        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel())
+        WordInputScreen(
+            navController = rememberNavController(),
+            categoryName = "직업",
+            dayIndex = 0,
+            questionIndex = 0,
+            viewModel = viewModel()
+        )
     }
 }

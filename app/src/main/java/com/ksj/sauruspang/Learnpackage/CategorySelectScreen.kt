@@ -1,5 +1,6 @@
 package com.ksj.sauruspang.Learnpackage
 
+import android.util.Log
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -211,10 +212,16 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
             painter = painterResource(id = R.drawable.image_cameramark),
             contentDescription = "CameraMark",
             modifier = Modifier
-                .offset(x = 10.dp, y = (-20).dp) // 오른쪽 위로 이동
+                .clickable {
+                    Log.d("Navigation", "Navigating to gpt_camera_preview")
+                    navController.navigate("gpt_camera_preview")
+                }
+                .offset(x = 10.dp, y = (-20).dp)
                 .width(80.dp)
-                .align(Alignment.TopEnd) // 상위 박스의 오른쪽 상단에 배치
+                .align(Alignment.TopEnd)
         )
+
+
     }
 }
 
