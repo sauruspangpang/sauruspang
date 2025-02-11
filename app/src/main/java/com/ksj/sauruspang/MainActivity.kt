@@ -105,7 +105,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             // Check if the category is not Fruits, Animals, or Colors
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
-                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel)
             } else {
                 LearnScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel)
             }
