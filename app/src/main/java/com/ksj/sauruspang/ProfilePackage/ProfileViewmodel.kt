@@ -1,14 +1,12 @@
 package com.ksj.sauruspang.ProfilePackage
 
-import com.ksj.sauruspang.ProfilePackage.Room.AppDatabase
-import com.ksj.sauruspang.ProfilePackage.Room.User
 import android.app.Application
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ksj.sauruspang.ProfilePackage.Room.AppDatabase
+import com.ksj.sauruspang.ProfilePackage.Room.User
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch

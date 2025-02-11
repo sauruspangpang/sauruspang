@@ -2,7 +2,6 @@ package com.ksj.sauruspang.Learnpackage
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 
 class ScoreViewModel : ViewModel() {
