@@ -88,7 +88,6 @@ fun LearnScreen(
     var showPopup by remember { mutableStateOf(false) }
 
 
-
     fun listen(text: String, locale: Locale) {
         tts?.language = locale
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
@@ -181,7 +180,8 @@ fun LearnScreen(
                                 category?.name?.let { categoryName ->
                                     navController.navigate("stage/$categoryName")
                                 }
-                            })
+                            }
+                    )
 
                     LinearProgressIndicator(
                         progress = { progress },
@@ -350,7 +350,7 @@ fun LearnScreen(
                 modifier = Modifier
                     .size(screenWidth * 0.155f)
                     .align(Alignment.CenterEnd)
-                 //   .offset(x = -(screenWidth * 0.03f))
+                    //   .offset(x = -(screenWidth * 0.03f))
 //                    .clickable(enabled = questionIndex < questions.size - 1)
 //                    {
 //                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {

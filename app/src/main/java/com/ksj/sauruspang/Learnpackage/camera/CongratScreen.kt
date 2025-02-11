@@ -7,6 +7,15 @@ import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.util.Log
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.R
 
 @Composable
 fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, categoryName: String) {
@@ -24,7 +33,20 @@ fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, cat
 //            popUpTo("congrats/$categoryName") { inclusive = true }
 //        }
     }
+    val category = QuizCategory.allCategories.find { it.name == categoryName }
+    Column(){
+        Text("Congratulation! You have completed the day!")
+        Image(painter = painterResource(id = R.drawable.image_backhome),
+            contentDescription = "",
+            modifier = Modifier
+                .size(30.dp)
+                .clickable {
+                    category?.name?.let { categoryName ->
+                        navController.navigate("stage/$categoryName")
+                    }
+                }
+        )
 
-    // 현재 카테고리의 day 증가
-    Text("Congratulation! You have completed the day!")
+    }
+
 }

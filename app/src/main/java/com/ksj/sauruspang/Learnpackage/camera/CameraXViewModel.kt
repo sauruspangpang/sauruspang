@@ -73,6 +73,7 @@ class SharedRouteViewModel : ViewModel() {
     var sharedQuestion: QuizQuestion = QuizQuestion(1, "", "")
     var sharedBack: String = ""
     var sharedCategoryName: String = ""
+    var sharedQuizStart: String = ""
 
     fun clearValue() {
         sharedValue = null

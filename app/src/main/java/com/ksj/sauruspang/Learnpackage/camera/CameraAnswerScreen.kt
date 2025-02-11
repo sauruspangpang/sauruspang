@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -30,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.CaptureCorrect
 import com.ksj.sauruspang.util.CaptureRetry
@@ -38,13 +40,16 @@ import com.ksj.sauruspang.util.CaptureRetry
 fun CameraAnswerScreen(
     navController: NavController,
     viewModel: CameraViewModel = viewModel(),
-    sharedRouteViewModel: SharedRouteViewModel = viewModel()
+    sharedRouteViewModel: SharedRouteViewModel = viewModel(),
 ) {
     val capturedImage = viewModel.capturedImage
     val sharedvModel = sharedRouteViewModel.sharedValue
     val category = sharedRouteViewModel.sharedCategory
     var clickCount = sharedRouteViewModel.sharedClickCount
     val sharedFront = sharedRouteViewModel.sharedFront
+    val sharedQuizStart = sharedRouteViewModel.sharedQuizStart
+
+
     val sharedPopUp = sharedRouteViewModel.sharedPopUp
     val questionIndex = sharedRouteViewModel.sharedQuestionIndex
     val question = sharedRouteViewModel.sharedQuestion
@@ -52,10 +57,12 @@ fun CameraAnswerScreen(
     val sharedBack = sharedRouteViewModel.sharedBack
     val categoryname = sharedRouteViewModel.sharedCategoryName
 
+
+    var correct by remember { mutableStateOf(false) }
+
     var retryCount by remember { mutableIntStateOf(0) }
     // 단일 상태 변수로 다이얼로그 표시 여부를 제어합니다.
     var showDialog by remember { mutableStateOf(false) }
-
     // 화면이 처음 구성될 때 다이얼로그를 표시하도록 설정합니다.
     LaunchedEffect(Unit) {
         showDialog = true
@@ -69,6 +76,7 @@ fun CameraAnswerScreen(
                 onDismiss = {
                     viewModel.isCorrect = false
                     showDialog = false
+                    correct=true
                 }
             )
         } else {
@@ -77,6 +85,7 @@ fun CameraAnswerScreen(
                 onDismiss = {
                     showDialog = false
                     retryCount++
+                    correct=false
                 }
             )
         }
@@ -97,7 +106,7 @@ fun CameraAnswerScreen(
                 .fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.back),
+                painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier
                     .size(140.dp)
@@ -148,18 +157,25 @@ fun CameraAnswerScreen(
 //            val nextRoute = TODO()
 
             Image(
-                painter = painterResource(id = if ((retryCount == 0) && (questionIndex < questions.size - 1)) R.drawable.image_frontarrow else R.drawable.frontnull),
+                painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable(enabled = (retryCount == 0) && (questionIndex < questions.size - 1))
-                    {  // TODO QuizScreen 으로 넘어가는 로직 구현 필요
-                        navController.navigate(sharedFront) {
-                            popUpTo(sharedPopUp) { inclusive = false }
+                    .clickable (enabled = correct){
+                        if (questionIndex == questions.size - 1) {
+                            navController.navigate(sharedQuizStart){
+                                popUpTo(sharedQuizStart) { inclusive = false }
+                            }
+                        } else {
+                            navController.navigate(sharedFront) {
+                                popUpTo(sharedPopUp) { inclusive = false }
+                            }
                         }
                         retryCount = 0
-                    }
+                        correct = false
+                    },
+                        colorFilter = if (correct) null else ColorFilter.tint(Color.Gray)
             )
             Button(
                 enabled = (retryCount != 0),
@@ -176,12 +192,20 @@ fun CameraAnswerScreen(
             }
 
             Button(
-                enabled = (retryCount != 0 && (questionIndex < questions.size - 1)),
-                onClick = {  // TODO QuizScreen 으로 넘어가는 로직 구현 필요, 구현 후 조건식 뒷 부분 제거
-                    navController.navigate(sharedFront) {
-                        popUpTo(sharedPopUp) { inclusive = false }
+              //  enabled = (retryCount != 0 && (questionIndex ==questions.size - 1)),
+                enabled = !correct,
+                onClick = {
+                    if (questionIndex == questions.size - 1) {
+                        navController.navigate(sharedQuizStart){
+                            popUpTo(sharedQuizStart) { inclusive = false }
+                        }
+                    } else {
+                        navController.navigate(sharedFront) {
+                            popUpTo(sharedPopUp) { inclusive = false }
+                        }
                     }
                     retryCount = 0
+                    correct = false
                 },
                 modifier = Modifier
                     .align(Alignment.BottomEnd) // Move button to bottom end

@@ -26,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -84,7 +85,7 @@ fun CameraScreen(
                 .fillMaxSize()
         ) {
             Image(
-                painter = painterResource(id = R.drawable.back),
+                painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier
                     .size(140.dp)
@@ -127,6 +128,7 @@ fun CameraScreen(
                         sharedRouteViewModel.sharedBack =
                             "learn/$categoryName/$dayIndex/${questionIndex - 1}"
                         sharedRouteViewModel.sharedCategoryName = categoryName
+                        sharedRouteViewModel.sharedQuizStart = "quiz/$categoryName/$dayIndex/0"
 
                     }
 
@@ -145,22 +147,19 @@ fun CameraScreen(
             )
             camViewModel.answerWord = question.english
             Image(
-                painter = painterResource(id = R.drawable.frontnull),
+                painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
-                    .align(Alignment.CenterEnd)
-                    .clickable {
-                        if (questionIndex == questions.size - 1) {
-                            // Navigate to the first question of the quiz screen
-                            navController.navigate("quiz/$categoryName/$dayIndex/0")
-                        } else {
-                            // Navigate to the next learn screen
-                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-                                popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-                            }
-                        }
-                    }
+                    .align(Alignment.CenterEnd),
+//                    .clickable(enabled = questionIndex < questions.size - 1)
+//                    {
+//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
+//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+//                        }
+//
+//                    }
+                colorFilter = ColorFilter.tint(Color.Gray)
             )
             Button(
                 onClick = { /*todo*/ },

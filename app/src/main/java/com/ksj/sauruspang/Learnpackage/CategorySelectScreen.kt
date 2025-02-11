@@ -77,6 +77,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             navController.navigate("profile")
                         }
                 )
+
                 ProfileBox()
                 Spacer(Modifier.weight(1f))
                 Image(
