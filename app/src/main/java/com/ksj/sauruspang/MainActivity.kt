@@ -1,15 +1,6 @@
 package com.ksj.sauruspang
 
 import Learnpackage.camera.LearnScreen
-import com.ksj.sauruspang.Learnpackage.HomeScreen
-import com.ksj.sauruspang.Learnpackage.StageScreen
-import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
-import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
-import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
-import com.ksj.sauruspang.Learnpackage.word.WordQuizScreen
-import com.ksj.sauruspang.ProfilePackage.MainScreen
-import com.ksj.sauruspang.ProfilePackage.ProfilePage
-import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
@@ -24,13 +15,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
-import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
+import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
-import com.ksj.sauruspang.Learnpackage.camera.LearnScreen
+import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
 import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
@@ -52,10 +43,11 @@ class MainActivity : ComponentActivity() {
         val viewModel = ProfileViewmodel(application)
         setContent {
             SauruspangTheme {
-                NaySys(viewModel,tts)
+                NaySys(viewModel, tts)
             }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         tts.shutdown() // Release resources when the activity is destroyed
@@ -63,7 +55,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
+fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
@@ -162,7 +154,6 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
         }
 
 
-
     }
 }
 
@@ -171,6 +162,12 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
 @Composable
 fun DefaultPreview() {
     SauruspangTheme {
-        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel())
+        WordInputScreen(
+            navController = rememberNavController(),
+            categoryName = "직업",
+            dayIndex = 0,
+            questionIndex = 0,
+            viewModel = viewModel()
+        )
     }
 }

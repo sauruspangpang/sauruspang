@@ -72,21 +72,27 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
         )
     )
 
-    object Jobs : QuizCategory("직업",
+    object Jobs : QuizCategory(
+        "직업",
         R.drawable.jobs_category,
         listOf(
-            QuizDay(1, listOf(
-                QuizQuestion(R.drawable.jobs_teacher, "선생님", "Teacher"),
-                QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
-                QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
-            )),
+            QuizDay(
+                1, listOf(
+                    QuizQuestion(R.drawable.jobs_teacher, "선생님", "Teacher"),
+                    QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
+                    QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
+                )
+            ),
             // TODO 더미 데이터
-            QuizDay(2, listOf(
-                QuizQuestion(R.drawable.test1, "선생님", "Teacher"),
-                QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
-                QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
-            ))
-        ))
+            QuizDay(
+                2, listOf(
+                    QuizQuestion(R.drawable.test1, "선생님", "Teacher"),
+                    QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
+                    QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
+                )
+            )
+        )
+    )
 
     companion object {
         val allCategories = listOf(Fruits, Animals, Colors, Jobs)
