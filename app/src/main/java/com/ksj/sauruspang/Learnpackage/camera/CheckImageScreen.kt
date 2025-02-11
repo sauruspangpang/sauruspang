@@ -2,6 +2,7 @@ package com.ksj.sauruspang.Learnpackage.camera
 
 import android.Manifest
 import android.graphics.Bitmap
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,6 +22,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,6 +39,7 @@ import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.flaskSever.ImageInput
 import com.ksj.sauruspang.flaskSever.ImagePrediction
+import kotlinx.coroutines.launch
 
 // 이미지 표시하는 Compose 함수
 @Composable
@@ -47,14 +50,18 @@ fun ShowCameraPreviewScreen(
     sharedRouteViewModel: SharedRouteViewModel = viewModel()
 ) {
     val capturedImage = viewModel.capturedImage
+    var predictionResultListState by remember { mutableStateOf(listOf<String>()) }
     val context = LocalContext.current
     val bitmapCapturedImage = getBitmapFromState(capturedImage)
+    val coroutineScope = rememberCoroutineScope()
+    var isLoading by remember { mutableStateOf(false) }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if (capturedImage.value == null) {
+        // capturedImage가 더미 이미지면 카메라 프리뷰 화면을 보여줌
+        if (capturedImage.value == viewModel.dummyBitmpa) {
             CameraPreviewScreen { bitmap ->
                 viewModel.setCapturedImage(bitmap) // ViewModel에 저장
             }
@@ -65,22 +72,30 @@ fun ShowCameraPreviewScreen(
                     .background(color = colorResource(R.color.background)),
                 contentAlignment = Alignment.BottomCenter
             ) {
+                // 로딩 다이얼로그가 활성화되어 있으면 화면 상단에 표시합니다.
+                if (isLoading) {
+                    LoadingDialog(message = "${viewModel.answerWord}을(를) 찾고 있어요!")
+                }
+
                 CapturedImage(capturedImage)
                 Row(modifier = Modifier.height(60.dp)) {
-                    //버튼들 박스로 만들고 텍스트로 기능 적어두고 클릭어블로 기능넣기
+                    // "다시 촬영" 버튼
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .fillMaxSize()
                             .background(color = Color.Red)
-                            .clickable { capturedImage.value = null }
+                            .clickable { capturedImage.value = viewModel.dummyBitmpa }
                     ) {
                         Text("다시 촬영", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     }
+                    // "정답 확인" 버튼
                     Box(
                         modifier = Modifier
                             .weight(1f)
                             .clickable {
+                                // 로딩 상태 true로 설정
+                                isLoading = true
                                 ImagePrediction.uploadImageToServer(
                                     context = context,
                                     imageInput = ImageInput.BitmapInput(bitmapCapturedImage),
@@ -91,12 +106,24 @@ fun ShowCameraPreviewScreen(
                                             .trim() in updatedList
                                     ) {
                                         SelectViewModelList(sharedRouteViewModel,viewModel,capturedImage)
+                                        viewModel.isCorrect = true
+                                        Log.d("isCorrect", "정답: ${viewModel.isCorrect}")
+                                    }else {
+                                        viewModel.isCorrect = false
+                                        Log.d("isCorrect", "오답: ${viewModel.isCorrect}")
                                     }
+                                    // 로딩 상태 false로 전환 후 메인 스레드에서 화면 전환
+                                    coroutineScope.launch {
+                                        isLoading = false
+                                        navController.navigate("answer")
+                                    }
+                                    Log.e("isCorrect", "최종: ${viewModel.isCorrect}")
+
                                 }
-                                navController.navigate("answer")
                             }
                             .background(color = Color.Green)
-                            .fillMaxSize()) {
+                            .fillMaxSize()
+                    ) {
                         Text("정답 확인", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     }
                 }
@@ -174,16 +201,15 @@ fun getBitmapFromState(bitmapState: MutableState<Bitmap?>): Bitmap? {
 @Composable
 fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
     val context = LocalContext.current
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            if (isGranted) {
-                onPermissionGranted()
-            } else {
-                Toast.makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-            }
-        }
-    )
+    val permissionLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(),
+            onResult = { isGranted ->
+                if (isGranted) {
+                    onPermissionGranted()
+                } else {
+                    Toast.makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                }
+            })
 
     LaunchedEffect(Unit) {
         permissionLauncher.launch(Manifest.permission.CAMERA)

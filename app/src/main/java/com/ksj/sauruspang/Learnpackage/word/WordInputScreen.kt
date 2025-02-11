@@ -1,19 +1,33 @@
 package com.ksj.sauruspang.Learnpackage.word
 
-import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -29,13 +43,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.google.mlkit.common.model.DownloadConditions
 import com.google.mlkit.common.model.RemoteModelManager
-import com.google.mlkit.vision.digitalink.*
+import com.google.mlkit.vision.digitalink.DigitalInkRecognition
+import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModel
+import com.google.mlkit.vision.digitalink.DigitalInkRecognitionModelIdentifier
+import com.google.mlkit.vision.digitalink.DigitalInkRecognizer
+import com.google.mlkit.vision.digitalink.DigitalInkRecognizerOptions
+import com.google.mlkit.vision.digitalink.Ink
 import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
-import kotlinx.coroutines.CoroutineScope
+import com.ksj.sauruspang.util.DialogCorrect
+import com.ksj.sauruspang.util.DialogRetry
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
+import kotlinx.coroutines.withContext
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -53,11 +75,27 @@ fun WordInputScreen(
     val modelIdentifier = DigitalInkRecognitionModelIdentifier.fromLanguageTag("en-US")
         ?: throw IllegalStateException("No model found for the given language tag")
     val model = DigitalInkRecognitionModel.builder(modelIdentifier).build()
-    val recognizedList = mutableListOf<String>()
+//    val recognizedList = mutableListOf<String>()
+    var recognizedList by remember { mutableStateOf(listOf<String>()) }
+
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
     val targetWord = question.english.uppercase()
+
+    var showCorrectDialog by remember { mutableStateOf(false) }
+    var showRetryDialog by remember { mutableStateOf(false) }
+    var wrongLettersInfo by remember { mutableStateOf("") }
+    val coroutineScope = rememberCoroutineScope()
+
+    var isCorrect by remember { mutableStateOf(false) }
+    var incorrectAnswerCount by remember { mutableIntStateOf(0) }
+
+    var nextRoute = if (questionIndex == questions.lastIndex) {
+        "quiz/$categoryName/$dayIndex/$questionIndex"
+    } else {
+        "learn/$categoryName/$dayIndex/${questionIndex + 1}"
+    }
 
     // 모델 다운로드 실행
     LaunchedEffect(Unit) {
@@ -87,19 +125,19 @@ fun WordInputScreen(
             )
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-                Image(
-                    painter = painterResource(id = R.drawable.back),
-                    contentDescription = "previous question",
-                    modifier = Modifier
-                        .size(140.dp)
-                        .clickable(enabled = questionIndex > 0) {
-                            if (questionIndex > 0) {
-                                navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
-                            } else {
-                                navController.popBackStack()
-                            }
+            Image(
+                painter = painterResource(id = R.drawable.back),
+                contentDescription = "previous question",
+                modifier = Modifier
+                    .size(140.dp)
+                    .clickable(enabled = questionIndex > 0) {
+                        if (questionIndex > 0) {
+                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                        } else {
+                            navController.popBackStack()
                         }
-                )
+                    }
+            )
             Box(
                 modifier = Modifier
                     .width(600.dp)
@@ -127,12 +165,18 @@ fun WordInputScreen(
                     drawPath(inkManager.path, Color.Red, style = Stroke(width = 25f))
                 }
             }
+            // 다음 문제 넘어가기 (정답 시 활성화)
             Image(
-                painter = painterResource(id = R.drawable.frontnull),
+                painter = painterResource(
+                    id = if (isCorrect) R.drawable.image_frontarrow else R.drawable.frontnull
+                ),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
-                    .clickable { navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") }
+                    .clickable(enabled = isCorrect) {
+                        navController.navigate(nextRoute)
+                        isCorrect = false
+                    }
             )
         }
         Row(
@@ -159,22 +203,47 @@ fun WordInputScreen(
             Button(
                 onClick = {
                     if (isModelDownloaded) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            recognizedText = inkManager.recognizeInk().uppercase()
-                            val recognizedSplit = recognizedText.split(",").take(2)
-                            recognizedList.addAll(recognizedSplit)
+                        coroutineScope.launch {
+                            // recognizedText와 리스트 초기화
+                            val result = withContext(Dispatchers.IO) {
+                                inkManager.recognizeInk().uppercase()
+                            }
+                            // Main 스레드에서 상태 업데이트
+                            recognizedText = result
+
+                            // 안전하게 결과 분리
+                            val recognizedSplit = result.split(",").take(2)
+                            if (recognizedSplit.size < 2) {
+                                // 인식 결과가 부족할 경우 추가 처리
+                                recognizedText = "인식 결과가 부족합니다. 다시 시도해 주세요."
+                                return@launch
+                            }
+                            recognizedList = recognizedSplit
                             Log.e("recognizedList", recognizedList.toString())
 
-                            val mismatchedIndexes1 = compareWords(targetWord, recognizedList[0])
-                            val mismatchedIndexes2 = compareWords(targetWord, recognizedList[1])
-                            // 글자 비교 후 결과 표시
-                            recognizedText =
-                                if (mismatchedIndexes1.isEmpty() || mismatchedIndexes2.isEmpty()) {
-                                    "정답입니다."
-                                } else {
-                                    "틀린 글자: ${targetWord[mismatchedIndexes1[0]]}, ${targetWord[mismatchedIndexes2[0]]}"
-                                    // 근데 왜 제대로 안나오지.. 흠..
-                                }
+                            val candidate1 = recognizedList[0]
+                            val candidate2 = recognizedList[1]
+
+                            val mismatchedIndexes1 = compareWords(targetWord, candidate1)
+                            val mismatchedIndexes2 = compareWords(targetWord, candidate2)
+
+                            // 두 후보가 targetWord와 길이가 같고 모두 일치해야 정답으로 판단
+                            // 정답 조건식 변경 가능 (candidate1 == targetWord || candidate2 == targetWord)
+                            if ((candidate1.length == targetWord.length && mismatchedIndexes1.isEmpty()) ||
+                                (candidate2.length == targetWord.length && mismatchedIndexes2.isEmpty())
+                            ) {
+                                recognizedText = "정답입니다."  // TODO 로깅 텍스트
+                                showCorrectDialog = true
+                                isCorrect = true
+                            } else {
+                                // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
+                                wrongLettersInfo = "틀린 글자: " +
+                                        "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
+                                        "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
+                                recognizedText = wrongLettersInfo  // TODO 로깅 텍스트
+                                showRetryDialog = true
+                                incorrectAnswerCount++
+                            }
                         }
                     } else {
                         recognizedText = "Model is not yet downloaded. Please try again later."
@@ -187,6 +256,7 @@ fun WordInputScreen(
             ) {
                 Text("정답확인")
             }
+
             Button(
                 onClick = {
                     inkManager.clearCanvas()
@@ -198,10 +268,38 @@ fun WordInputScreen(
             ) {
                 Text("다시쓰기")
             }
+
+            if (incorrectAnswerCount >= 3) {
+                Button(onClick = {
+                    navController.navigate(nextRoute)
+                    incorrectAnswerCount = 0
+                }) { Text("넘어가기") }
+            }
         }
 
+        // 최상위 레벨에서 상태에 따라 다이얼로그 표시
+        if (showCorrectDialog) {
+            DialogCorrect(
+                message = "정답입니다.",
+                onDismiss = { showCorrectDialog = false }
+            )
+        }
+
+        if (showRetryDialog) {
+            DialogRetry(
+                wrongLetters = wrongLettersInfo,
+                onDismiss = { showRetryDialog = false },
+                onRetry = {
+                    // 다시쓰기 동작 수행 (예: 캔버스 초기화)
+                    inkManager.clearCanvas()
+                    recognizedText = "Recognition Result: "
+                    showRetryDialog = false
+                }
+            )
+        }
     }
 }
+
 
 //모델 다운로드 함수
 private fun downloadModel(

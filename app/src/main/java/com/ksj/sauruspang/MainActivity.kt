@@ -1,6 +1,17 @@
 package com.ksj.sauruspang
 
+import Learnpackage.camera.LearnScreen
+import com.ksj.sauruspang.Learnpackage.HomeScreen
+import com.ksj.sauruspang.Learnpackage.StageScreen
+import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
+import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
+import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
+import com.ksj.sauruspang.Learnpackage.word.WordQuizScreen
+import com.ksj.sauruspang.ProfilePackage.MainScreen
+import com.ksj.sauruspang.ProfilePackage.ProfilePage
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.os.Bundle
+import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
@@ -13,6 +24,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
+import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
@@ -27,21 +39,31 @@ import com.ksj.sauruspang.ProfilePackage.MainScreen
 import com.ksj.sauruspang.ProfilePackage.ProfilePage
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
+import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        tts = TextToSpeech(this) { status ->
+            if (status == TextToSpeech.SUCCESS) {
+                tts.language = Locale.US // Set default language to English
+            }
+        }
         val viewModel = ProfileViewmodel(application)
         setContent {
             SauruspangTheme {
-                NaySys(viewModel)
+                NaySys(viewModel,tts)
             }
         }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        tts.shutdown() // Release resources when the activity is destroyed
     }
 }
 
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel) {
+fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
@@ -100,6 +122,7 @@ fun NaySys(viewmodel: ProfileViewmodel) {
                     categoryName,
                     dayIndex,
                     questionIndex,
+                    tts,
                     viewmodel,
                     sharedRouteViewModel
                 )
@@ -127,6 +150,19 @@ fun NaySys(viewmodel: ProfileViewmodel) {
                 sharedRouteViewModel
             )
         }
+
+        composable("quiz/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+            val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
+            val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
+            QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
+        }
+        composable("congrats") {
+            CongratScreen(navController, viewmodel)
+        }
+
+
+
     }
 }
 
@@ -135,12 +171,6 @@ fun NaySys(viewmodel: ProfileViewmodel) {
 @Composable
 fun DefaultPreview() {
     SauruspangTheme {
-        WordInputScreen(
-            navController = rememberNavController(),
-            categoryName = "직업",
-            dayIndex = 0,
-            questionIndex = 0,
-            viewModel = viewModel()
-        )
+        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel())
     }
 }

@@ -152,10 +152,18 @@ fun CameraScreen(
                     .align(Alignment.CenterEnd)
                     .clickable(enabled = questionIndex < questions.size - 1)
                     {
-                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+                        if (questionIndex < questions.size - 1) {
+                            // 다음 질문이 존재하는 경우: learn 경로로 이동
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
+                                popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+                            }
                         }
-
+                        // TODO 마지막 질문인 경우: quiz 경로로 이동
+//                        else {
+//                            navController.navigate("quiz/$categoryName/$dayIndex/$questionIndex") {
+//                                popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+//                            }
+//                        }
                     }
             )
             Button(
@@ -167,10 +175,8 @@ fun CameraScreen(
             ) {
                 Text("넘어가기")
             }
-
         }
     }
-
 }
 
 @Composable
