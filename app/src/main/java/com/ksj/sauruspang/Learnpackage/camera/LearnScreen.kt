@@ -7,6 +7,7 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
@@ -58,10 +59,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
+import com.ksj.sauruspang.PermissionViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
@@ -78,7 +81,8 @@ fun LearnScreen(
     questionIndex: Int,
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
-    sharedRouteViewModel: SharedRouteViewModel
+    sharedRouteViewModel: SharedRouteViewModel,
+    permissionViewModel: PermissionViewModel
 ) {
 
     val category = QuizCategory.allCategories.find { it.name == categoryName }
@@ -86,7 +90,7 @@ fun LearnScreen(
     val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
     var showPopup by remember { mutableStateOf(false) }
-
+    val hasPermission by permissionViewModel.micPermissionGranted
 
 
     fun listen(text: String, locale: Locale) {
@@ -157,7 +161,8 @@ fun LearnScreen(
         override fun onPartialResults(partialResults: Bundle?) {}
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
-    var hasPermission by remember { mutableStateOf(false) }
+//    var hasPermission by remember { mutableStateOf(false) }
+
 
     speechRecognizer.setRecognitionListener(recognitionListener)
     // Request microphone permission
@@ -302,7 +307,14 @@ fun LearnScreen(
                                 ),
                                 shape = RoundedCornerShape(16.dp)
                             )
-                            .clickable { speechRecognizer.startListening(speechIntent) }
+                            .clickable {
+                                if (!hasPermission) {
+                                    Toast
+                                        .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
+                                        .show()
+                                } else
+                                    speechRecognizer.startListening(speechIntent)
+                            }
 
                     ) {
                         // Glossy effect overlay
@@ -353,7 +365,7 @@ fun LearnScreen(
                 modifier = Modifier
                     .size(screenWidth * 0.155f)
                     .align(Alignment.CenterEnd)
-                 //   .offset(x = -(screenWidth * 0.03f))
+                    //   .offset(x = -(screenWidth * 0.03f))
 //                    .clickable(enabled = questionIndex < questions.size - 1)
 //                    {
 //                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {

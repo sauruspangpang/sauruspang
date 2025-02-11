@@ -61,7 +61,8 @@ class MainActivity : ComponentActivity() {
 
         val viewModel = ProfileViewmodel(application)
         setContent {
-            RequestMicPermission()// 마이크 권한 요청
+            val permissionViewModel: PermissionViewModel = viewModel()
+            RequestMicPermission(permissionViewModel)
             HideSystemBars()
             SauruspangTheme {
                 NaySys(viewModel,tts)
@@ -81,6 +82,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
     val detectedResultListViewModel : DetectedResultListViewModel = viewModel()
     val gPTCameraViewModel: GPTCameraViewModel = viewModel()
+    val permissionViewModel: PermissionViewModel = viewModel()
 
 
     NavHost(navController = navController,
@@ -130,7 +132,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             // Check if the category is not Fruits, Animals, or Colors
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
-                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel)
+                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel, permissionViewModel)
             } else {
                 LearnScreen(
                     navController,
@@ -139,7 +141,8 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
                     questionIndex,
                     tts,
                     viewmodel,
-                    sharedRouteViewModel
+                    sharedRouteViewModel,
+                    permissionViewModel
                 )
             }
         }
@@ -195,33 +198,33 @@ fun HideSystemBars() {
     }
 }
 
-@Composable
-fun RequestMicPermission() {
-    val context = LocalContext.current
-    val permissionState = remember { mutableStateOf(false) }
-
-    val launcher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission()
-    ) { isGranted: Boolean ->
-        permissionState.value = isGranted
-        if (isGranted) {
-            Toast.makeText(context, "마이크 권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
-        } else {
-            Toast.makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    LaunchedEffect(Unit) {
-        if (ContextCompat.checkSelfPermission(
-                context, android.Manifest.permission.RECORD_AUDIO
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            launcher.launch(android.Manifest.permission.RECORD_AUDIO)
-        } else {
-            permissionState.value = true
-        }
-    }
-}
+//@Composable
+//fun RequestMicPermission() {
+//    val context = LocalContext.current
+//    val permissionState = remember { mutableStateOf(false) }
+//
+//    val launcher = rememberLauncherForActivityResult(
+//        contract = ActivityResultContracts.RequestPermission()
+//    ) { isGranted: Boolean ->
+//        permissionState.value = isGranted
+//        if (isGranted) {
+//            Toast.makeText(context, "마이크 권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
+//        } else {
+//            Toast.makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+//        }
+//    }
+//
+//    LaunchedEffect(Unit) {
+//        if (ContextCompat.checkSelfPermission(
+//                context, android.Manifest.permission.RECORD_AUDIO
+//            ) != PackageManager.PERMISSION_GRANTED
+//        ) {
+//            launcher.launch(android.Manifest.permission.RECORD_AUDIO)
+//        } else {
+//            permissionState.value = true
+//        }
+//    }
+//}
 
 @Preview(showBackground = true)
 @Composable
