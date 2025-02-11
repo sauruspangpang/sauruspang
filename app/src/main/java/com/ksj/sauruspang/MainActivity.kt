@@ -1,16 +1,25 @@
 package com.ksj.sauruspang
 
 import Learnpackage.camera.LearnScreen
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.content.ContextCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
@@ -48,8 +57,11 @@ class MainActivity : ComponentActivity() {
                 tts.language = Locale.US // Set default language to English
             }
         }
+
+
         val viewModel = ProfileViewmodel(application)
         setContent {
+            RequestMicPermission()// 마이크 권한 요청
             HideSystemBars()
             SauruspangTheme {
                 NaySys(viewModel,tts)
@@ -180,6 +192,34 @@ fun HideSystemBars() {
         systemUiController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         systemUiController.setSystemBarsColor(Color.Transparent)
+    }
+}
+
+@Composable
+fun RequestMicPermission() {
+    val context = LocalContext.current
+    val permissionState = remember { mutableStateOf(false) }
+
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        permissionState.value = isGranted
+        if (isGranted) {
+            Toast.makeText(context, "마이크 권한이 허용되었습니다.", Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (ContextCompat.checkSelfPermission(
+                context, android.Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            launcher.launch(android.Manifest.permission.RECORD_AUDIO)
+        } else {
+            permissionState.value = true
+        }
     }
 }
 
