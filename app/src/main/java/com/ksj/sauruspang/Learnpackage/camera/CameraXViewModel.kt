@@ -13,9 +13,18 @@ class CameraViewModel : ViewModel() {
         private set
     var answerWord: String = ""
     var isCorrect: Boolean = false
-    var correctImageList: MutableList<Bitmap> = mutableStateListOf()
+    var correctFruitImageList: MutableList<Bitmap> = mutableStateListOf()
         private set
-    var correctWordList: MutableList<String> = mutableListOf()
+    var correctFruitWordList: MutableList<String> = mutableListOf()
+    var correctAnimalImageList: MutableList<Bitmap> = mutableStateListOf()
+        private set
+    var correctAnimalWordList: MutableList<String> = mutableListOf()
+    var correctColorImageList: MutableList<Bitmap> = mutableStateListOf()
+        private set
+    var correctColorWordList: MutableList<String> = mutableListOf()
+    var correctJobImageList: MutableList<Bitmap> = mutableStateListOf()
+        private set
+    var correctJobWordList: MutableList<String> = mutableListOf()
 
     fun setCapturedImage(bitmap: Bitmap) {
         capturedImage.value = bitmap

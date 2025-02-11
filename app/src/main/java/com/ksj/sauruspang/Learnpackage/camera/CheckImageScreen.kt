@@ -43,7 +43,8 @@ import com.ksj.sauruspang.flaskSever.ImagePrediction
 fun ShowCameraPreviewScreen(
     navController: NavController,
     viewModel: CameraViewModel = viewModel(),
-    resultListViewModel: DetectedResultListViewModel = viewModel()
+    resultListViewModel: DetectedResultListViewModel = viewModel(),
+    sharedRouteViewModel: SharedRouteViewModel = viewModel()
 ) {
     val capturedImage = viewModel.capturedImage
     val context = LocalContext.current
@@ -89,15 +90,7 @@ fun ShowCameraPreviewScreen(
                                             .lowercase()
                                             .trim() in updatedList
                                     ) {
-                                        if (viewModel.answerWord !in viewModel.correctWordList) {
-                                            viewModel.isCorrect = true
-                                            viewModel.correctWordList.add(viewModel.answerWord)
-                                            viewModel.correctImageList.add(
-                                                Bitmap.createBitmap(
-                                                    capturedImage.value!!
-                                                )
-                                            )
-                                        }
+                                        SelectViewModelList(sharedRouteViewModel,viewModel,capturedImage)
                                     }
                                 }
                                 navController.navigate("answer")
@@ -110,6 +103,59 @@ fun ShowCameraPreviewScreen(
             }
         }
     }
+}
+
+fun SelectViewModelList(sharedRouteViewModel: SharedRouteViewModel,viewModel: CameraViewModel, capturedImage: MutableState<Bitmap?>){
+    when (sharedRouteViewModel.sharedCategoryName) {
+        "과일과 야채" -> {
+            if (viewModel.answerWord !in viewModel.correctFruitWordList) {
+                viewModel.isCorrect = true
+                viewModel.correctFruitWordList.add(viewModel.answerWord)
+                viewModel.correctFruitImageList.add(
+                    Bitmap.createBitmap(
+                        capturedImage.value!!
+                    )
+                )
+            }
+        }
+
+        "동물" -> {
+            if (viewModel.answerWord !in viewModel.correctAnimalWordList) {
+                viewModel.isCorrect = true
+                viewModel.correctAnimalWordList.add(viewModel.answerWord)
+                viewModel.correctAnimalImageList.add(
+                    Bitmap.createBitmap(
+                        capturedImage.value!!
+                    )
+                )
+            }
+        }
+
+        "색" -> {
+            if (viewModel.answerWord !in viewModel.correctColorWordList) {
+                viewModel.isCorrect = true
+                viewModel.correctColorWordList.add(viewModel.answerWord)
+                viewModel.correctColorImageList.add(
+                    Bitmap.createBitmap(
+                        capturedImage.value!!
+                    )
+                )
+            }
+        }
+
+        "직업" -> {
+            if (viewModel.answerWord !in viewModel.correctJobWordList) {
+                viewModel.isCorrect = true
+                viewModel.correctJobWordList.add(viewModel.answerWord)
+                viewModel.correctJobImageList.add(
+                    Bitmap.createBitmap(
+                        capturedImage.value!!
+                    )
+                )
+            }
+        }
+    }
+
 }
 
 @Composable
