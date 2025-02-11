@@ -38,12 +38,12 @@ fun WordQuizScreen(
     dayIndex: Int,
     questionIndex: Int,
     viewModel: ProfileViewmodel
+
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -93,11 +93,7 @@ fun WordQuizScreen(
                     .size(140.dp)
                     .align(Alignment.CenterStart)
                     .clickable {
-                        if (questionIndex > 0) {
-                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
-                        } else {
-                            navController.popBackStack()
-                        }
+                      navController.popBackStack()
                     }
             )
             Image(
@@ -113,8 +109,12 @@ fun WordQuizScreen(
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable { navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex}") }
+                    .clickable {
+                        navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex}")
+
+                    }
             )
+
         }
     }
 

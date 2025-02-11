@@ -10,6 +10,6 @@ import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, categoryName: String) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     category?.incrementDayNumber()
-
     Text("Congratulations")
+    navController.navigate("stage/$categoryName")
 }

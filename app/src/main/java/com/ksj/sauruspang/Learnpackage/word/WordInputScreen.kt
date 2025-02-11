@@ -66,8 +66,9 @@ fun WordInputScreen(
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
 ) {
+    var hitNumber by remember { mutableIntStateOf(0) }
     val inkManager = remember { InkManager() }
     var recognizedText by remember { mutableStateOf("Recognition Result: ") }
     var isModelDownloaded by remember { mutableStateOf(false) }
@@ -97,6 +98,7 @@ fun WordInputScreen(
         "learn/$categoryName/$dayIndex/${questionIndex + 1}"
     }
 
+
     // 모델 다운로드 실행
     LaunchedEffect(Unit) {
         downloadModel(model, remoteModelManager) { success ->
@@ -120,7 +122,7 @@ fun WordInputScreen(
                 modifier = Modifier
                     .size(50.dp)
                     .clickable {
-                        navController.popBackStack()
+                        navController.navigate("stage/$categoryName")
                     }
             )
         }
@@ -130,14 +132,13 @@ fun WordInputScreen(
                 contentDescription = "previous question",
                 modifier = Modifier
                     .size(140.dp)
-                    .clickable(enabled = questionIndex > 0) {
-                        if (questionIndex > 0) {
-                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
-                        } else {
+                    .clickable() {
+                        if (questionIndex > 0 || hitNumber > 0) {
                             navController.popBackStack()
                         }
                     }
             )
+
             Box(
                 modifier = Modifier
                     .width(600.dp)
@@ -173,9 +174,11 @@ fun WordInputScreen(
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
-                    .clickable(enabled = isCorrect) {
-                        navController.navigate(nextRoute)
-                        isCorrect = false
+                    .clickable() {
+                        if(hitNumber > 0)
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}")
+//                        navController.navigate(nextRoute)
+
                     }
             )
         }
@@ -235,6 +238,7 @@ fun WordInputScreen(
                                 recognizedText = "정답입니다."  // TODO 로깅 텍스트
                                 showCorrectDialog = true
                                 isCorrect = true
+                                hitNumber++
                             } else {
                                 // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
                                 wrongLettersInfo = "틀린 글자: " +
