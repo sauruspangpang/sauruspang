@@ -1,5 +1,6 @@
 package com.ksj.sauruspang.util
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -25,6 +27,36 @@ import androidx.compose.ui.window.Dialog
 import kotlinx.coroutines.delay
 
 const val delayTimeMs = 2000L
+val correctDialogColor = Color(0xFFDBE5FF)
+val retryDialogColor = Color(0xFFFFDBDB)
+
+@Composable
+fun LoadingDialog(message: String) {
+    // Dialog를 사용하여 팝업 형태로 표시합니다.
+    Dialog(onDismissRequest = { /* 팝업은 자동으로 닫히므로 외부에서 dismiss 처리합니다. */ }) {
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = Color.White,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(1f)
+        ) {
+            // 간단한 로딩 인디케이터와 메시지 표시
+            Box(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(text = message)
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun DialogCorrect(
@@ -39,7 +71,7 @@ fun DialogCorrect(
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
             shape = RoundedCornerShape(8.dp),
-            color = Color(0xFFDBE5FF),
+            color = correctDialogColor,
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(1f)
@@ -78,7 +110,7 @@ fun DialogRetry(
     }) {
         Surface(
             shape = RoundedCornerShape(8.dp),
-            color = Color(0xFFFFDBDB),
+            color = retryDialogColor,
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(1f)
@@ -148,6 +180,68 @@ fun LearnRetry(
                 Button(onClick = onDismiss) {
                     Text("닫기")
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun CaptureCorrect(
+    message: String = "정답입니다!",
+    onDismiss: () -> Unit
+) {
+    // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
+    LaunchedEffect(Unit) {
+        delay(delayTimeMs)
+        onDismiss()
+    }
+    Dialog(onDismissRequest = { onDismiss() }) {
+        // 다이얼로그 UI 스타일을 적용하기 위해 Surface를 사용합니다.
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = correctDialogColor,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(1f)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = message)
+                // 버튼으로 팝업 닫기 할 경우
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Button(onClick = onDismiss) {
+//                    Text("확인")
+//                }
+            }
+        }
+    }
+}
+
+@Composable
+fun CaptureRetry(
+    message: String = "다시 한 번 찍어보세요.",
+    onDismiss: () -> Unit
+) {
+    // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
+    LaunchedEffect(Unit) {
+        delay(delayTimeMs)
+        onDismiss()
+    }
+    Dialog(onDismissRequest = { onDismiss() }) {
+        // 다이얼로그 UI 스타일을 적용하기 위해 Surface를 사용합니다.
+        Surface(
+            shape = RoundedCornerShape(8.dp),
+            color = retryDialogColor,
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(1f)
+        ) {
+            Column(modifier = Modifier.padding(16.dp)) {
+                Text(text = message)
+                // 버튼으로 팝업 닫기 할 경우
+//                Spacer(modifier = Modifier.height(16.dp))
+//                Button(onClick = onDismiss) {
+//                    Text("확인")
+//                }
             }
         }
     }
