@@ -1,15 +1,6 @@
 package com.ksj.sauruspang
 
 import Learnpackage.camera.LearnScreen
-import com.ksj.sauruspang.Learnpackage.HomeScreen
-import com.ksj.sauruspang.Learnpackage.StageScreen
-import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
-import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
-import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
-import com.ksj.sauruspang.Learnpackage.word.WordQuizScreen
-import com.ksj.sauruspang.ProfilePackage.MainScreen
-import com.ksj.sauruspang.ProfilePackage.ProfilePage
-import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
@@ -22,8 +13,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
+import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
@@ -36,12 +27,12 @@ import com.ksj.sauruspang.Learnpackage.camera.RandomCameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.RandomPhotoTakerScreen
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
+import com.ksj.sauruspang.Learnpackage.camera.ShowRandomCameraPreviewScreen
 import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
 import com.ksj.sauruspang.Learnpackage.word.WordQuizScreen
 import com.ksj.sauruspang.ProfilePackage.MainScreen
 import com.ksj.sauruspang.ProfilePackage.ProfilePage
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
-import com.ksj.sauruspang.Learnpackage.camera.ShowRandomCameraPreviewScreen
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 import java.util.Locale
 

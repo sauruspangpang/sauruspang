@@ -39,6 +39,7 @@ import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.flaskSever.ImageInput
 import com.ksj.sauruspang.flaskSever.ImagePrediction
+import com.ksj.sauruspang.util.LoadingDialog
 import kotlinx.coroutines.launch
 
 // 이미지 표시하는 Compose 함수

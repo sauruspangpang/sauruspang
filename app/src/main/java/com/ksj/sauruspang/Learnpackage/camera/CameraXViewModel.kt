@@ -51,8 +51,6 @@ class CameraViewModel : ViewModel() {
         private set
     var correctJobWordList: MutableList<String> = mutableListOf()
 
-    var answerWord: String = ""
-    var isCorrect: Boolean = false
 
     fun setCapturedImage(bitmap: Bitmap) {
         capturedImage.value = bitmap

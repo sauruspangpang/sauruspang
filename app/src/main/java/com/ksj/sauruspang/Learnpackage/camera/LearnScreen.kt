@@ -61,6 +61,7 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
@@ -76,7 +77,8 @@ fun LearnScreen(
     dayIndex: Int,
     questionIndex: Int,
     tts: TextToSpeech?,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
+    sharedRouteViewModel: SharedRouteViewModel
 ) {
 
     val category = QuizCategory.allCategories.find { it.name == categoryName }
