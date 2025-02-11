@@ -2,10 +2,15 @@ package com.ksj.sauruspang.Learnpackage
 
 import com.ksj.sauruspang.R
 
+
 data class QuizDay(
     val dayNumber: Int,
     val questions: List<QuizQuestion>
-)
+){
+    fun incrementDayNumber(): QuizDay {
+        return this.copy(dayNumber = this.dayNumber + 1)
+    }
+}
 data class QuizQuestion(
     val imageId: Int,
     val korean: String,
@@ -73,5 +78,12 @@ sealed class QuizCategory(val name: String, val thumbnail :Int, val days: List<Q
 
     companion object {
         val allCategories = listOf(Fruits, Animals, Colors, Jobs)
+    }
+    object DayNumberManager {
+        var dayNumber: Int = 1
+
+        fun incrementDayNumber() {
+            dayNumber += 1
+        }
     }
 }

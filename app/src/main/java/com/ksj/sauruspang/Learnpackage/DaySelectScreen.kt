@@ -142,22 +142,21 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
 
 @Composable
 fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController) {
+    val totalDays = QuizCategory.DayNumberManager.dayNumber // DayNumberManager에서 업데이트된 dayNumber 가져오기
     Row(
         modifier = Modifier
             .padding(30.dp)
-
     ) {
-        days.forEachIndexed { index, day ->
+        for (i in 0 until totalDays) {
             DayBox(
-                dayIndex = day.dayNumber-1,
-                isTop = index % 2 == 0,
-                categoryName = categoryName,
-                navController = navController
+                dayIndex = i, // 현재 인덱스를 dayIndex로 전달
+                isTop = i % 2 == 0, // 박스를 위쪽에 배치할지 아래쪽에 배치할지 결정
+                categoryName = categoryName, // 카테고리 이름 전달
+                navController = navController // NavController 전달
             )
         }
     }
 }
-
 @Composable
 fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: NavController) {
     Box(
