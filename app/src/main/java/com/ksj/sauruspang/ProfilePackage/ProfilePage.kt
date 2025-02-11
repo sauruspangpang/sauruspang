@@ -8,18 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -37,7 +31,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
@@ -52,17 +48,26 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
-        Text(
-            text = "아이 프로필 선택",
-            style = MaterialTheme.typography.headlineLarge,
-//            modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues())
-        )
+        Box(contentAlignment = Alignment.TopCenter,
+            modifier = Modifier.align(Alignment.TopCenter).offset(y = 15.dp)) {
+            Image(
+                painter = painterResource(R.drawable.image_banner),
+                contentDescription = "banner",
+            )
+            Text(
+                text = "아이 프로필 선택하기",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.ExtraBold,
+                modifier = Modifier.offset(y = 10.dp)
+            )
+        }
 
         // 프로필 리스트
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 50.dp),
+                .padding(horizontal = 50.dp)
+                .offset(y = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             profile.forEach { profile ->
@@ -141,6 +146,5 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 }
             }
         }
-
     }
 }

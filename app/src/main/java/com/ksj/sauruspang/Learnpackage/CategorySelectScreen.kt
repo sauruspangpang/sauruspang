@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.ksj.sauruspang.Learnpackage
 
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
@@ -10,7 +12,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,10 +26,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -39,6 +40,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ksj.sauruspang.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +84,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(30.dp),
+                    .padding(start = 30.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
@@ -90,81 +96,44 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             navController.navigate("profile")
                         }
                 )
-                Box(contentAlignment = Alignment.BottomCenter,
-                    modifier = Modifier
-                        .offset(y = (-30).dp)) {
-                    Image(
-                        painter = painterResource(R.drawable.image_woodboard),
-                        contentDescription = "",
-
-                    )
-                    Row(
-                        modifier = Modifier
-                            .padding(horizontal = 30.dp), // 좌우 여백 추가
-                        verticalAlignment = Alignment.CenterVertically // 내부 요소도 중앙 정렬
-                    ){
-                        Image(
-                            painter = painterResource(id = R.drawable.ellipse_1),
-                            contentDescription = "",
-                            Modifier.scale(0.8f)
-                        )
-                        Column(
-                            modifier = Modifier
-                                .padding(bottom = 20.dp), // 내부 요소 패딩
-                            verticalArrangement = Arrangement.SpaceBetween, // 내부 요소 정렬
-                            horizontalAlignment = Alignment.Start
-                        ) {
-                            Text(
-                                "Hello 박민준",
-                                style = TextStyle(
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
-                            )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically // 이미지와 텍스트를 같은 높이로 정렬
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.image_starpoint),
-                                    contentDescription = "",
-                                    modifier = Modifier.size(36.dp) // 원하는 크기로 조정
-                                )
-                                Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
-                                Text(
-                                    "245",
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold
-                                )
-                            }
-                        }
-                    }
-                }
+                ProfileBox()
                 Spacer(Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.image_photobook),
                     contentDescription = "",
                     modifier = Modifier
-                        .size(70.dp)
                         .clickable { navController.navigate("pictorial") }
 
                 )
-
             }
-            Row(
-                modifier = Modifier
-                    .horizontalScroll(rememberScrollState())
-                    .padding(start = 30.dp, bottom = 30.dp),
-                horizontalArrangement = Arrangement.spacedBy(40.dp) // 각 Box 사이의 간격 추가
-            ) {
-                QuizCategory.allCategories.forEach { category ->
-                    CategoryBox(category, navController)
+            Spacer(modifier = Modifier.height(30.dp))
+
+            Row() {
+                val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
+                val progress by animateLottieCompositionAsState(
+                    composition = composition,
+                    iterations = LottieConstants.IterateForever
+                )
+                LottieAnimation(
+                    composition = composition,
+                    progress = progress,
+                    modifier = Modifier.padding(horizontal = 20.dp)
+                )
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(start = 30.dp, bottom = 30.dp),
+                    horizontalArrangement = Arrangement.spacedBy(40.dp) // 각 Box 사이의 간격 추가
+                ) {
+                    QuizCategory.allCategories.forEach { category ->
+                        CategoryBox(category, navController)
+                    }
+                    Spacer(modifier = Modifier.width(30.dp))
+
                 }
-
             }
-
         }
     }
-
 }
 
 
@@ -186,6 +155,8 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                 .background(Color(0xFFFFFFFF)) // 배경색 적용
                 .clickable { navController.navigate("stage/${category.name}") }
                 .padding(top = 30.dp, start = 30.dp, end = 30.dp)
+                .height(150.dp)
+                .width(110.dp)
         ) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally, // 가운데 정렬
@@ -196,11 +167,14 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                 Image(
                     painter = painterResource(id = category.thumbnail),
                     contentDescription = "category thumbnail",
-                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .scale(1.2f)
                 )
                 Spacer(modifier = Modifier.height(20.dp)) // 20dp 간격 추가
                 Text(
                     category.name,
+                    fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(20.dp)) // 20dp 간격 추가
@@ -218,5 +192,54 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
     }
 }
 
-
-
+@Composable
+fun ProfileBox() {
+    Box(
+        contentAlignment = Alignment.BottomCenter,
+    ) {
+        Image(
+            painter = painterResource(R.drawable.image_woodboard),
+            contentDescription = "",
+        )
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 30.dp), // 좌우 여백 추가
+            verticalAlignment = Alignment.CenterVertically // 내부 요소도 중앙 정렬
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.ellipse_1),
+                contentDescription = "",
+                Modifier.scale(0.8f)
+            )
+            Column(
+                modifier = Modifier
+                    .padding(bottom = 20.dp), // 내부 요소 패딩
+                verticalArrangement = Arrangement.SpaceBetween, // 내부 요소 정렬
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    "Hello 박민준",
+                    style = TextStyle(
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold,
+                    )
+                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically // 이미지와 텍스트를 같은 높이로 정렬
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.image_starpoint),
+                        contentDescription = "",
+                        modifier = Modifier.size(36.dp) // 원하는 크기로 조정
+                    )
+                    Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
+                    Text(
+                        "245",
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+            }
+        }
+    }
+}

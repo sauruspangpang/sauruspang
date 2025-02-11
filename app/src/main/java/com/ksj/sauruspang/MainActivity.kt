@@ -98,7 +98,6 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             navController.navigate("learn/$categoryName/$dayIndex/0")
         }
 
-
         composable("learn/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
