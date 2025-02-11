@@ -26,14 +26,11 @@ import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
 import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
-import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
-import com.ksj.sauruspang.Learnpackage.camera.RandomCameraAnswerScreen
-import com.ksj.sauruspang.Learnpackage.camera.RandomPhotoTakerScreen
 import com.ksj.sauruspang.Learnpackage.camera.GPTCameraViewModel
 import com.ksj.sauruspang.Learnpackage.camera.GPTRandomPhotoTakerScreen
+import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
-import com.ksj.sauruspang.Learnpackage.camera.ShowRandomCameraPreviewScreen
 import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
 import com.ksj.sauruspang.Learnpackage.word.WordQuizScreen
 import com.ksj.sauruspang.ProfilePackage.MainScreen

@@ -62,28 +62,6 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            Row() {
-                Button(onClick = {
-                    val categoryName = "과일과 야채"
-                    val dayIndex = 0
-                    val questionIndex = 2
-                    navController.navigate("camera/$categoryName/$dayIndex/$questionIndex")
-                }) {
-                    Text("shortcut")
-                }
-
-                Box(
-                    modifier = Modifier
-                        .background(Color.White)
-                        .size(60.dp)
-                        .padding(5.dp)
-                        .clickable {
-                            navController.navigate("randomPhotoTaker")
-                        }
-                ) {
-                    Text("temp camera")
-                }
-            }
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,7 +89,9 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
             }
             Spacer(modifier = Modifier.height(30.dp))
 
-            Row() {
+            Row(
+                modifier = Modifier.clickable { navController.navigate("randomPhotoTaker") }
+            ) {
                 val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
                 val progress by animateLottieCompositionAsState(
                     composition = composition,
