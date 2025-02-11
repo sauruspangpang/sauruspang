@@ -1,13 +1,17 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
-import com.ksj.sauruspang.Learnpackage.QuizCategory
-import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import  androidx.compose.ui.text.TextStyle
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,68 +21,71 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.Learnpackage.QuizQuestion
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 
+var findCategoryName = ""
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CameraScreen(
     navController: NavController,
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
-    viewModel: ProfileViewmodel
+    viewModel: ProfileViewmodel,
+    camViewModel: CameraViewModel,
+    sharedRouteViewModel: SharedRouteViewModel
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
-    var clickCount by remember { mutableStateOf(0) }
+    var clickCount by remember { mutableIntStateOf(0) }
+    val findCategory = findCategoryByQuestion(question)
+    val categoryname = findCategory?.javaClass?.simpleName ?: "Unknown"
+    var hasPermission by remember { mutableStateOf(false) }
+    findCategoryName = categoryname
+
+    if (hasPermission) {
+        CameraPreviewScreen { bitmap ->
+            // 캡처된 이미지를 처리하는 코드
+        }
+    } else {
+        RequestCameraPermission {
+            hasPermission = true
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFDD4AA))
+            .background(color = colorResource(R.color.background))
     ) {
+        camViewModel.clearImage()
+        BackgroundScreen(category, navController)
         Box(
             modifier = Modifier
                 .padding(5.dp)
                 .fillMaxSize()
-
-
         ) {
             Image(
-                painter = painterResource(id = R.drawable.arrow),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clickable {
-                        category?.name?.let { categoryName ->
-                            navController.navigate("stage/$categoryName")
-                        }
-                    }
-                    .align(Alignment.TopStart) // Align image to the left
-            )
-            Text(
-                text = "사진을 찍어보세요",
-                modifier = Modifier
-                    .align(Alignment.TopCenter),
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 60.sp
-                )
-            )
-            Image(
-                painter = painterResource(id = R.drawable.image_backarrow),
+                painter = painterResource(id = R.drawable.back),
                 contentDescription = "previous question",
                 modifier = Modifier
                     .size(140.dp)
@@ -104,18 +111,32 @@ fun CameraScreen(
             )
             Box(
                 modifier = Modifier
-                    .size(height=200.dp,width=450.dp)
+                    .size(height = 200.dp, width = 450.dp)
                     .align(Alignment.Center)
                     .offset(y = (-15).dp)
                     .background(Color.LightGray)
+                    .clickable {
+                        navController.navigate("camerax")
+                        sharedRouteViewModel.sharedCategory = category
+                        sharedRouteViewModel.sharedClickCount = clickCount
+                        sharedRouteViewModel.sharedFront =
+                            "learn/$categoryName/$dayIndex/${questionIndex + 1}"
+                        sharedRouteViewModel.sharedPopUp = "learn/$categoryName/$dayIndex/0"
+                        sharedRouteViewModel.sharedQuestionIndex = questionIndex
+                        sharedRouteViewModel.sharedQuestion = question
+                        sharedRouteViewModel.sharedQuestions = questions
+                        sharedRouteViewModel.sharedBack = "learn/$categoryName/$dayIndex/${questionIndex - 1}"
+                        sharedRouteViewModel.sharedCategoryName = categoryName
+                    }
 
-            ){
-                Text("camera", modifier = Modifier.align(Alignment.Center))
+            ) {
+                Text(categoryname, modifier = Modifier.align(Alignment.Center))
             }
-            Text(question.english,
+            Text(
+                question.english,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y=-(20).dp),
+                    .offset(y = -(20).dp),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 75.sp
@@ -123,42 +144,99 @@ fun CameraScreen(
             )
 
             Image(
-                painter = painterResource(id = R.drawable.image_frontarrow),
+                painter = painterResource(id = R.drawable.frontnull),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-//                    .clickable(enabled = questionIndex < questions.size - 1)
-//                    {
-//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-//                        }
-//
-//                    }
-                    .clickable{
-                        if (questionIndex == questions.size - 1) {
-                            // Navigate to the first question of the quiz screen
-                            navController.navigate("quiz/$categoryName/$dayIndex/0")
-                        } else {
-                            // Navigate to the next learn screen
-                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-                                popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-                            }
+                    .clickable(enabled = questionIndex < questions.size - 1)
+                    {
+                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
+                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
                         }
+
                     }
             )
-            Button(onClick = {
-
-            },
-                    modifier = Modifier
+            Button(
+                onClick = { /*todo*/ },
+                modifier = Modifier
                     .align(Alignment.BottomEnd) // Move button to bottom end
-                .size(width = 200.dp, height = 60.dp), // Bigger button
+                    .size(width = 200.dp, height = 60.dp), // Bigger button
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
-            ){
+            ) {
                 Text("넘어가기")
             }
 
         }
     }
 
+}
+
+@Composable
+fun BackgroundScreen(category: QuizCategory?, navController: NavController) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                painter = painterResource(R.drawable.arrow),
+                contentDescription = "뒤로 가기 버튼",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(10.dp)
+                    .weight(1f)
+                    .clickable {
+                        category?.name?.let { categoryName ->
+                            navController.navigate("stage/$categoryName")
+                        }
+                    }
+            )
+            Text(
+                "사진을 찍어보세요",
+                fontSize = 50.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .weight(5f)
+                    .align(Alignment.CenterVertically)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(4f),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                painter = painterResource(R.drawable.background_fruit_2),
+                contentDescription = "오른쪽 배경",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.6f)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Image(
+                painter = painterResource(R.drawable.background_fruit_1),
+                contentDescription = "왼쪽 배경",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.8f)
+            )
+        }
+    }
+}
+
+fun findCategoryByQuestion(question: QuizQuestion): QuizCategory? {
+    return QuizCategory.allCategories.firstOrNull { category ->
+        category.days.any { day ->
+            day.questions.contains(question)
+        }
+    }
 }
