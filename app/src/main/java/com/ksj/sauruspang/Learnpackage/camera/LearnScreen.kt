@@ -20,12 +20,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Scaffold
@@ -38,17 +36,14 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -62,15 +57,12 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberPermissionState
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
-
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
 import java.util.Locale
-import java.util.jar.Manifest
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
@@ -165,15 +157,6 @@ fun LearnScreen(
     RequestMicrophonePermission(onPermissionGranted = {
         hasPermission = true
     })
-
-
-
-
-
-
-
-
-
     Scaffold(topBar = {
         TopAppBar(
             title = {
@@ -257,7 +240,7 @@ fun LearnScreen(
                             fontWeight = FontWeight.Bold, fontSize = 60.sp
                         )
                     )
-                    Image(painter = painterResource(id = R.drawable.listen),
+                    Image(painter = painterResource(id = R.drawable.listen_btn),
                         contentDescription = "listen button",
                         modifier = Modifier
                             .size(30.dp)
@@ -265,49 +248,59 @@ fun LearnScreen(
 
 
                 }
-                Spacer(modifier = Modifier.size(80.dp))
+                Spacer(modifier = Modifier.size(90.dp))
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.size(70.dp))
+                    Spacer(modifier = Modifier.size(100.dp))
                     Box(
-//                        modifier = Modifier
-//                            .size(90.dp)
-//                            .clip(RoundedCornerShape(8.dp)) // Rounded corners
-//                            .background(Color(0xFF77E4D2))
-//                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
-//                            .clickable { speechRecognizer.startListening(speechIntent) }
                         modifier = Modifier
-                            .size(90.dp)
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(16.dp))
+                            .size(130.dp)
+                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(16.dp)) // Increased shadow for more visibility
+
                             .background(
                                 brush = Brush.verticalGradient(
                                     colors = listOf(
-                                        Color(0xFF77E4D2),
-                                        Color(0xFF4ECDC4)
+                                        Color(0xFF77E4D2), // Bright turquoise
+                                        Color(0xFF4ECDC4)  // Slightly darker shade
                                     )
                                 ),
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .clickable { speechRecognizer.startListening(speechIntent) }
+
                     ) {
+                        // Glossy effect overlay
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.radialGradient(
+                                        colors = listOf(
+                                            Color.White.copy(alpha = 0.4f), // Shiny highlight
+                                            Color.Transparent
+                                        ),
+                                        center = Offset(30f, 20f), // Light source effect
+                                        radius = 120f
+                                    ),
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                        )
                         Image(
                             painter = painterResource(id = R.drawable.speakbutton),
                             contentDescription = "Speak button",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(8.dp),
-                            contentScale = ContentScale.Fit
+                            modifier = Modifier.fillMaxSize().padding(8.dp),
+                            contentScale = ContentScale.Fit // Ensures it fills the box
                         )
                     }
-                    Text("detected: $spokenText", fontSize = 20.sp)
+                    Spacer(modifier=Modifier.size(15.dp))
                     Row() {
                         Row {
                             repeat(3) { index ->
                                 Image(
                                     painter = painterResource(id = question.imageId),
                                     contentDescription = "listen button",
-                                    modifier = Modifier.size(30.dp),
+                                    modifier = Modifier.size(50.dp),
                                     alpha = if (index < correctCount) 1.0f else 0.4f
                                 )
                                 //index 0 = image1, index1 = image2, index2 = image3
@@ -319,7 +312,8 @@ fun LearnScreen(
                 }
 
             }
-            Image(painter = painterResource(id = R.drawable.image_frontarrow),
+            Image(
+                painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)

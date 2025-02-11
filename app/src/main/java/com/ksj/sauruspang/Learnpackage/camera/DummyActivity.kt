@@ -34,7 +34,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -50,12 +53,17 @@ import com.ksj.sauruspang.R
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 import java.util.Locale
 
-class DummyActivity : ComponentActivity(){
+class DummyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent{
+        setContent {
             SauruspangTheme {
-                DummyScreen(navController = rememberNavController(), categoryName = "과일", dayIndex = 0, questionIndex = 0)
+                DummyScreen(
+                    navController = rememberNavController(),
+                    categoryName = "과일",
+                    dayIndex = 0,
+                    questionIndex = 0
+                )
             }
         }
     }
@@ -68,7 +76,7 @@ fun DummyScreen(
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
-){
+) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
@@ -133,11 +141,11 @@ fun DummyScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
 
                     ) {
-                    Image(painter = painterResource(id = question.imageId),
+                    Image(
+                        painter = painterResource(id = question.imageId),
                         contentDescription = "question image",
                         modifier = Modifier
                             .size(180.dp)
-
 
 
                     )
@@ -148,53 +156,74 @@ fun DummyScreen(
 //                        .offset(y=-(20).dp),
 
                         style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 50.sp
+                            fontWeight = FontWeight.Bold, fontSize = 45.sp
                         )
                     )
                     Text(
                         question.english,
 
                         style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 60.sp
+                            fontWeight = FontWeight.Bold, fontSize = 55.sp
                         )
                     )
-                    Image(painter = painterResource(id = R.drawable.listen),
+                    Image(
+                        painter = painterResource(id = R.drawable.listen_btn),
                         contentDescription = "listen button",
                         modifier = Modifier
-                            .size(30.dp))
-
-
-
+                            .size(30.dp)
+                    )
                 }
-                Spacer(modifier = Modifier.size(80.dp))
+                Spacer(modifier = Modifier.size(90.dp))
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Spacer(modifier = Modifier.size(70.dp))
+                    Spacer(modifier = Modifier.size(100.dp))
                     Box(
                         modifier = Modifier
-                            .size(65.dp)
-                            .clip(RoundedCornerShape(8.dp)) // Rounded corners
-                            .background(Color(0xFF77E4D2))
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
+                            .size(130.dp)
+                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(16.dp)) // Increased shadow for more visibility
 
+                            .background(
+                                brush = Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color(0xFF77E4D2), // Bright turquoise
+                                        Color(0xFF4ECDC4)  // Slightly darker shade
+                                    )
+                                ),
+                                shape = RoundedCornerShape(16.dp)
+                            )
                     ) {
+                        // Glossy effect overlay
+                        Box(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .background(
+                                    Brush.radialGradient(
+                                        colors = listOf(
+                                            Color.White.copy(alpha = 0.4f), // Shiny highlight
+                                            Color.Transparent
+                                        ),
+                                        center = Offset(30f, 20f), // Light source effect
+                                        radius = 120f
+                                    ),
+                                    shape = RoundedCornerShape(16.dp)
+                                )
+                        )
                         Image(
                             painter = painterResource(id = R.drawable.speakbutton),
                             contentDescription = "Speak button",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .padding(8.dp) // Inner padding,
+                            modifier = Modifier.fillMaxSize().padding(8.dp),
+                            contentScale = ContentScale.Fit // Ensures it fills the box
                         )
                     }
-                    Text("detected:", fontSize = 20.sp)
+                    Spacer(modifier=Modifier.size(15.dp))
                     Row() {
                         Row {
                             repeat(3) { index ->
                                 Image(
                                     painter = painterResource(id = question.imageId),
                                     contentDescription = "listen button",
-                                    modifier = Modifier.size(30.dp),
+                                    modifier = Modifier.size(50.dp),
                                     alpha = if (index < correctCount) 1.0f else 0.4f
                                 )
                                 //index 0 = image1, index1 = image2, index2 = image3
@@ -204,8 +233,8 @@ fun DummyScreen(
                     }
 
                 }
-
             }
+
             Image(painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
                 modifier = Modifier
@@ -220,18 +249,15 @@ fun DummyScreen(
 //                    }
                     .clickable { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") })
         }
+
     }
-
-
-
-
-
 }
+
 
 @Preview(showBackground = true, widthDp = 900, heightDp = 400)
 @Composable
-fun DummyScreenPreview(){
+fun DummyScreenPreview() {
     SauruspangTheme {
-        DummyScreen(rememberNavController(),  "과일과 야채", dayIndex = 0, questionIndex = 0)
+        DummyScreen(rememberNavController(), "과일과 야채", dayIndex = 0, questionIndex = 0)
     }
 }

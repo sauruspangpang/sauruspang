@@ -221,7 +221,5 @@ fun RandomCameraAnswerScreen(
             CapturedImageRandom(capturedImage)
         }
 
-
-
     }
 }
