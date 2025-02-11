@@ -71,7 +71,9 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel) {
                         .background(Color.White)
                         .size(60.dp)
                         .padding(5.dp)
-                        .clickable { navController.navigate("randomPhotoTaker") }
+                        .clickable {
+                            navController.navigate("randomPhotoTaker")
+                        }
                 ) {
                     Text("temp camera")
                 }

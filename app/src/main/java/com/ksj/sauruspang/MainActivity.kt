@@ -1,5 +1,6 @@
 package com.ksj.sauruspang
 
+
 import Learnpackage.camera.LearnScreen
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.StageScreen
@@ -27,13 +28,13 @@ import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
 import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
-import com.ksj.sauruspang.Learnpackage.camera.RandomCameraAnswerScreen
-import com.ksj.sauruspang.Learnpackage.camera.RandomPhotoTakerScreen
+import com.ksj.sauruspang.Learnpackage.camera.GPTCameraViewModel
+import com.ksj.sauruspang.Learnpackage.camera.GPTRandomPhotoTakerScreen
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
-import com.ksj.sauruspang.Learnpackage.camera.ShowRandomCameraPreviewScreen
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 import java.util.Locale
+
 
 class MainActivity : ComponentActivity() {
     private lateinit var tts: TextToSpeech
@@ -47,23 +48,25 @@ class MainActivity : ComponentActivity() {
         val viewModel = ProfileViewmodel(application)
         setContent {
             SauruspangTheme {
-                NaySys(viewModel, tts)
+                NaySys(viewModel,tts)
             }
         }
     }
-
     override fun onDestroy() {
         super.onDestroy()
         tts.shutdown() // Release resources when the activity is destroyed
     }
 }
 
+
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
+fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
-    val detectedResultListViewModel: DetectedResultListViewModel = viewModel()
+    val detectedResultListViewModel : DetectedResultListViewModel = viewModel()
+    val gPTCameraViewModel: GPTCameraViewModel = viewModel()
+
 
     NavHost(navController = navController,
         startDestination = if (viewmodel.profiles.isEmpty()) "main" else "profile",
@@ -95,6 +98,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
 
+
             // Navigate to the first question index (0) when the user reaches the day
             navController.navigate("learn/$categoryName/$dayIndex/0")
         }
@@ -112,12 +116,14 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
             }
         }
 
+
         composable("WordInput/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             WordInputScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
+
 
         composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
@@ -134,6 +140,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
             )
         }
 
+
         composable("quiz/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
@@ -144,32 +151,18 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
             CongratScreen(navController, viewmodel)
         }
         composable("randomPhotoTaker") {
-            RandomPhotoTakerScreen(navController, viewmodel, cameraViewModel)
+            GPTRandomPhotoTakerScreen(gPTCameraViewModel)
         }
-        composable("randomCamera") {
-            ShowRandomCameraPreviewScreen(
-                navController,
-                cameraViewModel,
-                detectedResultListViewModel
-            )
-        }
-        composable("randomCameraAnswer") {
-            RandomCameraAnswerScreen(navController, cameraViewModel)
-        }
+
 
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     SauruspangTheme {
-        WordInputScreen(
-            navController = rememberNavController(),
-            categoryName = "직업",
-            dayIndex = 0,
-            questionIndex = 0,
-            viewModel = viewModel()
-        )
+        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel())
     }
 }
