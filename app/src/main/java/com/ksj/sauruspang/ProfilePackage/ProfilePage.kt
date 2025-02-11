@@ -3,23 +3,7 @@ package com.ksj.sauruspang.ProfilePackage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -41,10 +25,9 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
 
-
 @Composable
 fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
-    val profile = remember { viewModel.profiles }
+    val profiles = remember { viewModel.profiles }
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.kidsprofile_wallpaper),
@@ -55,7 +38,7 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
         Text(
             text = "아이 프로필 선택",
             style = MaterialTheme.typography.headlineLarge,
-//            modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues())
+            modifier = Modifier.padding(WindowInsets.systemBars.asPaddingValues())
         )
 
         // 프로필 리스트
@@ -65,7 +48,7 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 .padding(horizontal = 50.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            profile.forEach { profile ->
+            profiles.forEach { profile ->
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp)) // 둥근 모서리
@@ -141,6 +124,5 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 }
             }
         }
-
     }
 }

@@ -3,52 +3,45 @@ package com.ksj.sauruspang.ProfilePackage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+
 
 
 @Composable
 fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var name by remember { mutableStateOf("") }
     var birth by remember { mutableStateOf("") }
-    var userProfile by remember { mutableIntStateOf(0) }
-    var selectedImage by remember { mutableIntStateOf(R.drawable.test1) }
+    var selectedImage by remember { mutableStateOf(R.drawable.test1) }
+    var role by remember { mutableStateOf("역할") }  // 역할 변수 추가
+    var type by remember { mutableStateOf("타입") }  // 타입 변수 추가
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -56,19 +49,16 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
         Image(
             painter = painterResource(R.drawable.createprofile_wallpaper),
             contentDescription = null,
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
         Text(
             text = "새로운 아이 프로필 만들기",
             fontSize = 32.sp,
-            fontWeight = FontWeight.ExtraBold,
-            modifier = Modifier
-                .padding(20.dp)
+            modifier = Modifier.padding(20.dp)
         )
         Row(
-            modifier = Modifier
-                .fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -81,60 +71,54 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                     .clip(RoundedCornerShape(16.dp))
             )
             Spacer(modifier = Modifier.width(20.dp))
-            Row {
-                Column {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextField(
-                            value = name,
-                            onValueChange = { name = it },
-                            modifier = Modifier.padding(10.dp)
-                        )
-                        Spacer(modifier = Modifier.width(60.dp))
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    Color(0xFF0022B2),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .shadow(
-                                    elevation = 8.dp,
-                                    shape = RoundedCornerShape(12.dp),
-                                    spotColor = Color(0xFF505050)
-                                )
-                                .clickable {
-                                    if (name.isNotEmpty() && birth.isNotEmpty()) {
-                                        viewModel.addProfile(
-                                            name,
-                                            birth,
-                                            userProfile++,
-                                            selectedImage,
-                                            "아이",
-                                            "아이",
-                                            1
-                                        )
-                                        navController.navigate("profile")
-                                    }
-                                }
-                        ) {
-                            Text(
-                                text = "만들기",
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFFFFFF),
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-                    }
+            Column {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     TextField(
-                        value = birth,
-                        onValueChange = { birth = it },
+                        value = name,
+                        onValueChange = { name = it },
                         modifier = Modifier.padding(10.dp)
                     )
-                    Row {
-                        DynamicImageLoding { selectedImage = it }
+                    Spacer(modifier = Modifier.width(60.dp))
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                Color(0xFF0022B2),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) {
+                                if (name.isNotEmpty() && birth.isNotEmpty()) {
+                                    viewModel.addProfile(
+                                        name,
+                                        birth,
+                                        selectedImage,
+                                        role,  // 역할 변수 사용
+                                        type,  // 타입 변수 사용
+                                        1
+                                    )
+                                    navController.navigate("profile")
+                                }
+                            }
+                    ) {
+                        Text(
+                            text = "만들기",
+                            fontSize = 28.sp,
+                            color = Color(0xFFFFFFFF),
+                            modifier = Modifier.padding(16.dp)
+                        )
                     }
                 }
-
+                TextField(
+                    value = birth,
+                    onValueChange = { birth = it },
+                    modifier = Modifier.padding(10.dp)
+                )
+                Row {
+                    DynamicImageLoading { selectedImage = it }
+                }
+                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
@@ -142,7 +126,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
 
 // 프로필 이미지 선택
 @Composable
-fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
+fun DynamicImageLoading(onImageSelected: (Int) -> Unit) {
     for (i in 1..4) {
         val resourceId = getDrawableResourceId("test$i")
         if (resourceId != 0) {
@@ -152,11 +136,12 @@ fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
                 modifier = Modifier
                     .padding(10.dp)
                     .clip(RoundedCornerShape(16.dp))
-                    .clickable {
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) {
                         onImageSelected(resourceId)
-
                     }
-
             )
         }
     }

@@ -6,20 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-
-import androidx.compose.foundation.layout.Column
-
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -29,11 +16,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -44,16 +29,15 @@ import com.ksj.sauruspang.R
 
 @Composable
 fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel) {
-//    val category = QuizCategory.allCategories.find { it.name == categoryName }
     val quizCategory = QuizCategory.allCategories.find { it.name == categoryName }
     val days = quizCategory?.days ?: emptyList()
 
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.day_wallpaper),
             contentDescription = null,
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
         Column(
             modifier = Modifier
@@ -82,12 +66,11 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                     Image(
                         painter = painterResource(R.drawable.image_woodboard),
                         contentDescription = "",
-
-                        )
+                    )
                     Row(
                         modifier = Modifier
-                            .padding(horizontal = 30.dp), // 좌우 여백 추가
-                        verticalAlignment = Alignment.CenterVertically // 내부 요소도 중앙 정렬
+                            .padding(horizontal = 30.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ellipse_1),
@@ -96,8 +79,8 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                         )
                         Column(
                             modifier = Modifier
-                                .padding(bottom = 20.dp), // 내부 요소 패딩
-                            verticalArrangement = Arrangement.SpaceBetween, // 내부 요소 정렬
+                                .padding(bottom = 20.dp),
+                            verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.Start
                         ) {
                             Text(
@@ -108,14 +91,14 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                                 )
                             )
                             Row(
-                                verticalAlignment = Alignment.CenterVertically // 이미지와 텍스트를 같은 높이로 정렬
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Image(
                                     painter = painterResource(R.drawable.image_starpoint),
                                     contentDescription = "",
-                                    modifier = Modifier.size(36.dp) // 원하는 크기로 조정
+                                    modifier = Modifier.size(36.dp)
                                 )
-                                Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
+                                Spacer(modifier = Modifier.width(10.dp))
                                 Text(
                                     "245",
                                     fontSize = 24.sp,
@@ -138,24 +121,24 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                     .fillMaxHeight()
                     .horizontalScroll(rememberScrollState())
             ) {
-                Button(onClick = {
-                    // 버튼 클릭 시 프로필 별로 dayCount 증가
-                    // dayCount 값을 올바르게 증가시키기 위해 increaseDayCount 호출
-                    viewModel.increaseDayCount("아이")
-
-                    // 로그로 현재 프로필을 확인
-                    Log.e("DayCount", viewModel.profiles.toString())
-                }) {
-                    Text("데이 증가")
-
-                }
                 Column {
-                    ZigzagRow(days, categoryName, navController, viewModel)
+                    Button(onClick = {
+                        viewModel.increaseDayCount("역할")
+                        Log.d("Profile", "Day Count for $categoryName: ${viewModel.profiles.find { it.quizCategory == categoryName }?.fruitsDayCount}")
+                        Log.d("Profile", viewModel.profiles.toString())
+                    }) {
+                        Text("데이 증가")
+                    }
+                    Column {
+                        ZigzagRow(days, categoryName, navController, viewModel)
+                    }
                 }
             }
         }
     }
 }
+
+
 
 
 @Composable
@@ -168,47 +151,51 @@ fun ZigzagRow(
     // 상태 관리: List<Profile>을 UI에서 사용
     val profiles = viewModel.profiles // 이미 State로 관리되고 있으므로 collectAsState() 필요 없음
 
+    // 프로필을 찾고 dayCount를 가져옴
     val profile = profiles.find { it.quizCategory == categoryName }
-    // dayCount를 가져옴
-    val dayCount by remember { derivedStateOf { profile?.dayCount ?: 1 } }
+    val dayCount = when (categoryName) {
+        "과일과 야채" -> profile?.fruitsDayCount ?: 1
+        "동물" -> profile?.animalsDayCount ?: 1
+        "색" -> profile?.colorsDayCount ?: 1
+        "직업" -> profile?.jobsDayCount ?: 1
+        else -> 1
+    }
 
     Row(
         modifier = Modifier.padding(30.dp)
     ) {
-        days.forEachIndexed { index, day ->
-            if (day.dayNumber - 1 < dayCount) { // dayCount보다 작은 일차만 표시
-                DayBox(
-                    dayIndex = day.dayNumber - 1,
-                    isTop = index % 2 == 0,
-                    categoryName = categoryName,
-                    navController = navController
-                )
-            }
+        days.take(dayCount).forEachIndexed { index, day ->
+            DayBox(
+                dayIndex = day.dayNumber - 1,
+                isTop = index % 2 == 0,
+                categoryName = categoryName,
+                navController = navController
+            )
         }
     }
 }
-
-
-
-
-
-
-
 @Composable
-fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: NavController) {
+fun DayBox(
+    dayIndex: Int,
+    isTop: Boolean,
+    categoryName: String,
+    navController: NavController
+) {
     Box(
         modifier = Modifier
-            .offset(y = if (isTop) (-20).dp else 80.dp)
-            .size(width = 140.dp, height = 90.dp)
-            .background(Color.White)
+            .padding(8.dp)
+            .background(if (isTop) Color.LightGray else Color.Gray)
             .clickable {
-                navController.navigate("learn/$categoryName/$dayIndex")
-            },
-        contentAlignment = Alignment.Center
+                // Click action to navigate
+                navController.navigate("quiz_detail/$categoryName/$dayIndex")
+            }
+            .size(100.dp)
     ) {
         Text(
-            "Day ${dayIndex+1}",
-            style = TextStyle(fontSize = 40.sp)
+            text = "Day ${dayIndex + 1}",
+            modifier = Modifier
+                .align(if (isTop) Alignment.TopCenter else Alignment.BottomCenter)
+                .padding(8.dp)
         )
     }
 }

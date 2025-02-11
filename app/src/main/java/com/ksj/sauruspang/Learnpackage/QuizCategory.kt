@@ -3,7 +3,7 @@ package com.ksj.sauruspang.Learnpackage
 import com.ksj.sauruspang.R
 
 data class QuizDay(
-    val dayNumber: Int,
+    var dayNumber: Int,
     val questions: List<QuizQuestion>
 )
 
