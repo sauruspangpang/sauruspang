@@ -5,7 +5,6 @@ import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
 import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
-import com.ksj.sauruspang.Learnpackage.camera.LearnScreen
 import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
 import com.ksj.sauruspang.Learnpackage.word.WordQuizScreen
 import com.ksj.sauruspang.ProfilePackage.MainScreen
