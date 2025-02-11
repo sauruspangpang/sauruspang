@@ -7,9 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-
 import androidx.compose.foundation.layout.Column
-
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -24,11 +22,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.layout.VerticalAlignmentLine
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -49,15 +45,19 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
         )
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(30.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(30.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.image_backhome),
                     contentDescription = "button to stagescreen",
-                    modifier = Modifier.size(50.dp).clickable {
-                        navController.navigate("home")
-                    }
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable {
+                            navController.navigate("home")
+                        }
                 )
                 Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.offset(y = (-30).dp)) {
                     Image(
@@ -106,10 +106,12 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                 )
             }
             Row(
-                modifier = Modifier.fillMaxHeight().horizontalScroll(rememberScrollState())
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .horizontalScroll(rememberScrollState())
             ) {
                 category?.days?.let { days ->
-                    ZigzagRow(days, categoryName, navController, category.dayNumber)
+                    ZigzagRow(days, categoryName, navController)
                 }
             }
         }
@@ -117,18 +119,23 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
 }
 
 @Composable
-fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController, totalDays: Int) {
-    Row(modifier = Modifier.padding(30.dp)) {
+fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController) {
+    val totalDays = CategoryDayManager.getDay(categoryName) // 카테고리별로 업데이트된 dayNumber 가져오기
+    Row(
+        modifier = Modifier
+            .padding(30.dp)
+    ) {
         for (i in 0 until totalDays) {
             DayBox(
-                dayIndex = i,
-                isTop = i % 2 == 0,
-                categoryName = categoryName,
-                navController = navController
+                dayIndex = i, // 현재 인덱스를 dayIndex로 전달
+                isTop = i % 2 == 0, // 박스를 위쪽에 배치할지 아래쪽에 배치할지 결정
+                categoryName = categoryName, // 카테고리 이름 전달
+                navController = navController // NavController 전달
             )
         }
     }
 }
+
 @Composable
 fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: NavController) {
     Box(
@@ -142,7 +149,7 @@ fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: N
         contentAlignment = Alignment.Center
     ) {
         Text(
-            "Day ${dayIndex+1}",
+            "Day ${dayIndex + 1}",
             style = TextStyle(fontSize = 40.sp)
         )
     }

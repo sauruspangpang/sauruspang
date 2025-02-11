@@ -22,6 +22,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ksj.sauruspang.Learnpackage.CategoryDayManager
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
 import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
@@ -89,6 +90,8 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             StageScreen(navController, categoryName, viewmodel)
+            // Set the current category for later use
+            CategoryDayManager.setCurrentCategoryName(categoryName)
         }
         composable("learn/{categoryName}/{dayIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
@@ -139,9 +142,11 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
-        composable("congrats/{categoryName}") { backStackEntry ->
-            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
+        composable("congrats/{categoryName}") {
+            val categoryName = CategoryDayManager.getCurrentCategoryName() ?: ""
+
             CongratScreen(navController, viewmodel, categoryName)
+
         }
         composable("randomPhotoTaker") {
             RandomPhotoTakerScreen(navController, viewmodel, cameraViewModel)
