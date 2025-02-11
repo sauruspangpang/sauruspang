@@ -172,14 +172,17 @@ fun WordInputScreen(
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(140.dp)
-                    .clickable(enabled = isCorrect || hitNumber > 0) {
-                        if(hitNumber > 0)
-                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}")
+                    .clickable {
+                        if (questionIndex == questions.size - 1) {
+                            // Navigate to the first question of the quiz screen
+                            navController.navigate("quiz/$categoryName/$dayIndex/0")
+                        } else {
+                            // Navigate to the next learn screen
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
+                                popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+                            }
+                        }
                     }
-//                    .clickable(enabled = isCorrect) {
-//                        navController.navigate(nextRoute)
-//                        isCorrect = false
-//                    }
             )
         }
         Row(

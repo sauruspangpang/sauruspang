@@ -348,7 +348,7 @@ fun LearnScreen(
                 modifier = Modifier
                     .size(screenWidth * 0.155f)
                     .align(Alignment.CenterEnd)
-                    .offset(x = -(screenWidth * 0.03f))
+                 //   .offset(x = -(screenWidth * 0.03f))
 //                    .clickable(enabled = questionIndex < questions.size - 1)
 //                    {
 //                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {

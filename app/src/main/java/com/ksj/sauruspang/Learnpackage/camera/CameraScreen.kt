@@ -149,12 +149,16 @@ fun CameraScreen(
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable(enabled = questionIndex < questions.size - 1)
-                    {
-                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+                    .clickable {
+                        if (questionIndex == questions.size - 1) {
+                            // Navigate to the first question of the quiz screen
+                            navController.navigate("quiz/$categoryName/$dayIndex/0")
+                        } else {
+                            // Navigate to the next learn screen
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
+                                popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+                            }
                         }
-
                     }
             )
             Button(
