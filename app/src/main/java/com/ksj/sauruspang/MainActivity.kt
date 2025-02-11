@@ -27,8 +27,11 @@ import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
 import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
+import com.ksj.sauruspang.Learnpackage.camera.RandomCameraAnswerScreen
+import com.ksj.sauruspang.Learnpackage.camera.RandomPhotoTakerScreen
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
+import com.ksj.sauruspang.Learnpackage.camera.ShowRandomCameraPreviewScreen
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 import java.util.Locale
 
@@ -139,8 +142,15 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
         composable("congrats") {
             CongratScreen(navController, viewmodel)
         }
-
-
+        composable("randomPhotoTaker") {
+            RandomPhotoTakerScreen(navController, viewmodel, cameraViewModel)
+        }
+        composable("randomCamera") {
+            ShowRandomCameraPreviewScreen(navController, cameraViewModel, detectedResultListViewModel)
+        }
+        composable("randomCameraAnswer") {
+            RandomCameraAnswerScreen(navController, cameraViewModel)
+        }
 
     }
 }

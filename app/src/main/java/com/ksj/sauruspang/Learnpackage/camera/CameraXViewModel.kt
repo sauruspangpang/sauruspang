@@ -20,6 +20,7 @@ class CameraViewModel : ViewModel() {
     }
 }
 
+
 class SharedRouteViewModel : ViewModel() {
     var sharedValue: String? = null // 저장할 값
     var sharedCategory: QuizCategory? = null
