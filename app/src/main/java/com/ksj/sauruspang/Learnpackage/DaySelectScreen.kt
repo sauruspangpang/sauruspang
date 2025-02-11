@@ -40,46 +40,33 @@ import com.ksj.sauruspang.R
 @Composable
 fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
-    Box(modifier = Modifier.fillMaxSize()){
+    Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.day_wallpaper),
             contentDescription = null,
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(30.dp),
+                modifier = Modifier.fillMaxWidth().padding(30.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.image_backhome),
                     contentDescription = "button to stagescreen",
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clickable {
-                            navController.navigate("home")
-                        }
+                    modifier = Modifier.size(50.dp).clickable {
+                        navController.navigate("home")
+                    }
                 )
-                Box(
-                    contentAlignment = Alignment.BottomCenter,
-                    modifier = Modifier
-                        .offset(y = (-30).dp)
-                ) {
+                Box(contentAlignment = Alignment.BottomCenter, modifier = Modifier.offset(y = (-30).dp)) {
                     Image(
                         painter = painterResource(R.drawable.image_woodboard),
-                        contentDescription = "",
-
-                        )
+                        contentDescription = ""
+                    )
                     Row(
-                        modifier = Modifier
-                            .padding(horizontal = 30.dp), // 좌우 여백 추가
-                        verticalAlignment = Alignment.CenterVertically // 내부 요소도 중앙 정렬
+                        modifier = Modifier.padding(horizontal = 30.dp),
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
                             painter = painterResource(id = R.drawable.ellipse_1),
@@ -87,27 +74,21 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                             Modifier.scale(0.8f)
                         )
                         Column(
-                            modifier = Modifier
-                                .padding(bottom = 20.dp), // 내부 요소 패딩
-                            verticalArrangement = Arrangement.SpaceBetween, // 내부 요소 정렬
+                            modifier = Modifier.padding(bottom = 20.dp),
+                            verticalArrangement = Arrangement.SpaceBetween,
                             horizontalAlignment = Alignment.Start
                         ) {
                             Text(
                                 "Hello 박민준",
-                                style = TextStyle(
-                                    fontSize = 24.sp,
-                                    fontWeight = FontWeight.Bold,
-                                )
+                                style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
                             )
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically // 이미지와 텍스트를 같은 높이로 정렬
-                            ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 Image(
                                     painter = painterResource(R.drawable.image_starpoint),
                                     contentDescription = "",
-                                    modifier = Modifier.size(36.dp) // 원하는 크기로 조정
+                                    modifier = Modifier.size(36.dp)
                                 )
-                                Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
+                                Spacer(modifier = Modifier.width(10.dp))
                                 Text(
                                     "245",
                                     fontSize = 24.sp,
@@ -121,38 +102,29 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                 Image(
                     painter = painterResource(id = R.drawable.image_photobook),
                     contentDescription = "",
-                    modifier = Modifier
-                        .size(70.dp)
+                    modifier = Modifier.size(70.dp)
                 )
             }
             Row(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .horizontalScroll(rememberScrollState())
+                modifier = Modifier.fillMaxHeight().horizontalScroll(rememberScrollState())
             ) {
                 category?.days?.let { days ->
-                    ZigzagRow(days, categoryName, navController)
+                    ZigzagRow(days, categoryName, navController, category.dayNumber)
                 }
             }
         }
     }
 }
 
-
-
 @Composable
-fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController) {
-    val totalDays = QuizCategory.DayNumberManager.dayNumber // DayNumberManager에서 업데이트된 dayNumber 가져오기
-    Row(
-        modifier = Modifier
-            .padding(30.dp)
-    ) {
+fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController, totalDays: Int) {
+    Row(modifier = Modifier.padding(30.dp)) {
         for (i in 0 until totalDays) {
             DayBox(
-                dayIndex = i, // 현재 인덱스를 dayIndex로 전달
-                isTop = i % 2 == 0, // 박스를 위쪽에 배치할지 아래쪽에 배치할지 결정
-                categoryName = categoryName, // 카테고리 이름 전달
-                navController = navController // NavController 전달
+                dayIndex = i,
+                isTop = i % 2 == 0,
+                categoryName = categoryName,
+                navController = navController
             )
         }
     }

@@ -19,6 +19,10 @@ data class QuizQuestion(
 
 
 sealed class QuizCategory(val name: String, val thumbnail :Int, val days: List<QuizDay>) {
+    var dayNumber: Int = 1
+    fun incrementDayNumber() {
+        dayNumber += 1
+    }
     object Fruits : QuizCategory("과일과 야채",
         R.drawable.fruitsvegies_category,
         listOf(

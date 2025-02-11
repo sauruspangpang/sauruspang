@@ -204,7 +204,7 @@ fun QuizScreen(
 //                    }
                 .clickable(enabled = solvedQuestion) {
                     if (questionIndex == questions.size - 1) {
-                        navController.navigate("congrats")
+                        navController.navigate("congrats/${categoryName}")
 
                     } else {
                         navController.navigate("quiz/$categoryName/$dayIndex/${questionIndex + 1}")
