@@ -271,7 +271,7 @@ fun WordQuizScreen(
                             .clickable { speechRecognizer.startListening(speechIntent) }
                     ) {
                         Image(
-                            painter = painterResource(id = R.drawable.speakbutton),
+                            painter = painterResource(id = R.drawable.animal_cat),
                             contentDescription = "Speak button",
                             modifier = Modifier
                                 .size(60.dp)
