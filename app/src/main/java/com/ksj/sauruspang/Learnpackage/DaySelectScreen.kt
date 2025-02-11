@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -110,6 +111,12 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                     .fillMaxHeight()
                     .horizontalScroll(rememberScrollState())
             ) {
+                Button(onClick = {
+                    val categoryName = "직업"
+                    navController.navigate("congrats/${categoryName}")
+                }) {
+                    Text("shortcut")
+                }
                 category?.days?.let { days ->
                     ZigzagRow(days, categoryName, navController)
                 }

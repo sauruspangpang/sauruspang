@@ -142,11 +142,9 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel)
         }
-        composable("congrats/{categoryName}") {
-            val categoryName = CategoryDayManager.getCurrentCategoryName() ?: ""
-
+        composable("congrats/{categoryName}") { backStackEntry ->
+            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             CongratScreen(navController, viewmodel, categoryName)
-
         }
         composable("randomPhotoTaker") {
             RandomPhotoTakerScreen(navController, viewmodel, cameraViewModel)
