@@ -58,7 +58,10 @@ object ImagePrediction {
                 // 이미지 입력 타입에 따라 임시 파일 생성
                 val imageFile = when (imageInput) {
                     is ImageInput.UriInput -> createTempFileFromUri(context, imageInput.uri!!)
-                    is ImageInput.BitmapInput -> createTempFileFromBitmap(context, imageInput.bitmap!!)
+                    is ImageInput.BitmapInput -> createTempFileFromBitmap(
+                        context,
+                        imageInput.bitmap!!
+                    )
                 }
 
                 val requestBody = MultipartBody.Builder()
@@ -91,7 +94,7 @@ object ImagePrediction {
             }
 
             // 응답 파싱 후 결과 리스트 콜백 전달
-            onResult(predictionResults.toList())
+            onResult(predictionResults.toMutableList())
         }
     }
 
@@ -117,26 +120,34 @@ object ImagePrediction {
                             val predObj = predictionsArray.getJSONObject(i)
                             val predictionResult = predObj.optString("prediction_result", "")
                             val confidence = predObj.optDouble("confidence", 0.0)
-                            Log.d("Flask", "Classification #$i => prediction_result=$predictionResult, conf=$confidence")
+                            Log.d(
+                                "Flask",
+                                "Classification #$i => prediction_result=$predictionResult, conf=$confidence"
+                            )
                             if (predictionResult.isNotEmpty()) {
                                 addIfNotDuplicate(predictionResult)
                             }
                         }
                     }
                 }
+
                 "detection" -> {
                     jsonObj.optJSONArray("detections")?.let { detectionsArray ->
                         for (i in 0 until detectionsArray.length()) {
                             val detObj = detectionsArray.getJSONObject(i)
                             val predictionResult = detObj.optString("prediction_result", "")
                             val conf = detObj.optDouble("confidence", 0.0)
-                            Log.d("Flask", "Detection #$i => prediction_result=$predictionResult, conf=$conf")
+                            Log.d(
+                                "Flask",
+                                "Detection #$i => prediction_result=$predictionResult, conf=$conf"
+                            )
                             if (predictionResult.isNotEmpty()) {
                                 addIfNotDuplicate(predictionResult)
                             }
                         }
                     }
                 }
+
                 else -> {
                     Log.w("Flask", "Unknown type=$type, no prediction_result added.")
                 }

@@ -22,16 +22,25 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
-import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
+import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
+import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
+import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
+import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
 import com.ksj.sauruspang.Learnpackage.camera.RandomCameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.RandomPhotoTakerScreen
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
+import com.ksj.sauruspang.Learnpackage.word.WordInputScreen
+import com.ksj.sauruspang.Learnpackage.word.WordQuizScreen
+import com.ksj.sauruspang.ProfilePackage.MainScreen
+import com.ksj.sauruspang.ProfilePackage.ProfilePage
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.Learnpackage.camera.ShowRandomCameraPreviewScreen
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
 import java.util.Locale
@@ -79,13 +88,18 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             HomeScreen(navController, viewmodel)
         }
         composable("camerax") {
-            ShowCameraPreviewScreen(navController, cameraViewModel, detectedResultListViewModel)
+            ShowCameraPreviewScreen(
+                navController,
+                cameraViewModel,
+                detectedResultListViewModel,
+                sharedRouteViewModel
+            )
         }
         composable("answer") {
             CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel)
         }
         composable("pictorial") {
-            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel)
+            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel, cameraViewModel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
@@ -109,7 +123,15 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
                 WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel)
             } else {
-                LearnScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel)
+                LearnScreen(
+                    navController,
+                    categoryName,
+                    dayIndex,
+                    questionIndex,
+                    tts,
+                    viewmodel,
+                    sharedRouteViewModel
+                )
             }
         }
 
@@ -158,7 +180,6 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
 
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
