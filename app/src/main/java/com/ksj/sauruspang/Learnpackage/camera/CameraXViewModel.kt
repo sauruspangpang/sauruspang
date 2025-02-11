@@ -40,7 +40,6 @@ class SharedRouteViewModel : ViewModel() {
 class DetectedResultListViewModel : ViewModel(){
     var detectedResultList: List<String>? = null
     var answerWord: String? = null
-    var isCorrect: Boolean = false
 
     fun clearValue(){
         detectedResultList = null

@@ -1,7 +1,6 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
 import android.Manifest
-import android.content.Context
 import android.graphics.Bitmap
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -20,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -35,35 +33,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
-import com.ksj.sauruspang.ProfilePackage.Room.AppDatabase
-import com.ksj.sauruspang.ProfilePackage.Room.User
-import com.ksj.sauruspang.ProfilePackage.UserViewModel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.flaskSever.ImageInput
 import com.ksj.sauruspang.flaskSever.ImagePrediction
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 
 // 이미지 표시하는 Compose 함수
 @Composable
-fun ShowCameraPreviewScreen(
-    navController: NavController,
-    profileViewmodel: ProfileViewmodel = viewModel(),
-    camViewModel: CameraViewModel = viewModel(),
-    resultListViewModel: DetectedResultListViewModel = viewModel(),
-    detectedResultListViewModel: DetectedResultListViewModel = viewModel(),
-    userViewModel: UserViewModel = viewModel()
-) {
-    val capturedImage = camViewModel.capturedImage
+fun ShowCameraPreviewScreen(navController: NavController, viewModel: CameraViewModel = viewModel(), resultListViewModel: DetectedResultListViewModel = viewModel()) {
+    val capturedImage = viewModel.capturedImage
     var predictionResultListState by remember { mutableStateOf(listOf<String>()) }
     val context = LocalContext.current
     val bitmapCapturedImage = getBitmapFromState(capturedImage)
-    val profile = remember { profileViewmodel.profiles }
-    var bytearray = remember { mutableStateListOf<ByteArray>() }
-    var clearWords = remember { mutableStateListOf<String>() }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -71,22 +51,19 @@ fun ShowCameraPreviewScreen(
     ) {
         if (capturedImage.value == null) {
             CameraPreviewScreen { bitmap ->
-                bytearray.add(bitmapToByteArray(bitmap))
-                camViewModel.setCapturedImage(bitmap) // ViewModel에 저장
+                viewModel.setCapturedImage(bitmap) // ViewModel에 저장
             }
         } else {
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
                     .background(color = colorResource(R.color.background)),
                 contentAlignment = Alignment.BottomCenter
             ) {
                 CapturedImage(capturedImage)
-                Row(modifier = Modifier.height(60.dp)) {
+                Row (modifier = Modifier.height(60.dp)){
                     //버튼들 박스로 만들고 텍스트로 기능 적어두고 클릭어블로 기능넣기
                     Box(
-                        modifier = Modifier
-                            .weight(1f)
+                        modifier = Modifier.weight(1f)
                             .fillMaxSize()
                             .background(color = Color.Red)
                             .clickable { capturedImage.value = null }
@@ -94,40 +71,17 @@ fun ShowCameraPreviewScreen(
                         Text("다시 촬영", fontSize = 30.sp, fontWeight = FontWeight.Bold)
                     }
                     Box(
-                        modifier = Modifier
-                            .weight(1f)
+                        modifier = Modifier.weight(1f)
                             .clickable {
                                 ImagePrediction.uploadImageToServer(
                                     context = context,
                                     imageInput = ImageInput.BitmapInput(bitmapCapturedImage),
                                     selectedModel = findCategoryName
-                                ) { updatedList ->
+                                ){ updatedList ->
                                     predictionResultListState = updatedList
-                                    resultListViewModel.detectedResultList =
-                                        predictionResultListState
-                                    if (predictionResultListState.contains(
-                                            detectedResultListViewModel.answerWord
-                                        )
-                                    ) {
-                                        detectedResultListViewModel.isCorrect = true
-                                        detectedResultListViewModel.answerWord?.let {
-                                            clearWords.add(
-                                                it
-                                            )
-                                        }
-                                        profile.forEach { profile ->
-                                            userViewModel.saveUser(
-                                                name = profile.name,
-                                                birth = profile.birth,
-                                                selectedImage = profile.selectedImage,
-                                                clearedWords = clearWords,
-                                                clearedImages = bytearray
-                                            )
-                                        }
-                                    }
+                                    resultListViewModel.detectedResultList = predictionResultListState
                                 }
-                                navController.navigate("answer")
-                            }
+                                navController.navigate("answer") }
                             .background(color = Color.Green)
                             .fillMaxSize()) {
                         Text("정답 확인", fontSize = 30.sp, fontWeight = FontWeight.Bold)
@@ -139,7 +93,7 @@ fun ShowCameraPreviewScreen(
 }
 
 @Composable
-fun CapturedImage(capturedImage: MutableState<Bitmap?>) {
+fun CapturedImage(capturedImage: MutableState<Bitmap?>){
     Image(
         bitmap = capturedImage.value!!.asImageBitmap(),
         contentDescription = "Captured Image",
@@ -168,11 +122,4 @@ fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
     LaunchedEffect(Unit) {
         permissionLauncher.launch(Manifest.permission.CAMERA)
     }
-}
-
-fun bitmapToByteArray(bitmap: Bitmap): ByteArray {
-    val byteArrayOutputStream = ByteArrayOutputStream()
-    // Bitmap을 JPEG 형식으로 압축 후 byteArrayOutputStream에 기록
-    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-    return byteArrayOutputStream.toByteArray()  // ByteArray 반환
 }

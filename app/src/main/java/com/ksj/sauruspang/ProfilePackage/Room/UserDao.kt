@@ -2,9 +2,7 @@ package com.ksj.sauruspang.ProfilePackage.Room
 
 import androidx.room.Dao
 import androidx.room.Delete
-import androidx.room.Entity
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
@@ -18,10 +16,4 @@ interface UserDao {
 
     @Delete
     suspend fun delete(user: User)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertUser(user: User)
-
-    @Query("SELECT * FROM User WHERE uid = :uid")
-    suspend fun getUser(uid: Int): User?
 }

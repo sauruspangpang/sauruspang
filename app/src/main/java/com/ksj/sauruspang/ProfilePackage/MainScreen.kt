@@ -1,9 +1,5 @@
 package com.ksj.sauruspang.ProfilePackage
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.util.Base64
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,7 +24,6 @@ import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -38,36 +33,22 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.lifecycle.lifecycleScope
-import androidx.room.Dao
-import androidx.room.Entity
-import com.ksj.sauruspang.ProfilePackage.Room.User
-import com.ksj.sauruspang.ProfilePackage.Room.UserDao
 import com.ksj.sauruspang.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 
 
 @Composable
-fun MainScreen(navController: NavController, viewModel: ProfileViewmodel, userViewModel: UserViewModel) {
+fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var name by remember { mutableStateOf("") }
     var birth by remember { mutableStateOf("") }
     var userProfile by remember { mutableIntStateOf(0) }
     var selectedImage by remember { mutableIntStateOf(R.drawable.test1) }
-
-    fun saveUserUid(context: Context, uid: Int) {
-        val sharedPreferences = context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putInt("user_uid", uid)  // `user_uid`라는 키로 `uid` 저장
-        editor.apply()  // 비동기적으로 저장
-    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -121,21 +102,12 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel, userVi
                                     spotColor = Color(0xFF505050) // 그림자 색상
                                 )
                                 .clickable {
-                                    userViewModel.saveUser(
-                                        name,
-                                        birth,
-                                        selectedImage,
-                                        clearedImages = listOf(),
-                                        clearedWords = listOf()
-                                    )
                                     if (name.isNotEmpty() && birth.isNotEmpty()) {
                                         viewModel.addProfile(
                                             name,
                                             birth,
                                             userProfile++,
-                                            selectedImage,
-                                            listOf(),
-                                            listOf()
+                                            selectedImage
                                         )
                                     }
                                     navController.navigate("profile")
@@ -196,16 +168,3 @@ fun getDrawableResourceId(resourceName: String): Int {
         0
     }
 }
-
-fun bitmapToBase64(bitmap: Bitmap): String {
-    val byteArrayOutputStream = ByteArrayOutputStream()
-    bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
-    val byteArray = byteArrayOutputStream.toByteArray()
-    return Base64.encodeToString(byteArray, Base64.DEFAULT)
-}
-
-fun base64ToBitmap(encodedString: String): Bitmap {
-    val decodedBytes = Base64.decode(encodedString, Base64.DEFAULT)
-    return BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
-}
-
