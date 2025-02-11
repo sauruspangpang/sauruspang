@@ -68,7 +68,7 @@ fun WordInputScreen(
     questionIndex: Int,
     viewModel: ProfileViewmodel
 ) {
-    var hitNumber by remember { mutableStateOf(0) }
+    var hitNumber by remember { mutableIntStateOf(0) }
     val inkManager = remember { InkManager() }
     var recognizedText by remember { mutableStateOf("Recognition Result: ") }
     var isModelDownloaded by remember { mutableStateOf(false) }
@@ -131,9 +131,11 @@ fun WordInputScreen(
                 contentDescription = "previous question",
                 modifier = Modifier
                     .size(140.dp)
-                    .clickable(enabled = questionIndex > 0) {
+                    .clickable {
                         if (questionIndex > 0) {
                             navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
+                        } else {
+                            navController.navigate("learn/$categoryName/$dayIndex/0")
                         }
                     }
             )
@@ -176,6 +178,9 @@ fun WordInputScreen(
                         if (questionIndex == questions.size - 1) {
                             // Navigate to the first question of the quiz screen
                             navController.navigate("quiz/$categoryName/$dayIndex/0")
+                        } else if (questionIndex in 1..<hitNumber) {
+                            // Navigate to the previous learn screen
+                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}")
                         } else {
                             // Navigate to the next learn screen
                             navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
@@ -183,6 +188,7 @@ fun WordInputScreen(
                             }
                         }
                     }
+
             )
         }
         Row(
@@ -290,6 +296,7 @@ fun WordInputScreen(
                 message = "정답입니다.",
                 onDismiss = { showCorrectDialog = false }
             )
+
         }
 
         if (showRetryDialog) {
