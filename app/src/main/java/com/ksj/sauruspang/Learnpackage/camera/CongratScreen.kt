@@ -20,9 +20,9 @@ fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, cat
         Log.e("CongratScreen", "CategoryDayManager.getDay($categoryName): $currentDay")
 
         // 네비게이션을 한 번만 호출
-        navController.navigate("stage/$categoryName") {
-            popUpTo("congrats/$categoryName") { inclusive = true }
-        }
+//        navController.navigate("stage/$categoryName") {
+//            popUpTo("congrats/$categoryName") { inclusive = true }
+//        }
     }
 
     // 현재 카테고리의 day 증가

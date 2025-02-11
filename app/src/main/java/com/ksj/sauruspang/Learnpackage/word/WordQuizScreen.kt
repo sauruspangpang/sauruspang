@@ -198,7 +198,9 @@ fun WordQuizScreen(
                     .size(140.dp)
                     .align(Alignment.CenterStart)
                     .clickable {
-                      navController.popBackStack()
+                        if (questionIndex > 0) {
+                            navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex - 1}")
+                        }
                     }
             )
             Row(
