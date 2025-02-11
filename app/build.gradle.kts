@@ -65,7 +65,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1")
     implementation ("com.airbnb.android:lottie-compose:6.6.2")
     implementation (libs.accompanist.permissions)
-
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
 
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")

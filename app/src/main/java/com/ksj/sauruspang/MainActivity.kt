@@ -8,11 +8,15 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
@@ -47,6 +51,7 @@ class MainActivity : ComponentActivity() {
         }
         val viewModel = ProfileViewmodel(application)
         setContent {
+            HideSystemBars()
             SauruspangTheme {
                 NaySys(viewModel,tts)
             }
@@ -169,6 +174,17 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech) {
             RandomCameraAnswerScreen(navController, cameraViewModel)
         }
 
+    }
+}
+@Composable
+fun HideSystemBars() {
+    val systemUiController = rememberSystemUiController()
+
+    SideEffect {
+        systemUiController.isSystemBarsVisible = false // 네비게이션 바 & 상태 바 숨기기
+        systemUiController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        systemUiController.setSystemBarsColor(Color.Transparent)
     }
 }
 
