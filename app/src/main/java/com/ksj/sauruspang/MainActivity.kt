@@ -221,7 +221,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             CongratScreen(navController, viewmodel, catgeoryName)
         }
         composable("randomPhotoTaker") {
-            GPTRandomPhotoTakerScreen(gPTCameraViewModel)
+            GPTRandomPhotoTakerScreen(gPTCameraViewModel,tts,scoreViewModel, navController)
         }
 
     }

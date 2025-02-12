@@ -1,16 +1,22 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
 import android.graphics.Bitmap
+import android.speech.tts.TextToSpeech
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavController
+import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 
 @Composable
 fun GPTRandomPhotoTakerScreen(
-    camViewModel: GPTCameraViewModel
+    camViewModel: GPTCameraViewModel,
+    tts: TextToSpeech?,
+    scoreViewModel: ScoreViewModel,
+    navController: NavController
 ) {
     var capturedImage by remember { mutableStateOf<Bitmap?>(null) }
     var showResultScreen by remember { mutableStateOf(false) }
@@ -27,7 +33,11 @@ fun GPTRandomPhotoTakerScreen(
                 onRetake = {
                     showResultScreen = false
                     camViewModel.predictionResult.value = ""
-                }
+                },
+                tts = tts,
+                scoreViewModel = scoreViewModel,
+                navController = navController
+
             )
         } else {
             GPTCameraCaptureScreen { bitmap ->
