@@ -1,6 +1,7 @@
 package com.ksj.sauruspang.Learnpackage.word
 
 import android.util.Log
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -10,15 +11,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,9 +36,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -108,10 +114,16 @@ fun WordInputScreen(
         }
     }
 
+//    Box(modifier = Modifier.fillMaxSize()) {
+//        Image(
+//            painter = painterResource(id = R.drawable.question_wallpaper),
+//            contentDescription = "",
+//            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+//            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+//        )
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(color = Color(0xFFFDD4AA))
     ) {
         Box(
             modifier = Modifier
@@ -130,10 +142,11 @@ fun WordInputScreen(
         }
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             Image(
-                painter = painterResource(id = R.drawable.back),
+                painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier
-                    .size(140.dp)
+                    .size(130.dp)
+                    .align(Alignment.CenterVertically)
                     .clickable {
                         if (questionIndex > 0) {
                             navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
@@ -142,11 +155,11 @@ fun WordInputScreen(
                         }
                     }
             )
+
             Box(
                 modifier = Modifier
                     .width(600.dp)
-                    .height(200.dp)
-                    .background(Color.White)
+                    .height(250.dp)
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset -> inkManager.startStroke(offset) },
@@ -154,8 +167,13 @@ fun WordInputScreen(
                             onDragEnd = { inkManager.endStroke() }
                         )
                     },
-
-                ) {
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.real_sketchbook),
+                    contentDescription = null,
+                    contentScale = ContentScale.FillBounds,
+                    modifier = Modifier.fillMaxSize() // 화면에 맞게 꽉 채우기
+                )
                 Text(
                     text = question.english,
                     style = TextStyle(
@@ -169,15 +187,16 @@ fun WordInputScreen(
                     drawPath(inkManager.path, Color.Red, style = Stroke(width = 25f))
                 }
             }
+
             // 다음 문제 넘어가기 (정답 시 활성화)
             Image(
-                painter = painterResource(
-                    id = if (isCorrect) R.drawable.image_frontarrow else R.drawable.frontnull
-                ),
+                painter = painterResource(id = R.drawable.image_frontarrow),
+                //  id = if (isCorrect) R.drawable.image_frontarrow else R.drawable.frontnull
                 contentDescription = "next question",
                 modifier = Modifier
-                    .size(140.dp)
-                    .clickable {
+                    .size(130.dp)
+                    .align(Alignment.CenterVertically)
+                    .clickable(enabled = isCorrect) {
                         if (questionIndex == questions.size - 1) {
                             // Navigate to the first question of the quiz screen
                             navController.navigate("quiz/$categoryName/$dayIndex/0")
@@ -190,7 +209,8 @@ fun WordInputScreen(
                                 popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
                             }
                         }
-                    }
+                    },
+                colorFilter = if (isCorrect) null else ColorFilter.tint(Color.Gray)
 
             )
         }
@@ -205,17 +225,35 @@ fun WordInputScreen(
                 modifier = Modifier
                     .size(140.dp)
             )
-            Text(
-                text = recognizedText,
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.Black
-                ),
-                modifier = Modifier.padding(10.dp)
-            )
+//            Text(
+//                text = recognizedText,
+//                style = TextStyle(
+//                    fontSize = 20.sp,
+//                    fontWeight = FontWeight.Bold,
+//                    color = Color.Black
+//                ),
+//                modifier = Modifier.padding(10.dp)
+//            )
+            FilledTonalButton(
+                onClick = {
+                    inkManager.clearCanvas()
+                },
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(50.dp),
+                border = BorderStroke(2.dp, Color.Black)
+            ) {
+                Text(
+                    "다시쓰기",
+                    style = TextStyle(
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.Bold,
+                    )
+                )
+            }
+            Spacer(modifier = Modifier.size(5.dp))
             // 정답 확인 버튼
-            Button(
+            FilledTonalButton(
                 onClick = {
                     if (isModelDownloaded) {
                         coroutineScope.launch {
@@ -268,22 +306,20 @@ fun WordInputScreen(
                 modifier = Modifier
                     .width(120.dp)
                     .height(50.dp),
-                shape = RoundedCornerShape(10.dp)
+                shape = RoundedCornerShape(10.dp),
+                border = BorderStroke(2.dp, Color.Black), // Black outline
+
             ) {
-                Text("정답확인")
+                Text(
+                    "정답확인",
+                    style = TextStyle(
+                        color = Color.DarkGray,
+                        fontWeight = FontWeight.Bold,
+                    )
+                )
             }
 
-            Button(
-                onClick = {
-                    inkManager.clearCanvas()
-                    recognizedText = "Recognition Result: "
-                },
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(50.dp)
-            ) {
-                Text("다시쓰기")
-            }
+
 
             if (incorrectAnswerCount >= 3) {
                 Button(onClick = {
@@ -310,13 +346,15 @@ fun WordInputScreen(
                 onRetry = {
                     // 다시쓰기 동작 수행 (예: 캔버스 초기화)
                     inkManager.clearCanvas()
-                    recognizedText = "Recognition Result: "
+                    //     recognizedText = "Recognition Result: "
                     showRetryDialog = false
                 }
             )
         }
     }
+
 }
+//}
 
 // 모델 다운로드 함수
 private fun downloadModel(
