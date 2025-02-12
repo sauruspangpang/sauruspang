@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -130,13 +131,15 @@ fun PictorialBookScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(400.dp),
+                    .height(400.dp)
+                    .horizontalScroll(scrollState),
                 horizontalArrangement = Arrangement.Start
             ) {
                 for (index in 0..<indexValue) {
                     Box(
                         modifier = Modifier
                             .width(300.dp)
+                            .padding(horizontal = 10.dp)
                             .fillMaxHeight(),
                         contentAlignment = Alignment.Center
                     ) {
@@ -166,7 +169,7 @@ fun PictorialBookScreen(
                             )
                             Text(
                                 wordList[index],
-                                fontSize = 40.sp,
+                                fontSize = 30.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
                                 modifier = Modifier
