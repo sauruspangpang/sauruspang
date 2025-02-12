@@ -91,7 +91,6 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreV
             Spacer(modifier = Modifier.height(30.dp))
 
             Row(
-                modifier = Modifier.clickable { navController.navigate("randomPhotoTaker") }
             ) {
                 val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
                 val progress by animateLottieCompositionAsState(
@@ -102,6 +101,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreV
                     composition = composition,
                     progress = progress,
                     modifier = Modifier.padding(horizontal = 20.dp)
+                    .clickable { navController.navigate("randomPhotoTaker") }
                 )
                 Row(
                     modifier = Modifier
