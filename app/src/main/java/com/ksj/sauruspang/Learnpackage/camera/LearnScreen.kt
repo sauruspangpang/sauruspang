@@ -111,7 +111,6 @@ fun LearnScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            message = "정답입니다.",
             scoreViewModel= scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
@@ -368,14 +367,7 @@ fun LearnScreen(
                 modifier = Modifier
                     .size(screenWidth * 0.155f)
                     .align(Alignment.CenterEnd)
-                    //   .offset(x = -(screenWidth * 0.03f))
-//                    .clickable(enabled = questionIndex < questions.size - 1)
-//                    {
-//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-//                        }
-//
-//                    }
+
                     .clickable(enabled = completedQuestion)
                     { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") },
                 colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)
@@ -386,53 +378,3 @@ fun LearnScreen(
         }
     }
 }
-
-
-//@Composable
-//fun RequestMicrophonePermission(onPermissionGranted: () -> Unit) {
-//    val context = LocalContext.current
-//    var showRationale by remember { mutableStateOf(false) }
-//
-//    // Permission launcher
-//    val requestPermissionLauncher = rememberLauncherForActivityResult(
-//        ActivityResultContracts.RequestPermission()
-//    ) { isGranted ->
-//        if (isGranted) {
-//            onPermissionGranted()
-//        } else {
-//            showRationale = true
-//        }
-//    }
-//
-//// Check if the permission is already granted
-//    LaunchedEffect(Unit) {
-//        if (ContextCompat.checkSelfPermission(
-//                context, android.Manifest.permission.RECORD_AUDIO
-//            ) == PackageManager.PERMISSION_GRANTED
-//        ) {
-//            onPermissionGranted()
-//        } else {
-//            showRationale = true
-//        }
-//    }
-//
-//    // Show rationale dialog if needed
-//    if (showRationale) {
-//        AlertDialog(onDismissRequest = { /* Handle dialog dismissal */ },
-//            title = { Text("Microphone Permission Required") },
-//            text = { Text("This app requires microphone access to function properly.") },
-//            confirmButton = {
-//                TextButton(onClick = {
-//                    requestPermissionLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
-//                    showRationale = false
-//                }) {
-//                    Text("Grant Permission")
-//                }
-//            },
-//            dismissButton = {
-//                TextButton(onClick = { showRationale = false }) {
-//                    Text("Cancel")
-//                }
-//            })
-//    }
-//}
