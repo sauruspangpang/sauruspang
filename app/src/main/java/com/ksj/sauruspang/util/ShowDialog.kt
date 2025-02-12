@@ -55,7 +55,7 @@ fun LoadingDialog(message: String) {
                 Column {
                     Text(
                         text = message,
-                        fontSize = 40.sp,
+                        fontSize = 34.sp,
                         fontWeight = FontWeight.ExtraBold,
                         style = TextStyle(
                             brush = Brush.linearGradient(
@@ -159,6 +159,10 @@ fun LearnRetry(
     onDismiss: () -> Unit,
     onRetry: () -> Unit
 ) {
+    LaunchedEffect(Unit) {
+        delay(delayTimeMs)
+        onDismiss()
+    }
     Dialog(onDismissRequest = { onDismiss() }) {
         Surface(
             shape = RoundedCornerShape(8.dp),
@@ -167,21 +171,28 @@ fun LearnRetry(
                 .padding(16.dp)
                 .fillMaxWidth(1f)
         ) {
-            Column(
-                modifier = Modifier.padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = "오답입니다.")
-                Spacer(modifier = Modifier.height(16.dp))
-                // 다이얼로그에서 두 가지 액션이 필요한 경우 두 개의 버튼을 배치할 수 있습니다.
+//            Column(
+//                modifier = Modifier.padding(16.dp),
+//                horizontalAlignment = Alignment.CenterHorizontally
+//            ) {
+//                Text(text = "오답입니다.")
+//                Spacer(modifier = Modifier.height(16.dp))
+//                // 다이얼로그에서 두 가지 액션이 필요한 경우 두 개의 버튼을 배치할 수 있습니다.
 //                Button(onClick = onRetry) {
 //                    Text("다시말하기")
 //                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = onDismiss) {
-                    Text("닫기")
-                }
+//                Spacer(modifier = Modifier.height(8.dp))
+//                Button(onClick = onDismiss) {
+//                    Text("닫기")
+//                }
+//            }
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                MarkWrong()
             }
+
         }
     }
 }

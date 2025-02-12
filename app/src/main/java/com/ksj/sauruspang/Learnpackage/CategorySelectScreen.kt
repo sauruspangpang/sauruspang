@@ -214,7 +214,7 @@ fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
 
         selectedProfile?.let { profile ->
             Row(
-                modifier = Modifier.padding(horizontal = 30.dp),
+                modifier = Modifier.padding(horizontal = 30.dp).offset(y=20.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
