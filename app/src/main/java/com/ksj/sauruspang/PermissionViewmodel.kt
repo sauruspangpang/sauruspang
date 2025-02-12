@@ -34,7 +34,7 @@ class PermissionViewModel : ViewModel() {
         _micPermissionGranted.value = isGranted
     }
 
-    fun updateCamPermissionState(isGranted: Boolean){
+    fun updateCamPermissionState(isGranted: Boolean) {
         hasPermission.value = isGranted
     }
 }
