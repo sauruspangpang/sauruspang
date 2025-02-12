@@ -1,7 +1,6 @@
 package com.ksj.sauruspang
 
 import Learnpackage.camera.LearnScreen
-import android.content.Context
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
@@ -12,14 +11,8 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -33,7 +26,6 @@ import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
-import com.ksj.sauruspang.Learnpackage.camera.CameraPreviewScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
 import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
@@ -63,8 +55,7 @@ class MainActivity : ComponentActivity() {
         val viewModel = ProfileViewmodel(application)
         setContent {
             val scoreViewModel: ScoreViewModel = viewModel()
-            val permissionViewModel: PermissionViewModel = viewModel()
-            RequestPermissions(permissionViewModel)
+            RequestPermissions()
             HideSystemBars()
             SauruspangTheme {
                 NaySys(viewModel, tts, scoreViewModel)
@@ -85,7 +76,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
     val detectedResultListViewModel: DetectedResultListViewModel = viewModel()
     val gPTCameraViewModel: GPTCameraViewModel = viewModel()
-    val permissionViewModel: PermissionViewModel = viewModel()
 
 
     NavHost(navController = navController,
@@ -167,7 +157,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                     tts,
                     viewmodel,
                     scoreViewModel,
-                    permissionViewModel
                 )
 
             } else {
@@ -180,7 +169,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                     viewmodel,
                     sharedRouteViewModel,
                     scoreViewModel,
-                    permissionViewModel
                 )
             }
         }
@@ -211,7 +199,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 viewmodel,
                 cameraViewModel,
                 sharedRouteViewModel,
-                permissionViewModel
             )
         }
 
@@ -265,16 +252,4 @@ fun DefaultPreview() {
             scoreViewModel = viewModel()
         )
     }
-}
-
-fun savePermission(context: Context, value: Boolean) {
-    val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-    val editor = sharedPreferences.edit()
-    editor.putBoolean("has_permission", value)
-    editor.apply()
-}
-
-fun getPermission(context: Context): Boolean {
-    val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
-    return sharedPreferences.getBoolean("has_permission", false) // 기본값은 false
 }

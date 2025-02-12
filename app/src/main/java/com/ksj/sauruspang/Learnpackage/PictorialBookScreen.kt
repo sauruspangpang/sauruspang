@@ -2,7 +2,6 @@ package com.ksj.sauruspang.Learnpackage
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +18,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -106,7 +104,7 @@ fun PictorialBookScreen(
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            navController.navigate("home")
+                            navController.popBackStack()
                         }
                 )
                 ScrollableTabRow(

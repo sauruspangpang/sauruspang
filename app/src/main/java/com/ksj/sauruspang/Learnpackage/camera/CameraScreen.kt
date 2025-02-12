@@ -23,7 +23,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -43,7 +42,6 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.QuizQuestion
-import com.ksj.sauruspang.PermissionViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 
@@ -58,7 +56,6 @@ fun CameraScreen(
     viewModel: ProfileViewmodel,
     camViewModel: CameraViewModel,
     sharedRouteViewModel: SharedRouteViewModel,
-    permissionViewModel: PermissionViewModel
 ) {
     val context = LocalContext.current
     val category = QuizCategory.allCategories.find { it.name == categoryName }
@@ -67,7 +64,6 @@ fun CameraScreen(
     var clickCount by remember { mutableIntStateOf(0) }
     val findCategory = findCategoryByQuestion(question)
     val categoryname = findCategory?.javaClass?.simpleName ?: "Unknown"
-    val hasPermission by permissionViewModel.hasPermissionState
     findCategoryName = categoryname
 
 
@@ -115,7 +111,8 @@ fun CameraScreen(
                     .offset(y = (-15).dp)
                     .background(Color.LightGray)
                     .clickable {
-                        val camPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                        val camPermission =
+                            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
                         if (camPermission != PackageManager.PERMISSION_GRANTED) {
                             Toast
                                 .makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT)
@@ -156,13 +153,6 @@ fun CameraScreen(
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd),
-//                    .clickable(enabled = questionIndex < questions.size - 1)
-//                    {
-//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-//                        }
-//
-//                    }
                 colorFilter = ColorFilter.tint(Color.Gray)
             )
             Button(

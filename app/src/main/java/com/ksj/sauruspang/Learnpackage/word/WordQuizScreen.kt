@@ -1,6 +1,8 @@
 package com.ksj.sauruspang.Learnpackage.word
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -47,10 +49,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
-import com.ksj.sauruspang.PermissionViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
@@ -68,13 +70,11 @@ fun WordQuizScreen(
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
     scoreViewModel: ScoreViewModel,
-    permissionViewModel: PermissionViewModel
 
-) {
+    ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
-    val hasPermission by permissionViewModel.micPermissionGranted
 
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
 
@@ -103,7 +103,7 @@ fun WordQuizScreen(
     if (showCorrectDialog) {
         LearnCorrect(
             message = "정답입니다.",
-            scoreViewModel=scoreViewModel,
+            scoreViewModel = scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }
@@ -255,12 +255,6 @@ fun WordQuizScreen(
                 ) {
                     Spacer(modifier = Modifier.size(70.dp))
                     Box(
-//                        modifier = Modifier
-//                            .size(90.dp)
-//                            .clip(RoundedCornerShape(8.dp)) // Rounded corners
-//                            .background(Color(0xFF77E4D2))
-//                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
-//                            .clickable { speechRecognizer.startListening(speechIntent) }
                         modifier = Modifier
                             .size(90.dp)
                             .shadow(elevation = 8.dp, shape = RoundedCornerShape(16.dp))
@@ -274,7 +268,11 @@ fun WordQuizScreen(
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                if (!hasPermission) {
+                                val micPermission = ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.RECORD_AUDIO
+                                )
+                                if (micPermission != PackageManager.PERMISSION_GRANTED) {
                                     Toast
                                         .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
                                         .show()

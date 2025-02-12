@@ -1,46 +1,15 @@
 package com.ksj.sauruspang
 
 import android.Manifest
-import android.content.pm.PackageManager
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-
-
-data class Permission(
-    var camera: Boolean = false,
-    var mic: Boolean = false
-)
-
-class PermissionViewModel : ViewModel() {
-    private val _micPermissionGranted = mutableStateOf(false)
-    val micPermissionGranted: State<Boolean> = _micPermissionGranted
-
-    private val hasPermission = mutableStateOf(false)
-    val hasPermissionState: State<Boolean> = hasPermission
-
-
-    fun updatePermissionState(isGranted: Boolean) {
-        _micPermissionGranted.value = isGranted
-    }
-
-    fun updateCamPermissionState(isGranted: Boolean) {
-        hasPermission.value = isGranted
-    }
-}
 
 @Composable
-fun RequestPermissions(permissionViewModel: PermissionViewModel) {
+fun RequestPermissions() {
     val context = LocalContext.current
 
     val camPermission = rememberLauncherForActivityResult(
