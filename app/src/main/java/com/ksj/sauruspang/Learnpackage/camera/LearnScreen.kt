@@ -63,7 +63,6 @@ import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.PermissionViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
-import com.ksj.sauruspang.RequestPermissions
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
 import java.util.Locale
@@ -113,8 +112,7 @@ fun LearnScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            message = "정답입니다.",
-            scoreViewModel= scoreViewModel,
+            scoreViewModel = scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }
@@ -184,7 +182,7 @@ fun LearnScreen(
                             .size(screenWidth * 0.07f)
                             .clickable {
                                 category?.name?.let { categoryName ->
-                                    navController.popBackStack("stage/$categoryName",false)
+                                    navController.popBackStack("stage/$categoryName", false)
                                 }
                             }
                     )
@@ -218,7 +216,10 @@ fun LearnScreen(
                     .align(Alignment.CenterStart)
                     .clickable(enabled = questionIndex > 0) {
                         if (questionIndex > 0) {
-                            navController.popBackStack("camera/$categoryName/$dayIndex/${questionIndex - 1}",false)
+                            navController.popBackStack(
+                                "camera/$categoryName/$dayIndex/${questionIndex - 1}",
+                                false
+                            )
                         } else {
                             navController.popBackStack()
                         }
@@ -306,7 +307,10 @@ fun LearnScreen(
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                val micPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                                val micPermission = ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.RECORD_AUDIO
+                                )
                                 if (micPermission != PackageManager.PERMISSION_GRANTED) {
                                     Toast
                                         .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)

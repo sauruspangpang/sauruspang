@@ -1,12 +1,8 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
-import android.Manifest
 import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
-import android.widget.Toast
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -18,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +27,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -76,7 +70,7 @@ fun ShowCameraPreviewScreen(
             ) {
                 // 로딩 다이얼로그가 활성화되어 있으면 화면 상단에 표시합니다.
                 if (isLoading) {
-                    LoadingDialog(message = "${viewModel.answerWord}을(를) 찾고 있어요!")
+                    LoadingDialog(message = viewModel.answerWord)
                 }
 
                 CapturedImage(capturedImage)
@@ -107,10 +101,14 @@ fun ShowCameraPreviewScreen(
                                             .lowercase()
                                             .trim() in updatedList
                                     ) {
-                                        SelectViewModelList(sharedRouteViewModel,viewModel,capturedImage)
+                                        SelectViewModelList(
+                                            sharedRouteViewModel,
+                                            viewModel,
+                                            capturedImage
+                                        )
                                         viewModel.isCorrect = true
                                         Log.d("isCorrect", "정답: ${viewModel.isCorrect}")
-                                    }else {
+                                    } else {
                                         viewModel.isCorrect = false
                                         Log.d("isCorrect", "오답: ${viewModel.isCorrect}")
                                     }
@@ -134,7 +132,11 @@ fun ShowCameraPreviewScreen(
     }
 }
 
-fun SelectViewModelList(sharedRouteViewModel: SharedRouteViewModel,viewModel: CameraViewModel, capturedImage: MutableState<Bitmap?>){
+fun SelectViewModelList(
+    sharedRouteViewModel: SharedRouteViewModel,
+    viewModel: CameraViewModel,
+    capturedImage: MutableState<Bitmap?>
+) {
     when (sharedRouteViewModel.sharedCategoryName) {
         "과일과 야채" -> {
             if (viewModel.answerWord !in viewModel.correctFruitWordList) {
@@ -199,7 +201,6 @@ fun CapturedImage(capturedImage: MutableState<Bitmap?>) {
 fun getBitmapFromState(bitmapState: MutableState<Bitmap?>): Bitmap? {
     return bitmapState.value  // nullable 상태 그대로 반환
 }
-
 
 
 fun savePermission(context: Context, value: Boolean) {

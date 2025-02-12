@@ -67,7 +67,6 @@ fun QuizScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            message = "정답입니다.",
             scoreViewModel = scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )

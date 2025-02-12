@@ -73,21 +73,19 @@ fun CameraAnswerScreen(
     if (showDialog) {
         if (viewModel.isCorrect) {
             CaptureCorrect(
-                message = "정답입니다.",
                 scoreViewModel = scoreViewModel,
                 onDismiss = {
                     viewModel.isCorrect = false
                     showDialog = false
-                    correct=true
+                    correct = true
                 }
             )
         } else {
             CaptureRetry(
-                message = "다시 한 번 찍어보세요.",
                 onDismiss = {
                     showDialog = false
                     retryCount++
-                    correct=false
+                    correct = false
                 }
             )
         }
@@ -164,9 +162,9 @@ fun CameraAnswerScreen(
                 modifier = Modifier
                     .size(140.dp)
                     .align(Alignment.CenterEnd)
-                    .clickable (enabled = correct){
+                    .clickable(enabled = correct) {
                         if (questionIndex == questions.size - 1) {
-                            navController.navigate(sharedQuizStart){
+                            navController.navigate(sharedQuizStart) {
                                 popUpTo(sharedQuizStart) { inclusive = false }
                             }
                         } else {
@@ -177,7 +175,7 @@ fun CameraAnswerScreen(
                         retryCount = 0
                         correct = false
                     },
-                        colorFilter = if (correct) null else ColorFilter.tint(Color.Gray)
+                colorFilter = if (correct) null else ColorFilter.tint(Color.Gray)
             )
             Button(
                 enabled = (retryCount != 0),
@@ -194,11 +192,11 @@ fun CameraAnswerScreen(
             }
 
             Button(
-              //  enabled = (retryCount != 0 && (questionIndex ==questions.size - 1)),
+                //  enabled = (retryCount != 0 && (questionIndex ==questions.size - 1)),
                 enabled = !correct,
                 onClick = {
                     if (questionIndex == questions.size - 1) {
-                        navController.navigate(sharedQuizStart){
+                        navController.navigate(sharedQuizStart) {
                             popUpTo(sharedQuizStart) { inclusive = false }
                         }
                     } else {

@@ -1,30 +1,33 @@
 package com.ksj.sauruspang.util
 
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
+import com.ksj.sauruspang.R
 import kotlinx.coroutines.delay
 
 const val delayTimeMs = 2000L
@@ -41,18 +44,30 @@ fun LoadingDialog(message: String) {
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(1f)
+                .fillMaxHeight(0.4f)
         ) {
-            // 간단한 로딩 인디케이터와 메시지 표시
-            Box(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .fillMaxWidth(),
-                contentAlignment = Alignment.Center
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    CircularProgressIndicator()
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(text = message)
+                CircularProgressIndicator()
+                Spacer(modifier = Modifier.width(16.dp))
+                Column {
+                    Text(
+                        text = message,
+                        fontSize = 40.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        style = TextStyle(
+                            brush = Brush.linearGradient(
+                                colors = listOf(
+                                    Color.Red, Color.Blue
+                                )
+                            )
+                        )
+                    )
+                    Text(
+                        text = "을(를) 찾고 있어요!", fontSize = 24.sp
+                    )
                 }
             }
         }
@@ -61,7 +76,6 @@ fun LoadingDialog(message: String) {
 
 @Composable
 fun DialogCorrect(
-    message: String = "정답입니다!",
     scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
@@ -77,21 +91,7 @@ fun DialogCorrect(
             color = correctDialogColor,
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(1f)
-        ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // TODO 오답 이미지 또는 아이콘 변경 필요
-                Icon(
-                    imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(text = message)
-            }
-        }
+        ) { MarkCorrect() }
     }
 }
 
@@ -122,15 +122,9 @@ fun DialogRetry(
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // TODO 오답 이미지 또는 아이콘 변경 필요
-                Icon(
-                    imageVector = Icons.Filled.Refresh,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(16.dp))
                 Column {
-                    Text(text = "다시 한 번 풀어보세요.")
-                    // TODO 틀린 단어 출력 할 지 결정 필요
+                    MarkWrong()
+                    Spacer(modifier = Modifier.width(16.dp))
                     Text(text = wrongLetters)
                 }
             }
@@ -140,7 +134,6 @@ fun DialogRetry(
 
 @Composable
 fun LearnCorrect(
-    message: String = "정답입니다!",
     scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
@@ -157,20 +150,7 @@ fun LearnCorrect(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(1f)
-        ) {
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // TODO 오답 이미지 또는 아이콘 변경 필요
-                Icon(
-                    imageVector = Icons.Filled.CheckCircle,
-                    contentDescription = null
-                )
-                Spacer(modifier = Modifier.width(16.dp))
-                Text(text = message)
-            }
-        }
+        ) { MarkCorrect() }
     }
 }
 
@@ -183,15 +163,20 @@ fun LearnRetry(
         Surface(
             shape = RoundedCornerShape(8.dp),
             color = Color.White,
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(1f)
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(text = "오답입니다.")
                 Spacer(modifier = Modifier.height(16.dp))
                 // 다이얼로그에서 두 가지 액션이 필요한 경우 두 개의 버튼을 배치할 수 있습니다.
-                Button(onClick = onRetry) {
-                    Text("다시말하기")
-                }
+//                Button(onClick = onRetry) {
+//                    Text("다시말하기")
+//                }
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(onClick = onDismiss) {
                     Text("닫기")
@@ -203,7 +188,6 @@ fun LearnRetry(
 
 @Composable
 fun CaptureCorrect(
-    message: String = "정답입니다!",
     scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
@@ -221,22 +205,12 @@ fun CaptureCorrect(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(1f)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = message)
-                // 버튼으로 팝업 닫기 할 경우
-//                Spacer(modifier = Modifier.height(16.dp))
-//                Button(onClick = onDismiss) {
-//                    Text("확인")
-//                }
-            }
-        }
+        ) { MarkCorrect() }
     }
 }
 
 @Composable
 fun CaptureRetry(
-    message: String = "다시 한 번 찍어보세요.",
     onDismiss: () -> Unit
 ) {
     // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
@@ -252,15 +226,24 @@ fun CaptureRetry(
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(1f)
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Text(text = message)
-                // 버튼으로 팝업 닫기 할 경우
-//                Spacer(modifier = Modifier.height(16.dp))
-//                Button(onClick = onDismiss) {
-//                    Text("확인")
-//                }
-            }
-        }
+        ) { MarkWrong() }
     }
+}
+
+@Composable
+fun MarkCorrect() {
+    Image(
+        painter = painterResource(id = R.drawable.mark_correct),
+        contentDescription = null,
+        modifier = Modifier.padding(16.dp)
+    )
+}
+
+@Composable
+fun MarkWrong() {
+    Image(
+        painter = painterResource(id = R.drawable.mark_wrong),
+        contentDescription = null,
+        modifier = Modifier.padding(16.dp)
+    )
 }

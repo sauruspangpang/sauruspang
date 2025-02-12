@@ -3,7 +3,6 @@ package com.ksj.sauruspang.Learnpackage.camera
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.Paint
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -17,15 +16,7 @@ fun createDummyBitmap(width: Int = 100, height: Int = 100): Bitmap {
     val canvas = Canvas(bitmap)
 
     // 배경 색상 설정
-    canvas.drawColor(Color.BLACK)
-
-    // 간단한 텍스트 추가 (선택 사항)
-    val paint = Paint().apply {
-        color = Color.RED
-        textSize = 20f
-        isAntiAlias = true
-    }
-    canvas.drawText("Dummy", 10f, height / 2f, paint)
+    canvas.drawColor(Color.TRANSPARENT)
 
     return bitmap
 }
