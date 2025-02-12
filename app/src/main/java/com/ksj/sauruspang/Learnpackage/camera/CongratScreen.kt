@@ -11,12 +11,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -43,29 +46,41 @@ fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, cat
 
     }
     val category = QuizCategory.allCategories.find { it.name == categoryName }
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(color = Color(0xFFFDD4AA))) {
-        Image(painter = painterResource(id = R.drawable.image_backhome),
-            contentDescription = "",
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(R.drawable.confetti_wallpaper),
+            contentDescription = "conftti",
+            contentScale = ContentScale.Fit,
             modifier = Modifier
-                .size(80.dp)
-                .clickable {
-                    category?.name?.let { categoryName ->
-                        navController.navigate("stage/$categoryName")
-                    }
-                }
+                .fillMaxSize()
+                .width(250.dp)
+                .wrapContentHeight()
         )
-        Box(modifier = Modifier.fillMaxSize()) {
-            CongratAnimation()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            Image(painter = painterResource(id = R.drawable.image_backhome),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(80.dp)
+                    .clickable {
+                        category?.name?.let { categoryName ->
+                            navController.navigate("stage/$categoryName")
+                        }
+                    }
+            )
+            Box(modifier = Modifier.fillMaxSize()) {
+                CongratAnimation()
+            }
+
         }
-
     }
-
 }
 
 @Composable
 fun CongratAnimation() {
+
         val composition2 by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.confetti))
         val progress2 by animateLottieCompositionAsState(
             composition = composition2,
@@ -74,19 +89,19 @@ fun CongratAnimation() {
         LottieAnimation(
             composition = composition2,
             progress = progress2,
-            modifier = Modifier.size(300.dp)
+            modifier = Modifier.fillMaxSize()
         )
 
-    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.komacongrat))
-    val progress by animateLottieCompositionAsState(
-        composition = composition,
-        iterations = LottieConstants.IterateForever
-    )
-    LottieAnimation(
-        composition = composition,
-        progress = progress,
-        modifier = Modifier.fillMaxSize()
-    )
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.komacongrat))
+        val progress by animateLottieCompositionAsState(
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
+        LottieAnimation(
+            composition = composition,
+            progress = progress,
+            modifier = Modifier.fillMaxSize()
+        )
 
 
 }
