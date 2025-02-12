@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,6 +64,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreV
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -73,6 +75,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreV
                     .padding(start = 30.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+
                 Image(
                     painter = painterResource(id = R.drawable.image_backhome),
                     contentDescription = "button to profile screen",
