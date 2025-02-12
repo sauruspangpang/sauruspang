@@ -134,105 +134,109 @@ fun CameraScreen(
                     }
 
             ) {
-                Text(categoryname, modifier = Modifier.align(Alignment.Center))
+                Box (modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center){
+                Text("누르면 사진을 찍어요!")
+                }
             }
-            Text(
-                question.english,
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .offset(y = -(20).dp),
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 75.sp
+
+                Text(
+                    question.english,
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .offset(y = -(20).dp),
+                    style = TextStyle(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 75.sp
+                    )
                 )
-            )
-            camViewModel.answerWord = question.english
-            Image(
-                painter = painterResource(id = R.drawable.image_frontarrow),
-                contentDescription = "next question",
-                modifier = Modifier
-                    .size(140.dp)
-                    .align(Alignment.CenterEnd),
-                colorFilter = ColorFilter.tint(Color.Gray)
-            )
-            Button(
-                onClick = { /*todo*/ },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd) // Move button to bottom end
-                    .size(width = 200.dp, height = 60.dp), // Bigger button
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
-            ) {
-                Text("넘어가기")
+                camViewModel.answerWord = question.english
+                Image(
+                    painter = painterResource(id = R.drawable.image_frontarrow),
+                    contentDescription = "next question",
+                    modifier = Modifier
+                        .size(140.dp)
+                        .align(Alignment.CenterEnd),
+                    colorFilter = ColorFilter.tint(Color.Gray)
+                )
+                Button(
+                    onClick = { /*todo*/ },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd) // Move button to bottom end
+                        .size(width = 200.dp, height = 60.dp), // Bigger button
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
+                ) {
+                    Text("넘어가기")
+                }
             }
         }
     }
-}
 
-@Composable
-fun BackgroundScreen(category: QuizCategory?, navController: NavController) {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Image(
-                painter = painterResource(R.drawable.arrow),
-                contentDescription = "뒤로 가기 버튼",
-                contentScale = ContentScale.Fit,
+    @Composable
+    fun BackgroundScreen(category: QuizCategory?, navController: NavController) {
+        Column {
+            Row(
                 modifier = Modifier
-                    .fillMaxHeight()
-                    .padding(10.dp)
-                    .weight(1f)
-                    .clickable {
-                        category?.name?.let { categoryName ->
-                            navController.navigate("stage/$categoryName")
+                    .fillMaxWidth()
+                    .weight(1f),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.arrow),
+                    contentDescription = "뒤로 가기 버튼",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .padding(10.dp)
+                        .weight(1f)
+                        .clickable {
+                            category?.name?.let { categoryName ->
+                                navController.navigate("stage/$categoryName")
+                            }
                         }
-                    }
-            )
-            Text(
-                "사진을 찍어보세요",
-                fontSize = 50.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
+                )
+                Text(
+                    "사진을 찍어보세요",
+                    fontSize = 50.sp,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .weight(5f)
+                        .align(Alignment.CenterVertically)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+            }
+            Row(
                 modifier = Modifier
-                    .weight(5f)
-                    .align(Alignment.CenterVertically)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-        }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(4f),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Image(
-                painter = painterResource(R.drawable.background_fruit_2),
-                contentDescription = "오른쪽 배경",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.6f)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-            Image(
-                painter = painterResource(R.drawable.background_fruit_1),
-                contentDescription = "왼쪽 배경",
-                contentScale = ContentScale.Fit,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(0.8f)
-            )
+                    .fillMaxWidth()
+                    .weight(4f),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Image(
+                    painter = painterResource(R.drawable.background_fruit_2),
+                    contentDescription = "오른쪽 배경",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(0.6f)
+                )
+                Spacer(modifier = Modifier.weight(1f))
+                Image(
+                    painter = painterResource(R.drawable.background_fruit_1),
+                    contentDescription = "왼쪽 배경",
+                    contentScale = ContentScale.Fit,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .weight(0.8f)
+                )
+            }
         }
     }
-}
 
-fun findCategoryByQuestion(question: QuizQuestion): QuizCategory? {
-    return QuizCategory.allCategories.firstOrNull { category ->
-        category.days.any { day ->
-            day.questions.contains(question)
+    fun findCategoryByQuestion(question: QuizQuestion): QuizCategory? {
+        return QuizCategory.allCategories.firstOrNull { category ->
+            category.days.any { day ->
+                day.questions.contains(question)
+            }
         }
     }
-}
