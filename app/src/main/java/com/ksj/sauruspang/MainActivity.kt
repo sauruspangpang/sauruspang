@@ -1,15 +1,25 @@
 package com.ksj.sauruspang
 
 import Learnpackage.camera.LearnScreen
+import android.content.Context
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -23,6 +33,7 @@ import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
+import com.ksj.sauruspang.Learnpackage.camera.CameraPreviewScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
 import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
@@ -53,13 +64,14 @@ class MainActivity : ComponentActivity() {
         setContent {
             val scoreViewModel: ScoreViewModel = viewModel()
             val permissionViewModel: PermissionViewModel = viewModel()
-            RequestMicPermission(permissionViewModel)
+            RequestPermissions(permissionViewModel)
             HideSystemBars()
             SauruspangTheme {
-                NaySys(viewModel,tts, scoreViewModel)
+                NaySys(viewModel, tts, scoreViewModel)
             }
         }
     }
+
     override fun onDestroy() {
         super.onDestroy()
         tts.shutdown() // Release resources when the activity is destroyed
@@ -67,11 +79,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreViewModel) {
+fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: ScoreViewModel) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
-    val detectedResultListViewModel : DetectedResultListViewModel = viewModel()
+    val detectedResultListViewModel: DetectedResultListViewModel = viewModel()
     val gPTCameraViewModel: GPTCameraViewModel = viewModel()
     val permissionViewModel: PermissionViewModel = viewModel()
 
@@ -83,10 +95,34 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
         composable("main") {
             MainScreen(navController, viewmodel)
         }
-        composable("profile") {
+        composable("profile", enterTransition = {
+            slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
+                // Offsets the content by 1/3 of its width to the left, and slide towards right
+                // Overwrites the default animation with tween for this slide animation.
+                fullWidth / -1
+            }
+        }, exitTransition = {
+            slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
+                // Offsets the content by 1/3 of its width to the left, and slide towards right
+                // Overwrites the default animation with tween for this slide animation.
+                fullWidth / 1
+            }
+        }) {
             ProfilePage(navController, viewmodel)
         }
-        composable("home") {
+        composable("home", enterTransition = {
+            slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
+                // Offsets the content by 1/3 of its width to the left, and slide towards right
+                // Overwrites the default animation with tween for this slide animation.
+                fullWidth / -1
+            }
+        }, exitTransition = {
+            slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
+                // Offsets the content by 1/3 of its width to the left, and slide towards right
+                // Overwrites the default animation with tween for this slide animation.
+                fullWidth / 1
+            }
+        }) {
             HomeScreen(navController, viewmodel, scoreViewModel)
         }
         composable("camerax") {
@@ -105,7 +141,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
-            StageScreen(navController, categoryName, viewmodel,scoreViewModel)
+            StageScreen(navController, categoryName, viewmodel, scoreViewModel)
             // Set the current category for later use
             CategoryDayManager.setCurrentCategoryName(categoryName)
         }
@@ -123,7 +159,16 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             // Check if the category is not Fruits, Animals, or Colors
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
-                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel, scoreViewModel, permissionViewModel)
+                WordQuizScreen(
+                    navController,
+                    categoryName,
+                    dayIndex,
+                    questionIndex,
+                    tts,
+                    viewmodel,
+                    scoreViewModel,
+                    permissionViewModel
+                )
 
             } else {
                 LearnScreen(
@@ -144,7 +189,14 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            WordInputScreen(navController, categoryName, dayIndex, questionIndex, viewmodel,scoreViewModel)
+            WordInputScreen(
+                navController,
+                categoryName,
+                dayIndex,
+                questionIndex,
+                viewmodel,
+                scoreViewModel
+            )
         }
 
         composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
@@ -158,7 +210,8 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
                 questionIndex,
                 viewmodel,
                 cameraViewModel,
-                sharedRouteViewModel
+                sharedRouteViewModel,
+                permissionViewModel
             )
         }
 
@@ -166,7 +219,14 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel,scoreViewModel)
+            QuizScreen(
+                navController,
+                categoryName,
+                dayIndex,
+                questionIndex,
+                viewmodel,
+                scoreViewModel
+            )
         }
         composable("congrats/{categoryName}") { backStackEntry ->
 //            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
@@ -179,6 +239,7 @@ fun NaySys(viewmodel: ProfileViewmodel,tts: TextToSpeech, scoreViewModel: ScoreV
 
     }
 }
+
 @Composable
 fun HideSystemBars() {
     val systemUiController = rememberSystemUiController()
@@ -195,6 +256,25 @@ fun HideSystemBars() {
 @Composable
 fun DefaultPreview() {
     SauruspangTheme {
-        WordInputScreen(navController = rememberNavController(), categoryName = "직업", dayIndex = 0, questionIndex = 0, viewModel = viewModel(), scoreViewModel = viewModel())
+        WordInputScreen(
+            navController = rememberNavController(),
+            categoryName = "직업",
+            dayIndex = 0,
+            questionIndex = 0,
+            viewModel = viewModel(),
+            scoreViewModel = viewModel()
+        )
     }
+}
+
+fun savePermission(context: Context, value: Boolean) {
+    val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putBoolean("has_permission", value)
+    editor.apply()
+}
+
+fun getPermission(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("has_permission", false) // 기본값은 false
 }

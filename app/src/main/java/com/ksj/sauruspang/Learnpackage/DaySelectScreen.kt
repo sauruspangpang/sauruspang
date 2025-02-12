@@ -52,7 +52,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                         .size(80.dp)
                         .offset(y = (-5).dp)
                         .clickable {
-                            navController.navigate("home")
+                            navController.popBackStack("home",false)
                         }
                 )
                 ProfileBox(scoreViewModel =scoreViewModel, viewModel = viewModel)

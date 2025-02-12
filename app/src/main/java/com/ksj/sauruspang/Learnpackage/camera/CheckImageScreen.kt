@@ -1,6 +1,7 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
 import android.Manifest
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import android.widget.Toast
@@ -199,20 +200,16 @@ fun getBitmapFromState(bitmapState: MutableState<Bitmap?>): Bitmap? {
     return bitmapState.value  // nullable 상태 그대로 반환
 }
 
-@Composable
-fun RequestCameraPermission(onPermissionGranted: () -> Unit) {
-    val context = LocalContext.current
-    val permissionLauncher =
-        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission(),
-            onResult = { isGranted ->
-                if (isGranted) {
-                    onPermissionGranted()
-                } else {
-                    Toast.makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
-                }
-            })
 
-    LaunchedEffect(Unit) {
-        permissionLauncher.launch(Manifest.permission.CAMERA)
-    }
+
+fun savePermission(context: Context, value: Boolean) {
+    val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putBoolean("has_permission", value)
+    editor.apply()
+}
+
+fun getPermission(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("has_permission", false) // 기본값은 false
 }
