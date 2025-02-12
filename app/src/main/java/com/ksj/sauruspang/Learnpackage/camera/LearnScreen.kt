@@ -375,7 +375,7 @@ fun LearnScreen(
 //                        }
 //
 //                    }
-                    .clickable(enabled = completedQuestion)
+                    .clickable(enabled = true)
                     { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") },
                 colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)
 
