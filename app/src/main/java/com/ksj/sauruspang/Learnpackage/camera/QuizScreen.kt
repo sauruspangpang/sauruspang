@@ -110,6 +110,8 @@ fun QuizScreen(
                     navController.navigate(
                         if (questionIndex > 0) {
                             "quiz/$categoryName/$dayIndex/${questionIndex - 1}"
+                        } else if (categoryName in listOf("직업")) {
+                            "WordInput/$categoryName/$dayIndex/${questionIndex}"
                         } else {
                             "camera/$categoryName/$dayIndex/${questions.size - 1}"
                         }

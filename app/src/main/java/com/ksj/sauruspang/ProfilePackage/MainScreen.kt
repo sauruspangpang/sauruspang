@@ -100,7 +100,8 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                         TextField(
                             value = name,
                             onValueChange = { name = it },
-                            modifier = Modifier.padding(bottom = 10.dp)
+                            modifier = Modifier.padding(bottom = 10.dp),
+                            placeholder = { Text("이름") }
                         )
                         Spacer(modifier = Modifier.width(60.dp))
                         Box(
@@ -138,7 +139,8 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                     TextField(
                         value = birth,
                         onValueChange = { birth = it },
-                        modifier = Modifier.padding(bottom = 10.dp)
+                        modifier = Modifier.padding(bottom = 10.dp),
+                        placeholder = { Text("생년월일") }
                     )
                     Row {
                         DynamicImageLoding { selectedImage = it }
