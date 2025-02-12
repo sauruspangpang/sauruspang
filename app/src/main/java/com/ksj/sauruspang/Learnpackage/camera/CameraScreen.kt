@@ -1,5 +1,8 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -28,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -35,9 +39,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.QuizQuestion
+import com.ksj.sauruspang.PermissionViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 
@@ -51,26 +57,19 @@ fun CameraScreen(
     questionIndex: Int,
     viewModel: ProfileViewmodel,
     camViewModel: CameraViewModel,
-    sharedRouteViewModel: SharedRouteViewModel
+    sharedRouteViewModel: SharedRouteViewModel,
+    permissionViewModel: PermissionViewModel
 ) {
+    val context = LocalContext.current
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
     var clickCount by remember { mutableIntStateOf(0) }
     val findCategory = findCategoryByQuestion(question)
     val categoryname = findCategory?.javaClass?.simpleName ?: "Unknown"
-    var hasPermission by remember { mutableStateOf(false) }
+    val hasPermission by permissionViewModel.hasPermissionState
     findCategoryName = categoryname
 
-    if (hasPermission) {
-        CameraPreviewScreen { bitmap ->
-            // 캡처된 이미지를 처리하는 코드
-        }
-    } else {
-        RequestCameraPermission {
-            hasPermission = true
-        }
-    }
 
     Box(
         modifier = Modifier
@@ -116,7 +115,13 @@ fun CameraScreen(
                     .offset(y = (-15).dp)
                     .background(Color.LightGray)
                     .clickable {
-                        navController.navigate("camerax")
+                        val camPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                        if (camPermission != PackageManager.PERMISSION_GRANTED) {
+                            Toast
+                                .makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT)
+                                .show()
+                        } else
+                            navController.navigate("camerax")
                         sharedRouteViewModel.sharedCategory = category
                         sharedRouteViewModel.sharedClickCount = clickCount
                         sharedRouteViewModel.sharedFront =
@@ -129,7 +134,6 @@ fun CameraScreen(
                             "learn/$categoryName/$dayIndex/${questionIndex - 1}"
                         sharedRouteViewModel.sharedCategoryName = categoryName
                         sharedRouteViewModel.sharedQuizStart = "quiz/$categoryName/$dayIndex/0"
-
                     }
 
             ) {

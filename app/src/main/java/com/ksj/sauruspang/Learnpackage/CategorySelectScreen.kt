@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -78,7 +79,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreV
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            navController.navigate("profile")
+                            navController.popBackStack()
                         }
                 )
 
@@ -95,29 +96,38 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreV
             Spacer(modifier = Modifier.height(30.dp))
 
             Row(
+                modifier = Modifier.fillMaxWidth()
             ) {
+                // Lottie Animation
                 val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
                 val progress by animateLottieCompositionAsState(
                     composition = composition,
                     iterations = LottieConstants.IterateForever
                 )
+
                 LottieAnimation(
                     composition = composition,
                     progress = progress,
                     modifier = Modifier.padding(horizontal = 20.dp)
                     .clickable { navController.navigate("randomPhotoTaker") }
                 )
-                Row(
-                    modifier = Modifier
-                        .horizontalScroll(rememberScrollState())
-                        .padding(start = 30.dp, bottom = 30.dp),
-                    horizontalArrangement = Arrangement.spacedBy(40.dp) // 각 Box 사이의 간격 추가
-                ) {
-                    QuizCategory.allCategories.forEach { category ->
-                        CategoryBox(category, navController)
-                    }
-                    Spacer(modifier = Modifier.width(30.dp))
 
+                // Scrollable Row using LazyRow
+                LazyRow(
+                    modifier = Modifier
+                        .padding(start = 30.dp, bottom = 30.dp),
+                    horizontalArrangement = Arrangement.spacedBy(40.dp)
+                ) {
+                    // 반복적으로 카테고리 박스 생성
+                    QuizCategory.allCategories.forEachIndexed { index, category ->
+                        item(key = index) {
+                            CategoryBox(category, navController)
+                        }
+                    }
+                    // 마지막 Spacer
+                    item {
+                        Spacer(modifier = Modifier.width(30.dp))
+                    }
                 }
             }
         }

@@ -1,6 +1,8 @@
 package Learnpackage.camera
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
@@ -52,6 +54,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ksj.sauruspang.Learnpackage.QuizCategory
@@ -60,6 +63,7 @@ import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.PermissionViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
+import com.ksj.sauruspang.RequestPermissions
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
 import java.util.Locale
@@ -84,7 +88,6 @@ fun LearnScreen(
     val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
     var showPopup by remember { mutableStateOf(false) }
-    val hasPermission by permissionViewModel.micPermissionGranted
 
     fun listen(text: String, locale: Locale) {
         tts?.language = locale
@@ -181,7 +184,7 @@ fun LearnScreen(
                             .size(screenWidth * 0.07f)
                             .clickable {
                                 category?.name?.let { categoryName ->
-                                    navController.navigate("stage/$categoryName")
+                                    navController.popBackStack("stage/$categoryName",false)
                                 }
                             }
                     )
@@ -215,7 +218,7 @@ fun LearnScreen(
                     .align(Alignment.CenterStart)
                     .clickable(enabled = questionIndex > 0) {
                         if (questionIndex > 0) {
-                            navController.navigate("camera/$categoryName/$dayIndex/${questionIndex - 1}")
+                            navController.popBackStack("camera/$categoryName/$dayIndex/${questionIndex - 1}",false)
                         } else {
                             navController.popBackStack()
                         }
@@ -303,7 +306,8 @@ fun LearnScreen(
                                 shape = RoundedCornerShape(16.dp)
                             )
                             .clickable {
-                                if (!hasPermission) {
+                                val micPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO)
+                                if (micPermission != PackageManager.PERMISSION_GRANTED) {
                                     Toast
                                         .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
                                         .show()
