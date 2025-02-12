@@ -73,7 +73,6 @@ fun CameraAnswerScreen(
     if (showDialog) {
         if (viewModel.isCorrect) {
             CaptureCorrect(
-                message = "정답입니다.",
                 scoreViewModel = scoreViewModel,
                 onDismiss = {
                     viewModel.isCorrect = false
@@ -83,7 +82,6 @@ fun CameraAnswerScreen(
             )
         } else {
             CaptureRetry(
-                message = "다시 한 번 찍어보세요.",
                 onDismiss = {
                     showDialog = false
                     retryCount++

@@ -102,8 +102,7 @@ fun WordQuizScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            message = "정답입니다.",
-            scoreViewModel = scoreViewModel,
+            scoreViewModel=scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }
@@ -255,6 +254,12 @@ fun WordQuizScreen(
                 ) {
                     Spacer(modifier = Modifier.size(70.dp))
                     Box(
+//                        modifier = Modifier
+//                            .size(90.dp)
+//                            .clip(RoundedCornerShape(8.dp)) // Rounded corners
+//                            .background(Color(0xFF77E4D2))
+//                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), clip = false)
+//                            .clickable { speechRecognizer.startListening(speechIntent) }
                         modifier = Modifier
                             .size(90.dp)
                             .shadow(elevation = 8.dp, shape = RoundedCornerShape(16.dp))

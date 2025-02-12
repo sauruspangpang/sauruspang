@@ -296,7 +296,6 @@ fun WordInputScreen(
         // 최상위 레벨에서 상태에 따라 다이얼로그 표시
         if (showCorrectDialog) {
             DialogCorrect(
-                message = "정답입니다.",
                 scoreViewModel = scoreViewModel,
                 onDismiss = { showCorrectDialog = false }
             )

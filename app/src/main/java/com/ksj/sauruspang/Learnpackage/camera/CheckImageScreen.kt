@@ -105,8 +105,9 @@ fun ShowCameraPreviewScreen(
                                 .weight(3f)
                                 .padding(20.dp)
                         ) {
+                            // 로딩 다이얼로그가 활성화되어 있으면 화면 상단에 표시합니다.
                             if (isLoading) {
-                                LoadingDialog(message = "${viewModel.answerWord}을(를) 찾고 있어요!")
+                                LoadingDialog(message = viewModel.answerWord)
                             }
                             Image(
                                 bitmap = capturedImage.value!!.asImageBitmap(),
@@ -218,34 +219,40 @@ fun SelectViewModelList(
             )
         }
 
-        "동물" -> if (viewModel.answerWord !in viewModel.correctAnimalWordList) {
-            viewModel.isCorrect = true
-            viewModel.correctAnimalWordList.add(viewModel.answerWord)
-            viewModel.correctAnimalImageList.add(
-                Bitmap.createBitmap(
-                    capturedImage.value!!
+        "동물" -> {
+            if (viewModel.answerWord !in viewModel.correctAnimalWordList) {
+                viewModel.isCorrect = true
+                viewModel.correctAnimalWordList.add(viewModel.answerWord)
+                viewModel.correctAnimalImageList.add(
+                    Bitmap.createBitmap(
+                        capturedImage.value!!
+                    )
                 )
-            )
+            }
         }
 
-        "색" -> if (viewModel.answerWord !in viewModel.correctColorWordList) {
-            viewModel.isCorrect = true
-            viewModel.correctColorWordList.add(viewModel.answerWord)
-            viewModel.correctColorImageList.add(
-                Bitmap.createBitmap(
-                    capturedImage.value!!
+        "색" -> {
+            if (viewModel.answerWord !in viewModel.correctColorWordList) {
+                viewModel.isCorrect = true
+                viewModel.correctColorWordList.add(viewModel.answerWord)
+                viewModel.correctColorImageList.add(
+                    Bitmap.createBitmap(
+                        capturedImage.value!!
+                    )
                 )
-            )
+            }
         }
 
-        "직업" -> if (viewModel.answerWord !in viewModel.correctJobWordList) {
-            viewModel.isCorrect = true
-            viewModel.correctJobWordList.add(viewModel.answerWord)
-            viewModel.correctJobImageList.add(
-                Bitmap.createBitmap(
-                    capturedImage.value!!
+        "직업" -> {
+            if (viewModel.answerWord !in viewModel.correctJobWordList) {
+                viewModel.isCorrect = true
+                viewModel.correctJobWordList.add(viewModel.answerWord)
+                viewModel.correctJobImageList.add(
+                    Bitmap.createBitmap(
+                        capturedImage.value!!
+                    )
                 )
-            )
+            }
         }
     }
 
@@ -262,4 +269,18 @@ fun CapturedImage(capturedImage: MutableState<Bitmap?>) {
 
 fun getBitmapFromState(bitmapState: MutableState<Bitmap?>): Bitmap? {
     return bitmapState.value  // nullable 상태 그대로 반환
+}
+
+
+
+fun savePermission(context: Context, value: Boolean) {
+    val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    val editor = sharedPreferences.edit()
+    editor.putBoolean("has_permission", value)
+    editor.apply()
+}
+
+fun getPermission(context: Context): Boolean {
+    val sharedPreferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+    return sharedPreferences.getBoolean("has_permission", false) // 기본값은 false
 }

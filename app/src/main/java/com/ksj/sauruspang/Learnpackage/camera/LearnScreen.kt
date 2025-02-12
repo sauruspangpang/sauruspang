@@ -62,6 +62,7 @@ import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
+import com.ksj.sauruspang.RequestPermissions
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
 import java.util.Locale
@@ -111,7 +112,7 @@ fun LearnScreen(
     if (showCorrectDialog) {
         LearnCorrect(
             message = "정답입니다.",
-            scoreViewModel = scoreViewModel,
+            scoreViewModel= scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }
