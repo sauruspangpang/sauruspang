@@ -40,7 +40,7 @@ import com.ksj.sauruspang.R
 
 @Composable
 fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
-    val profile = remember { viewModel.profiles }
+    val profiles = viewModel.profiles
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.kidsprofile_wallpaper),
@@ -48,8 +48,12 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
-        Box(contentAlignment = Alignment.TopCenter,
-            modifier = Modifier.align(Alignment.TopCenter).offset(y = 15.dp)) {
+        Box(
+            contentAlignment = Alignment.TopCenter,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .offset(y = 15.dp)
+        ) {
             Image(
                 painter = painterResource(R.drawable.image_banner),
                 contentDescription = "banner",
@@ -70,7 +74,7 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 .offset(y = 20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            profile.forEach { profile ->
+            profiles.forEachIndexed { index, profile ->
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp)) // 둥근 모서리
@@ -83,7 +87,10 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                                 cornerRadius = CornerRadius(12.dp.toPx())
                             )
                         }
-                        .clickable { navController.navigate("home") },
+                        .clickable {
+                            viewModel.selectProfile(index)
+                            navController.navigate("home")
+                        },
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

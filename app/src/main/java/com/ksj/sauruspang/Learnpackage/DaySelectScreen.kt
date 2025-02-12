@@ -55,7 +55,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                             navController.navigate("home")
                         }
                 )
-                ProfileBox(scoreViewModel =scoreViewModel )
+                ProfileBox(scoreViewModel =scoreViewModel, viewModel = viewModel)
             }
             Row(
                 modifier = Modifier

@@ -1,8 +1,10 @@
 package com.ksj.sauruspang.ProfilePackage
 
 import android.app.Application
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ksj.sauruspang.ProfilePackage.Room.AppDatabase
@@ -23,12 +25,18 @@ data class Profile(
 
 class ProfileViewmodel(application: Application) : AndroidViewModel(application) {
     var profiles = mutableStateListOf<Profile>()
+    var selectedProfileIndex = mutableIntStateOf(-1) // 수정: 단일 선택 인덱스로 변경
     private val userDao = AppDatabase.getDatabase(application).userDao()
+
+
 
     init {
         loadProfilesFromDatabase()
     }
 
+    fun selectProfile(index: Int) {
+        selectedProfileIndex = mutableIntStateOf(index)
+    }
     fun addProfile(name: String, birth: String, userprofile: Int, selectedImage: Int) {
         profiles.add(Profile(name, birth, userprofile, selectedImage))
         saveProfileToDatabase(name, birth, selectedImage)

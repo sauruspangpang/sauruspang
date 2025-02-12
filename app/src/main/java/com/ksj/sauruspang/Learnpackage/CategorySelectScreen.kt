@@ -2,6 +2,7 @@
 
 package com.ksj.sauruspang.Learnpackage
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -26,6 +27,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -78,7 +81,7 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreV
                         }
                 )
 
-                ProfileBox(scoreViewModel)
+                ProfileBox(scoreViewModel, viewModel)
                 Spacer(Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.image_photobook),
@@ -182,55 +185,60 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
     }
 }
 
+@SuppressLint("MutableCollectionMutableState")
 @Composable
-fun ProfileBox(scoreViewModel: ScoreViewModel) {
-    Box(
-        contentAlignment = Alignment.BottomCenter,
-    ) {
+fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
+    val selectedIndex by viewModel.selectedProfileIndex // 선택된 인덱스 가져오기
+    val profile = viewModel.profiles // 프로필 리스트 가져오기
+    val selectedProfile = profile.getOrNull(selectedIndex)
+
+    Box(contentAlignment = Alignment.BottomCenter) {
         Image(
             painter = painterResource(R.drawable.image_woodboard),
             contentDescription = "",
         )
-        Row(
-            modifier = Modifier
-                .padding(horizontal = 30.dp), // 좌우 여백 추가
-            verticalAlignment = Alignment.CenterVertically // 내부 요소도 중앙 정렬
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.ellipse_1),
-                contentDescription = "",
-                Modifier.scale(0.8f)
-            )
-            Column(
-                modifier = Modifier
-                    .padding(bottom = 20.dp), // 내부 요소 패딩
-                verticalArrangement = Arrangement.SpaceBetween, // 내부 요소 정렬
-                horizontalAlignment = Alignment.Start
+
+        selectedProfile?.let { profile ->
+            Row(
+                modifier = Modifier.padding(horizontal = 30.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    "Hello 박민준",
-                    style = TextStyle(
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                    )
+                Image(
+                    painter = painterResource(profile.selectedImage),
+                    contentDescription = "",
+                    Modifier.scale(0.8f)
                 )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically // 이미지와 텍스트를 같은 높이로 정렬
+                Column(
+                    modifier = Modifier.padding(bottom = 20.dp),
+                    verticalArrangement = Arrangement.SpaceBetween,
+                    horizontalAlignment = Alignment.Start
                 ) {
-                    Image(
-                        painter = painterResource(R.drawable.image_starpoint),
-                        contentDescription = "",
-                        modifier = Modifier.size(36.dp) // 원하는 크기로 조정
-                    )
-                    Spacer(modifier = Modifier.width(10.dp)) // 이미지와 숫자 사이 간격
-                    val score by scoreViewModel.correctAnswers
                     Text(
-                        "${score*5}",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold
+                        text = profile.name,
+                        style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
                     )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Image(
+                            painter = painterResource(R.drawable.image_starpoint),
+                            contentDescription = "",
+                            modifier = Modifier.size(36.dp)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        val score by scoreViewModel.correctAnswers
+                        Text(
+                            "${score * 5}",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
                 }
             }
+        } ?: run {
+            Text(
+                text = "No Profile Selected",
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold
+            )
         }
     }
 }

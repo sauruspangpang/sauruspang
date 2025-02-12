@@ -1,4 +1,4 @@
-package com.ksj.sauruspang
+ package com.ksj.sauruspang
 
 import android.content.pm.PackageManager
 import android.widget.Toast
