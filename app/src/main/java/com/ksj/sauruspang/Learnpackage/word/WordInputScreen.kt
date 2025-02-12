@@ -117,13 +117,14 @@ fun WordInputScreen(
 //    Box(modifier = Modifier.fillMaxSize()) {
 //        Image(
 //            painter = painterResource(id = R.drawable.question_wallpaper),
-//            contentDescription = "",
+//            contentDescription = " ",
 //            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
 //            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
 //        )
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color(0xFFFDD4AA))
     ) {
         Box(
             modifier = Modifier
@@ -352,9 +353,9 @@ fun WordInputScreen(
             )
         }
     }
-
+    // }
 }
-//}
+
 
 // 모델 다운로드 함수
 private fun downloadModel(

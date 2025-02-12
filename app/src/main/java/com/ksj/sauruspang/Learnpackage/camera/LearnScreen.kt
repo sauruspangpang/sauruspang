@@ -186,13 +186,13 @@ fun LearnScreen(
                             }
                     )
 
-                    LinearProgressIndicator(
-                        progress = { progress },
-                        modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .height(20.dp)
-                            .align(Alignment.Center)
-                    )
+//                    LinearProgressIndicator(
+//                        progress = { progress },
+//                        modifier = Modifier
+//                            .fillMaxWidth(0.5f)
+//                            .height(20.dp)
+//                            .align(Alignment.Center)
+//                    )
                 }
             },
 
