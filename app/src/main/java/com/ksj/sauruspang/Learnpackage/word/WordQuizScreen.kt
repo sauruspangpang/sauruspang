@@ -160,6 +160,7 @@ fun WordQuizScreen(
     val screenHeight = configuration.screenHeightDp.dp
 
     Scaffold(
+        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
                 title = {
@@ -188,9 +189,7 @@ fun WordQuizScreen(
                     }
                 },
 
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFDD4AA)
-                )
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
             )
         }
     ) { padding ->
@@ -198,9 +197,13 @@ fun WordQuizScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .background(Color(0xFFFDD4AA))
-
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.confetti_wallpaper),
+                contentDescription = " ",
+                contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+                modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            )
             Image(
                 painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "",
@@ -359,7 +362,7 @@ fun WordQuizScreen(
                     .size(screenWidth * 0.155f)
                     .align(Alignment.CenterEnd)
                     .offset(x = -(screenWidth * 0.03f))
-                    .clickable(enabled = completedQuestion)
+                    .clickable(/*enabled = completedQuestion*/)
                     {
                         navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex}")
                     },

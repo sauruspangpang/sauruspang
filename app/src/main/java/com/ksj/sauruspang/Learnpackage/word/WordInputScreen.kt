@@ -1,10 +1,10 @@
 package com.ksj.sauruspang.Learnpackage.word
 
+import android.speech.tts.TextToSpeech
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -73,6 +74,7 @@ fun WordInputScreen(
     categoryName: String,
     dayIndex: Int,
     questionIndex: Int,
+    tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
     scoreViewModel: ScoreViewModel
 ) {
@@ -100,6 +102,9 @@ fun WordInputScreen(
 
     var isCorrect by remember { mutableStateOf(false) }
     var incorrectAnswerCount by remember { mutableIntStateOf(0) }
+    val configuration = LocalConfiguration.current
+    val screenWidth = configuration.screenWidthDp.dp
+    val screenHeight = configuration.screenHeightDp.dp
 
     var nextRoute = if (questionIndex == questions.lastIndex) {
         "quiz/$categoryName/$dayIndex/$questionIndex"
@@ -114,118 +119,138 @@ fun WordInputScreen(
         }
     }
 
-//    Box(modifier = Modifier.fillMaxSize()) {
-//        Image(
-//            painter = painterResource(id = R.drawable.question_wallpaper),
-//            contentDescription = " ",
-//            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-//            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
-//        )
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color(0xFFFDD4AA))
-    ) {
-        Box(
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.confetti_wallpaper),
+            contentDescription = " ",
+            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+        )
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(10.dp)
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.arrow),
-                contentDescription = "button to stagescreen",
-                modifier = Modifier
-                    .size(50.dp)
-                    .clickable {
-                        navController.navigate("stage/$categoryName")
-                    }
-            )
-        }
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
-            Image(
-                painter = painterResource(id = R.drawable.image_backarrow),
-                contentDescription = "previous question",
-                modifier = Modifier
-                    .size(130.dp)
-                    .align(Alignment.CenterVertically)
-                    .clickable {
-                        if (questionIndex > 0) {
-                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
-                        } else {
-                            navController.navigate("learn/$categoryName/$dayIndex/0")
-                        }
-                    }
-            )
+                .fillMaxSize()
 
+        ) {
             Box(
                 modifier = Modifier
-                    .width(600.dp)
-                    .height(250.dp)
-                    .pointerInput(Unit) {
-                        detectDragGestures(
-                            onDragStart = { offset -> inkManager.startStroke(offset) },
-                            onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
-                            onDragEnd = { inkManager.endStroke() }
-                        )
-                    },
+                    .fillMaxWidth()
+                    .padding(10.dp)
             ) {
                 Image(
-                    painter = painterResource(R.drawable.real_sketchbook),
-                    contentDescription = null,
-                    contentScale = ContentScale.FillBounds,
-                    modifier = Modifier.fillMaxSize() // 화면에 맞게 꽉 채우기
+                    painter = painterResource(id = R.drawable.arrow),
+                    contentDescription = "button to stagescreen",
+                    modifier = Modifier
+                        .size(50.dp)
+                        .clickable {
+                            navController.navigate("stage/$categoryName")
+                        }
                 )
-                Text(
-                    text = question.english,
-                    style = TextStyle(
-                        fontSize = 120.sp, fontWeight = FontWeight.Bold,
-                        color = Color.Black.copy(alpha = 0.2f)
-                    ),
-                    modifier = Modifier.align(Alignment.Center)
-                )
-                val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
-                Canvas(modifier = Modifier.matchParentSize()) {
-                    drawPath(inkManager.path, Color.Red, style = Stroke(width = 25f))
-                }
             }
-
-            // 다음 문제 넘어가기 (정답 시 활성화)
-            Image(
-                painter = painterResource(id = R.drawable.image_frontarrow),
-                //  id = if (isCorrect) R.drawable.image_frontarrow else R.drawable.frontnull
-                contentDescription = "next question",
-                modifier = Modifier
-                    .size(130.dp)
-                    .align(Alignment.CenterVertically)
-                    .clickable(enabled = isCorrect) {
-                        if (questionIndex == questions.size - 1) {
-                            // Navigate to the first question of the quiz screen
-                            navController.navigate("quiz/$categoryName/$dayIndex/0")
-                        } else if (questionIndex in 1..<hitNumber) {
-                            // Navigate to the previous learn screen
-                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}")
-                        } else {
-                            // Navigate to the next learn screen
-                            navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-                                popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                Image(
+                    painter = painterResource(id = R.drawable.image_backarrow),
+                    contentDescription = "previous question",
+                    modifier = Modifier
+                        .size(130.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable {
+                            if (questionIndex > 0) {
+                                navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
+                            } else {
+                                navController.navigate("learn/$categoryName/$dayIndex/0")
                             }
                         }
-                    },
-                colorFilter = if (isCorrect) null else ColorFilter.tint(Color.Gray)
+                )
 
-            )
-        }
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Image(
-                painter = painterResource(question.imageId),
-                contentDescription = "Question Image",
-                modifier = Modifier
-                    .size(140.dp)
-            )
+                Box(
+                    modifier = Modifier
+                        .width(600.dp)
+                        .height(250.dp)
+                        .pointerInput(Unit) {
+                            detectDragGestures(
+                                onDragStart = { offset -> inkManager.startStroke(offset) },
+                                onDrag = { change, _ -> inkManager.addPointToStroke(change.position) },
+                                onDragEnd = { inkManager.endStroke() }
+                            )
+                        },
+                ) {
+                    Box {
+                        Image(
+                            painter = painterResource(question.imageId),
+                            contentDescription = "Question Image",
+                            modifier = Modifier
+                                .size(300.dp)
+                                .align(Alignment.CenterStart)
+                                .offset(x = screenWidth * -0.1f)
+                        )
+                    }
+                    Box(
+                        modifier = Modifier
+                            .width(400.dp) // 스케치북 크기에 맞춤
+                            .align(Alignment.CenterEnd)
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.real_sketchbook),
+                            contentDescription = "Sketchbook",
+                            contentScale = ContentScale.FillBounds,
+                            modifier = Modifier.fillMaxSize() // 박스를 가득 채우도록 설정
+                        )
+
+                        Text(
+                            text = question.english,
+                            style = TextStyle(
+                                fontSize = 95.sp, fontWeight = FontWeight.Bold,
+                                color = Color.Black.copy(alpha = 0.2f)
+                            ),
+                            modifier = Modifier.align(Alignment.Center) // 중앙 정렬
+                        )
+                    }
+                    val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
+                    Canvas(modifier = Modifier.size(600.dp)) {
+                        drawPath(inkManager.path, Color.Red, style = Stroke(width = 25f))
+
+
+                    }
+
+                }
+
+                // 다음 문제 넘어가기 (정답 시 활성화)
+                Image(
+                    painter = painterResource(id = R.drawable.image_frontarrow),
+                    //  id = if (isCorrect) R.drawable.image_frontarrow else R.drawable.frontnull
+                    contentDescription = "next question",
+                    modifier = Modifier
+                        .size(130.dp)
+                        .align(Alignment.CenterVertically)
+                        .clickable(enabled = isCorrect) {
+                            if (questionIndex == questions.size - 1) {
+                                // Navigate to the first question of the quiz screen
+                                navController.navigate("quiz/$categoryName/$dayIndex/0")
+                            } else if (questionIndex in 1..<hitNumber) {
+                                // Navigate to the previous learn screen
+                                navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}")
+                            } else {
+                                // Navigate to the next learn screen
+                                navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
+                                    popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
+                                }
+                            }
+                        },
+                    colorFilter = if (isCorrect) null else ColorFilter.tint(Color.Gray)
+
+                )
+            }
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+//                horizontalArrangement = Arrangement.Center,
+//                verticalAlignment = Alignment.CenterVertically
+            ) {
+//                Image(
+//                    painter = painterResource(question.imageId),
+//                    contentDescription = "Question Image",
+//                    modifier = Modifier
+//                        .size(140.dp)
+//                )
 //            Text(
 //                text = recognizedText,
 //                style = TextStyle(
@@ -235,91 +260,95 @@ fun WordInputScreen(
 //                ),
 //                modifier = Modifier.padding(10.dp)
 //            )
-            FilledTonalButton(
-                onClick = {
-                    inkManager.clearCanvas()
-                },
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(50.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(
-                    "다시쓰기",
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontWeight = FontWeight.Bold,
+                Spacer(modifier = Modifier.weight(1f))
+                FilledTonalButton(
+                    onClick = {
+                        inkManager.clearCanvas()
+                    },
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(50.dp),
+                    border = BorderStroke(2.dp, Color.Black)
+                ) {
+                    Text(
+                        "다시쓰기",
+                        style = TextStyle(
+                            color = Color.DarkGray,
+                            fontWeight = FontWeight.Bold,
+                        )
                     )
-                )
-            }
-            Spacer(modifier = Modifier.size(5.dp))
-            // 정답 확인 버튼
-            FilledTonalButton(
-                onClick = {
-                    if (isModelDownloaded) {
-                        coroutineScope.launch {
-                            // recognizedText와 리스트 초기화
-                            val result = withContext(Dispatchers.IO) {
-                                inkManager.recognizeInk().uppercase()
+                }
+
+                Spacer(modifier = Modifier.size(5.dp))
+                // 정답 확인 버튼
+                FilledTonalButton(
+                    onClick = {
+                        if (isModelDownloaded) {
+                            coroutineScope.launch {
+                                // recognizedText와 리스트 초기화
+                                val result = withContext(Dispatchers.IO) {
+                                    inkManager.recognizeInk().uppercase()
+                                }
+                                // Main 스레드에서 상태 업데이트
+                                recognizedText = result
+
+                                // 안전하게 결과 분리
+                                val recognizedSplit = result.split(",").take(2)
+                                if (recognizedSplit.size < 2) {
+                                    // 인식 결과가 부족할 경우 추가 처리
+                                    recognizedText = "인식 결과가 부족합니다. 다시 시도해 주세요."
+                                    return@launch
+                                }
+                                recognizedList = recognizedSplit
+                                Log.e("recognizedList", recognizedList.toString())
+
+                                val candidate1 = recognizedList[0]
+                                val candidate2 = recognizedList[1]
+
+                                val mismatchedIndexes1 = compareWords(targetWord, candidate1)
+                                val mismatchedIndexes2 = compareWords(targetWord, candidate2)
+
+                                // 두 후보가 targetWord와 길이가 같고 모두 일치해야 정답으로 판단
+                                // 정답 조건식 변경 가능 (candidate1 == targetWord || candidate2 == targetWord)
+                                if ((candidate1.length == targetWord.length && mismatchedIndexes1.isEmpty()) ||
+                                    (candidate2.length == targetWord.length && mismatchedIndexes2.isEmpty())
+                                ) {
+                                    recognizedText = "정답입니다."  // TODO 로깅 텍스트
+                                    showCorrectDialog = true
+                                    isCorrect = true
+                                    hitNumber++
+                                } else {
+                                    // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
+                                    wrongLettersInfo = "틀린 글자: " +
+                                            "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
+                                            "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
+                                    recognizedText = wrongLettersInfo  // TODO 로깅 텍스트
+                                    showRetryDialog = true
+                                    incorrectAnswerCount++
+                                }
                             }
-                            // Main 스레드에서 상태 업데이트
-                            recognizedText = result
-
-                            // 안전하게 결과 분리
-                            val recognizedSplit = result.split(",").take(2)
-                            if (recognizedSplit.size < 2) {
-                                // 인식 결과가 부족할 경우 추가 처리
-                                recognizedText = "인식 결과가 부족합니다. 다시 시도해 주세요."
-                                return@launch
-                            }
-                            recognizedList = recognizedSplit
-                            Log.e("recognizedList", recognizedList.toString())
-
-                            val candidate1 = recognizedList[0]
-                            val candidate2 = recognizedList[1]
-
-                            val mismatchedIndexes1 = compareWords(targetWord, candidate1)
-                            val mismatchedIndexes2 = compareWords(targetWord, candidate2)
-
-                            // 두 후보가 targetWord와 길이가 같고 모두 일치해야 정답으로 판단
-                            // 정답 조건식 변경 가능 (candidate1 == targetWord || candidate2 == targetWord)
-                            if ((candidate1.length == targetWord.length && mismatchedIndexes1.isEmpty()) ||
-                                (candidate2.length == targetWord.length && mismatchedIndexes2.isEmpty())
-                            ) {
-                                recognizedText = "정답입니다."  // TODO 로깅 텍스트
-                                showCorrectDialog = true
-                                isCorrect = true
-                                hitNumber++
-                            } else {
-                                // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
-                                wrongLettersInfo = "틀린 글자: " +
-                                        "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
-                                        "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
-                                recognizedText = wrongLettersInfo  // TODO 로깅 텍스트
-                                showRetryDialog = true
-                                incorrectAnswerCount++
-                            }
+                        } else {
+                            recognizedText =
+                                "Model is not yet downloaded. Please try again later."
                         }
-                    } else {
-                        recognizedText = "Model is not yet downloaded. Please try again later."
-                    }
-                },
-                modifier = Modifier
-                    .width(120.dp)
-                    .height(50.dp),
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(2.dp, Color.Black), // Black outline
+                    },
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(50.dp),
+                    shape = RoundedCornerShape(10.dp),
+                    border = BorderStroke(2.dp, Color.Black), // Black outline
 
-            ) {
-                Text(
-                    "정답확인",
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontWeight = FontWeight.Bold,
+                ) {
+                    Text(
+                        "정답확인",
+                        style = TextStyle(
+                            color = Color.DarkGray,
+                            fontWeight = FontWeight.Bold,
+                        )
                     )
-                )
+                }
+                Spacer(modifier = Modifier.weight(0.5f))
             }
-
 
 
             if (incorrectAnswerCount >= 3) {
@@ -352,7 +381,6 @@ fun WordInputScreen(
             )
         }
     }
-    // }
 }
 
 

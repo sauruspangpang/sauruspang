@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -85,9 +86,15 @@ fun QuizScreen(
         modifier = Modifier
             .padding(5.dp)
             .fillMaxSize()
-            .background(Color(0xFFFDD4AA))
+
 
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.confetti_wallpaper),
+            contentDescription = " ",
+            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+        )
         Image(
             painter = painterResource(id = R.drawable.arrow),
             contentDescription = "button to stagescreen",

@@ -175,6 +175,7 @@ fun LearnScreen(
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
+
                     Image(painter = painterResource(id = R.drawable.image_backhome),
                         contentDescription = "",
                         modifier = Modifier
@@ -197,7 +198,7 @@ fun LearnScreen(
             },
 
             colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFFFDD4AA)
+
             )
         )
     }) { padding ->
@@ -205,9 +206,15 @@ fun LearnScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .background(Color(0xFFFDD4AA))
 
         ) {
+            Image(
+                painter = painterResource(id = R.drawable.confetti_wallpaper),
+                contentDescription = " ",
+                contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+                modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            )
+
             Image(painter = painterResource(id = R.drawable.image_backarrow),
                 contentDescription = "previous question",
                 modifier = Modifier

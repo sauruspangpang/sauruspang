@@ -182,6 +182,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 categoryName,
                 dayIndex,
                 questionIndex,
+                tts,
                 viewmodel,
                 scoreViewModel
             )
@@ -249,7 +250,8 @@ fun DefaultPreview() {
             dayIndex = 0,
             questionIndex = 0,
             viewModel = viewModel(),
-            scoreViewModel = viewModel()
+            scoreViewModel = viewModel(),
+            tts = TextToSpeech(null, null)
         )
     }
 }
