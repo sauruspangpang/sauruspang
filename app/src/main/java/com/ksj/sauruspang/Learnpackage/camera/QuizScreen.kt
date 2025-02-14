@@ -89,6 +89,7 @@ fun QuizScreen(
 
 
     ) {
+        // 배경이미지 설정
         Image(
             painter = painterResource(id = R.drawable.confetti_wallpaper),
             contentDescription = " ",

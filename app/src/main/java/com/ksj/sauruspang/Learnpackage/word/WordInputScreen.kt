@@ -120,6 +120,7 @@ fun WordInputScreen(
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+        // 배경이미지 설정
         Image(
             painter = painterResource(id = R.drawable.confetti_wallpaper),
             contentDescription = " ",
@@ -186,7 +187,7 @@ fun WordInputScreen(
                     }
                     Box(
                         modifier = Modifier
-                            .width(400.dp) // 스케치북 크기에 맞춤
+                            .width(450.dp) // 스케치북 크기에 맞춤
                             .align(Alignment.CenterEnd)
                     ) {
                         Image(
@@ -199,7 +200,7 @@ fun WordInputScreen(
                         Text(
                             text = question.english,
                             style = TextStyle(
-                                fontSize = 95.sp, fontWeight = FontWeight.Bold,
+                                fontSize = 90.sp, fontWeight = FontWeight.Bold,
                                 color = Color.Black.copy(alpha = 0.2f)
                             ),
                             modifier = Modifier.align(Alignment.Center) // 중앙 정렬
@@ -267,7 +268,8 @@ fun WordInputScreen(
                     },
                     modifier = Modifier
                         .width(120.dp)
-                        .height(50.dp),
+                        .height(50.dp)
+                        .padding(top = 10.dp),
                     border = BorderStroke(2.dp, Color.Black)
                 ) {
                     Text(
@@ -334,7 +336,8 @@ fun WordInputScreen(
                     },
                     modifier = Modifier
                         .width(120.dp)
-                        .height(50.dp),
+                        .height(50.dp)
+                        .padding(top = 10.dp),
                     shape = RoundedCornerShape(10.dp),
                     border = BorderStroke(2.dp, Color.Black), // Black outline
 

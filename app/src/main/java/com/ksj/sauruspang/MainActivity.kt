@@ -253,7 +253,7 @@ fun HideSystemBars() {
 @Composable
 fun DefaultPreview() {
     SauruspangTheme {
-        WordInputScreen(
+        WordQuizScreen(
             navController = rememberNavController(),
             categoryName = "직업",
             dayIndex = 0,

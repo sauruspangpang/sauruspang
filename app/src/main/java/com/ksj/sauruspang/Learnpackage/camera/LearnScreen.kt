@@ -111,7 +111,7 @@ fun LearnScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            scoreViewModel= scoreViewModel,
+            scoreViewModel = scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }
@@ -169,219 +169,208 @@ fun LearnScreen(
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
-    Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                Box(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
 
-                    Image(painter = painterResource(id = R.drawable.image_backhome),
-                        contentDescription = "",
+    Column {
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+
+            Image(painter = painterResource(id = R.drawable.image_backhome),
+                contentDescription = "",
+                modifier = Modifier
+                    .size(screenWidth * 0.07f)
+                    .clickable {
+                        category?.name?.let { categoryName ->
+                            navController.popBackStack("stage/$categoryName", false)
+                        }
+                    }
+            )
+        }
+    }
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+
+    ) {
+        // 배경 이미지 설정
+        Image(
+            painter = painterResource(id = R.drawable.confetti_wallpaper),
+            contentDescription = " ",
+            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+        )
+
+        Image(painter = painterResource(id = R.drawable.image_backarrow),
+            contentDescription = "previous question",
+            modifier = Modifier
+                .size(screenWidth * 0.15f)
+                .align(Alignment.CenterStart)
+                .clickable(enabled = questionIndex > 0) {
+                    if (questionIndex > 0) {
+                        navController.popBackStack(
+                            "camera/$categoryName/$dayIndex/${questionIndex - 1}",
+                            false
+                        )
+                    } else {
+                        navController.popBackStack()
+                    }
+                })
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+
+
+                ) {
+                Spacer(modifier = Modifier.height(screenHeight * 0.1f))
+                Image(painter = painterResource(id = question.imageId),
+                    contentDescription = "question image",
+                    modifier = Modifier
+                        .size(screenWidth * 0.2f)
+                        .clickable { listen(question.english, Locale.US) }
+                )
+                Spacer(modifier = Modifier.height(screenHeight * 0.02f))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        question.korean,
+                        modifier = Modifier.clickable {
+                            listen(
+                                question.korean,
+                                Locale.KOREAN
+                            )
+                        },
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold, fontSize = 50.sp
+                        )
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.listen_btn),
+                        contentDescription = "listen button",
                         modifier = Modifier
                             .size(screenWidth * 0.07f)
-                            .clickable {
-                                category?.name?.let { categoryName ->
-                                    navController.popBackStack("stage/$categoryName", false)
-                                }
-                            }
+                            .padding(start = screenWidth * 0.02f)
+                            .clickable { listen(question.korean, Locale.KOREAN) }
                     )
-
-//                    LinearProgressIndicator(
-//                        progress = { progress },
-//                        modifier = Modifier
-//                            .fillMaxWidth(0.5f)
-//                            .height(20.dp)
-//                            .align(Alignment.Center)
-//                    )
                 }
-            },
 
-            colors = TopAppBarDefaults.topAppBarColors(
-
-            )
-        )
-    }) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.confetti_wallpaper),
-                contentDescription = " ",
-                contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-                modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
-            )
-
-            Image(painter = painterResource(id = R.drawable.image_backarrow),
-                contentDescription = "previous question",
-                modifier = Modifier
-                    .size(screenWidth * 0.15f)
-                    .align(Alignment.CenterStart)
-                    .clickable(enabled = questionIndex > 0) {
-                        if (questionIndex > 0) {
-                            navController.popBackStack(
-                                "camera/$categoryName/$dayIndex/${questionIndex - 1}",
-                                false
-                            )
-                        } else {
-                            navController.popBackStack()
-                        }
-                    })
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.align(Alignment.Center)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-
-                    ) {
-                    Image(painter = painterResource(id = question.imageId),
-                        contentDescription = "question image",
-                        modifier = Modifier
-                            .size(screenWidth * 0.2f)
-                            .clickable { listen(question.english, Locale.US) }
-                    )
-                    Spacer(modifier = Modifier.height(screenHeight * 0.02f))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            question.korean,
-                            modifier = Modifier.clickable {
-                                listen(
-                                    question.korean,
-                                    Locale.KOREAN
-                                )
-                            },
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold, fontSize = 50.sp
-                            )
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.listen_btn),
-                            contentDescription = "listen button",
-                            modifier = Modifier
-                                .size(screenWidth * 0.07f)
-                                .padding(start = screenWidth * 0.02f)
-                                .clickable { listen(question.korean, Locale.KOREAN) }
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            question.english,
-                            modifier = Modifier.clickable { listen(question.english, Locale.US) },
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold, fontSize = 60.sp
-                            )
-                        )
-                        Image(painter = painterResource(id = R.drawable.listen_btn),
-                            contentDescription = "listen button",
-                            modifier = Modifier
-                                .size(screenWidth * 0.07f)
-                                .padding(start = screenWidth * 0.02f)
-                                .clickable { listen(question.english, Locale.US) })
-                    }
-                }
-                Spacer(modifier = Modifier.width(screenWidth * 0.08f))
-                Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(modifier = Modifier.height(screenHeight * 0.23f))
+                    Text(
+                        question.english,
+                        modifier = Modifier.clickable { listen(question.english, Locale.US) },
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold, fontSize = 60.sp
+                        )
+                    )
+                    Image(painter = painterResource(id = R.drawable.listen_btn),
+                        contentDescription = "listen button",
+                        modifier = Modifier
+                            .size(screenWidth * 0.07f)
+                            .padding(start = screenWidth * 0.02f)
+                            .clickable { listen(question.english, Locale.US) })
+                }
+            }
+            Spacer(modifier = Modifier.width(screenWidth * 0.08f))
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Spacer(modifier = Modifier.height(screenHeight * 0.23f))
+                Box(
+                    modifier = Modifier
+                        .size(screenWidth * 0.12f)
+                        .shadow(
+                            elevation = 10.dp,
+                            shape = RoundedCornerShape(16.dp)
+                        ) // Increased shadow for more visibility
+
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0xFF77E4D2), // Bright turquoise
+                                    Color(0xFF4ECDC4)  // Slightly darker shade
+                                )
+                            ),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            val micPermission = ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.RECORD_AUDIO
+                            )
+                            if (micPermission != PackageManager.PERMISSION_GRANTED) {
+                                Toast
+                                    .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else
+                                speechRecognizer.startListening(speechIntent)
+                        }
+
+                ) {
+                    // Glossy effect overlay
                     Box(
                         modifier = Modifier
-                            .size(screenWidth * 0.12f)
-                            .shadow(
-                                elevation = 10.dp,
-                                shape = RoundedCornerShape(16.dp)
-                            ) // Increased shadow for more visibility
-
+                            .fillMaxSize()
                             .background(
-                                brush = Brush.verticalGradient(
+                                Brush.radialGradient(
                                     colors = listOf(
-                                        Color(0xFF77E4D2), // Bright turquoise
-                                        Color(0xFF4ECDC4)  // Slightly darker shade
-                                    )
+                                        Color.White.copy(alpha = 0.4f), // Shiny highlight
+                                        Color.Transparent
+                                    ),
+                                    center = Offset(30f, 20f), // Light source effect
+                                    radius = 120f
                                 ),
                                 shape = RoundedCornerShape(16.dp)
                             )
-                            .clickable {
-                                val micPermission = ContextCompat.checkSelfPermission(
-                                    context,
-                                    Manifest.permission.RECORD_AUDIO
-                                )
-                                if (micPermission != PackageManager.PERMISSION_GRANTED) {
-                                    Toast
-                                        .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
-                                        .show()
-                                } else
-                                    speechRecognizer.startListening(speechIntent)
-                            }
-
-                    ) {
-                        // Glossy effect overlay
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.radialGradient(
-                                        colors = listOf(
-                                            Color.White.copy(alpha = 0.4f), // Shiny highlight
-                                            Color.Transparent
-                                        ),
-                                        center = Offset(30f, 20f), // Light source effect
-                                        radius = 120f
-                                    ),
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        )
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.speakbutton),
+                        contentDescription = "Speak button",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        contentScale = ContentScale.Fit // Ensures it fills the box
+                    )
+                }
+                Spacer(modifier = Modifier.height(screenHeight * 0.05f))
+                Row {
+                    repeat(3) { index ->
                         Image(
-                            painter = painterResource(id = R.drawable.speakbutton),
-                            contentDescription = "Speak button",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
-                            contentScale = ContentScale.Fit // Ensures it fills the box
+                            painter = painterResource(id = question.imageId),
+                            contentDescription = "listen button",
+                            modifier = Modifier.size(screenWidth * 0.055f),
+                            alpha = if (index < correctCount) 1.0f else 0.4f
                         )
+                        //index 0 = image1, index1 = image2, index2 = image3
                     }
-                    Spacer(modifier = Modifier.height(screenHeight * 0.05f))
-                    Row {
-                        repeat(3) { index ->
-                            Image(
-                                painter = painterResource(id = question.imageId),
-                                contentDescription = "listen button",
-                                modifier = Modifier.size(screenWidth * 0.055f),
-                                alpha = if (index < correctCount) 1.0f else 0.4f
-                            )
-                            //index 0 = image1, index1 = image2, index2 = image3
-                        }
-                    }
-
-
                 }
 
+
             }
-            Image(
-                painter = painterResource(id = R.drawable.image_frontarrow),
-                contentDescription = "next question",
-                modifier = Modifier
-                    .size(screenWidth * 0.155f)
-                    .align(Alignment.CenterEnd)
-
-                    .clickable(enabled = completedQuestion)
-                    { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") },
-                colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)
-
-            )
-
 
         }
+        Image(
+            painter = painterResource(id = R.drawable.image_frontarrow),
+            contentDescription = "next question",
+            modifier = Modifier
+                .size(screenWidth * 0.155f)
+                .align(Alignment.CenterEnd)
+
+                .clickable(enabled = completedQuestion)
+                { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") },
+            colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)
+
+        )
+
+
     }
 }
+
