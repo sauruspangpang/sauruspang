@@ -66,6 +66,8 @@ class MainActivity : ComponentActivity() {
         val viewModel = ProfileViewmodel(application)
         setContent {
             val scoreViewModel: ScoreViewModel = viewModel()
+            RequestPermissions()
+            HideSystemBars()
             SauruspangTheme {
                 NaySys(viewModel, tts, scoreViewModel)
             }
