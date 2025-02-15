@@ -2,6 +2,7 @@ package com.ksj.sauruspang.ProfilePackage
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -91,6 +92,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                 modifier = Modifier
                     .padding(10.dp)
                     .size(180.dp)
+                    .border(3.dp, Color(0xFFE8A59C), RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
             )
             Spacer(modifier = Modifier.width(20.dp))
@@ -162,6 +164,7 @@ fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
                 contentDescription = "foreground",
                 modifier = Modifier
                     .padding(10.dp)
+                    .border(2.dp, Color(0xFFE8A59C), RoundedCornerShape(16.dp))
                     .clip(RoundedCornerShape(16.dp))
                     .clickable {
                         onImageSelected(resourceId)

@@ -151,6 +151,11 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                         tint = Color.Black // 아이콘 색상 설정 (원하는 색상으로 변경 가능)
                     )
                 }
+                Text(
+                    text = "새로운 프로필 만들기",
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier.padding(vertical = 20.dp)
+                )
             }
         }
     }

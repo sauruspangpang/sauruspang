@@ -55,7 +55,11 @@ import com.ksj.sauruspang.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreViewModel: ScoreViewModel) {
+fun HomeScreen(
+    navController: NavController,
+    viewModel: ProfileViewmodel,
+    scoreViewModel: ScoreViewModel
+) {
     val score by scoreViewModel.correctAnswers
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -111,8 +115,9 @@ fun HomeScreen(navController: NavController, viewModel: ProfileViewmodel, scoreV
                 LottieAnimation(
                     composition = composition,
                     progress = progress,
-                    modifier = Modifier.padding(horizontal = 20.dp)
-                    .clickable { navController.navigate("randomPhotoTaker") }
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp)
+                        .clickable { navController.navigate("randomPhotoTaker") }
                 )
 
                 // Scrollable Row using LazyRow
@@ -211,21 +216,27 @@ fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
             painter = painterResource(R.drawable.image_woodboard),
             contentDescription = "",
         )
-
         selectedProfile?.let { profile ->
             Row(
-                modifier = Modifier.padding(horizontal = 30.dp).offset(y=20.dp),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .padding(horizontal = 0.dp)
+                    .offset(y = (-10).dp)
+                ,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
                 Image(
                     painter = painterResource(profile.selectedImage),
                     contentDescription = "",
-                    Modifier.scale(0.6f).clip(CircleShape)
+                    Modifier
+                        .size(80.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .padding(end = 15.dp)
                 )
                 Column(
-                    modifier = Modifier.padding(bottom = 20.dp),
+                    modifier = Modifier.padding(bottom = 0.dp),
                     verticalArrangement = Arrangement.SpaceBetween,
-                    horizontalAlignment = Alignment.Start
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = profile.name,
