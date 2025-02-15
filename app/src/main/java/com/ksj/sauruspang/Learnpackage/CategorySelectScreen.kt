@@ -7,31 +7,13 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -45,11 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.animateLottieCompositionAsState
-import com.airbnb.lottie.compose.rememberLottieComposition
+import com.airbnb.lottie.compose.*
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 
@@ -65,29 +43,23 @@ fun HomeScreen(
         Image(
             painter = painterResource(R.drawable.choosecategory_wallpaper),
             contentDescription = null,
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 30.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Image(
                     painter = painterResource(id = R.drawable.image_backhome),
                     contentDescription = "button to profile screen",
                     modifier = Modifier
                         .size(50.dp)
-                        .clickable {
-                            navController.popBackStack()
-                        }
+                        .clickable { navController.popBackStack() }
                 )
 
                 ProfileBox(scoreViewModel, viewModel)
@@ -95,17 +67,12 @@ fun HomeScreen(
                 Image(
                     painter = painterResource(id = R.drawable.image_photobook),
                     contentDescription = "",
-                    modifier = Modifier
-                        .clickable { navController.navigate("pictorial") }
-
+                    modifier = Modifier.clickable { navController.navigate("pictorial") }
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))
 
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                // Lottie Animation
+            Row(modifier = Modifier.fillMaxWidth()) {
                 val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
                 val progress by animateLottieCompositionAsState(
                     composition = composition,
@@ -120,54 +87,40 @@ fun HomeScreen(
                         .clickable { navController.navigate("randomPhotoTaker") }
                 )
 
-                // Scrollable Row using LazyRow
                 LazyRow(
-                    modifier = Modifier
-                        .padding(start = 30.dp, bottom = 30.dp),
+                    modifier = Modifier.padding(start = 30.dp, bottom = 30.dp),
                     horizontalArrangement = Arrangement.spacedBy(40.dp)
                 ) {
-                    // 반복적으로 카테고리 박스 생성
                     QuizCategory.allCategories.forEachIndexed { index, category ->
                         item(key = index) {
                             CategoryBox(category, navController)
                         }
                     }
-                    // 마지막 Spacer
-                    item {
-                        Spacer(modifier = Modifier.width(30.dp))
-                    }
+                    item { Spacer(modifier = Modifier.width(30.dp)) }
                 }
             }
         }
     }
 }
 
-
 @Composable
 fun CategoryBox(category: QuizCategory, navController: NavController) {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
-        // 박스 본체
+    Box(modifier = Modifier.fillMaxSize()) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(12.dp),
-                    spotColor = Color(0xFF000000) // 그림자 색상
-                )
-                .clip(RoundedCornerShape(12.dp)) // 둥근 모서리 적용
-                .background(Color(0xFFFFFFFF)) // 배경색 적용
+                .shadow(8.dp, RoundedCornerShape(12.dp), spotColor = Color(0xFF000000))
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color(0xFFFFFFFF))
                 .clickable { navController.navigate("stage/${category.name}") }
                 .padding(top = 30.dp, start = 30.dp, end = 30.dp)
                 .height(150.dp)
                 .width(110.dp)
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally, // 가운데 정렬
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth() // 전체 크기 채우기
+                    .fillMaxWidth()
                     .wrapContentHeight()
             ) {
                 Image(
@@ -177,13 +130,13 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                         .align(Alignment.CenterHorizontally)
                         .scale(1.2f)
                 )
-                Spacer(modifier = Modifier.height(20.dp)) // 20dp 간격 추가
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     category.name,
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Spacer(modifier = Modifier.height(20.dp)) // 20dp 간격 추가
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
 
@@ -199,16 +152,14 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                 .width(80.dp)
                 .align(Alignment.TopEnd)
         )
-
-
     }
 }
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
 fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
-    val selectedIndex by viewModel.selectedProfileIndex // 선택된 인덱스 가져오기
-    val profile = viewModel.profiles // 프로필 리스트 가져오기
+    val selectedIndex by viewModel.selectedProfileIndex
+    val profile = viewModel.profiles
     val selectedProfile = profile.getOrNull(selectedIndex)
 
     Box(contentAlignment = Alignment.BottomCenter) {
@@ -220,8 +171,7 @@ fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
             Row(
                 modifier = Modifier
                     .padding(horizontal = 0.dp)
-                    .offset(y = (-10).dp)
-                ,
+                    .offset(y = (-10).dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {

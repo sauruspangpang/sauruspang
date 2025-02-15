@@ -12,33 +12,11 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
@@ -62,11 +40,9 @@ import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
-import com.ksj.sauruspang.RequestPermissions
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
 import java.util.Locale
-
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalPermissionsApi::class)
 @Composable
@@ -80,11 +56,10 @@ fun LearnScreen(
     sharedRouteViewModel: SharedRouteViewModel,
     scoreViewModel: ScoreViewModel
 ) {
-
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
-    var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
+    var progress by remember { mutableFloatStateOf(0.2f) }
     var showPopup by remember { mutableStateOf(false) }
 
     fun listen(text: String, locale: Locale) {
@@ -92,20 +67,16 @@ fun LearnScreen(
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, null)
     }
 
-
     val context = LocalContext.current
     val speechRecognizer = remember { SpeechRecognizer.createSpeechRecognizer(context) }
     val speechIntent = remember {
         Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
-            putExtra(
-                RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
-            )
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, "en-US")
         }
     }
     var showCorrectDialog by remember { mutableStateOf(false) }
     var showRetryDialog by remember { mutableStateOf(false) }
-
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -119,16 +90,11 @@ fun LearnScreen(
     if (showRetryDialog) {
         LearnRetry(
             onDismiss = { showRetryDialog = false },
-            onRetry = {
-                // 다시쓰기 동작 수행 (예: 캔버스 초기화)
-                // recognizedText = "Recognition Result: "
-                showRetryDialog = false
-            }
+            onRetry = { showRetryDialog = false }
         )
     }
+
     var spokenText by remember { mutableStateOf("") }
-//    var correctCount by rememberSaveable { mutableIntStateOf(0) }
-//    var completedQuestion by rememberSaveable { mutableStateOf(false) }
     val questionId = "$categoryName-$dayIndex-$questionIndex"
     val correctCount by remember { derivedStateOf { viewModel.getCorrectCount(questionId) } }
     val completedQuestion by remember { derivedStateOf { correctCount > 2 } }
@@ -155,27 +121,16 @@ fun LearnScreen(
         override fun onPartialResults(partialResults: Bundle?) {}
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
-//    var hasPermission by remember { mutableStateOf(false) }
-
 
     speechRecognizer.setRecognitionListener(recognitionListener)
-    // Request microphone permission
-
-
-//    RequestMicrophonePermission(onPermissionGranted = {
-//        hasPermission = true
-//    })
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
-
     Column {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-
-            Image(painter = painterResource(id = R.drawable.image_backhome),
+        Box(modifier = Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(id = R.drawable.image_backhome),
                 contentDescription = "",
                 modifier = Modifier
                     .size(screenWidth * 0.07f)
@@ -187,34 +142,28 @@ fun LearnScreen(
             )
         }
     }
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-
-    ) {
-        // 배경 이미지 설정
+    Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = R.drawable.confetti_wallpaper),
             contentDescription = " ",
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
 
-        Image(painter = painterResource(id = R.drawable.image_backarrow),
+        Image(
+            painter = painterResource(id = R.drawable.image_backarrow),
             contentDescription = "previous question",
             modifier = Modifier
                 .size(screenWidth * 0.15f)
                 .align(Alignment.CenterStart)
                 .clickable(enabled = questionIndex > 0) {
                     if (questionIndex > 0) {
-                        navController.popBackStack(
-                            "camera/$categoryName/$dayIndex/${questionIndex - 1}",
-                            false
-                        )
+                        navController.popBackStack("camera/$categoryName/$dayIndex/${questionIndex - 1}", false)
                     } else {
                         navController.popBackStack()
                     }
-                })
+                }
+        )
         Row(
             horizontalArrangement = Arrangement.Center,
             modifier = Modifier.align(Alignment.Center)
@@ -222,11 +171,10 @@ fun LearnScreen(
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
-
-
-                ) {
+            ) {
                 Spacer(modifier = Modifier.height(screenHeight * 0.1f))
-                Image(painter = painterResource(id = question.imageId),
+                Image(
+                    painter = painterResource(id = question.imageId),
                     contentDescription = "question image",
                     modifier = Modifier
                         .size(screenWidth * 0.2f)
@@ -234,20 +182,11 @@ fun LearnScreen(
                 )
                 Spacer(modifier = Modifier.height(screenHeight * 0.02f))
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         question.korean,
-                        modifier = Modifier.clickable {
-                            listen(
-                                question.korean,
-                                Locale.KOREAN
-                            )
-                        },
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 50.sp
-                        )
+                        modifier = Modifier.clickable { listen(question.korean, Locale.KOREAN) },
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 50.sp)
                     )
                     Image(
                         painter = painterResource(id = R.drawable.listen_btn),
@@ -259,22 +198,20 @@ fun LearnScreen(
                     )
                 }
 
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
                         question.english,
                         modifier = Modifier.clickable { listen(question.english, Locale.US) },
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 60.sp
-                        )
+                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 60.sp)
                     )
-                    Image(painter = painterResource(id = R.drawable.listen_btn),
+                    Image(
+                        painter = painterResource(id = R.drawable.listen_btn),
                         contentDescription = "listen button",
                         modifier = Modifier
                             .size(screenWidth * 0.07f)
                             .padding(start = screenWidth * 0.02f)
-                            .clickable { listen(question.english, Locale.US) })
+                            .clickable { listen(question.english, Locale.US) }
+                    )
                 }
             }
             Spacer(modifier = Modifier.width(screenWidth * 0.08f))
@@ -287,16 +224,12 @@ fun LearnScreen(
                 Box(
                     modifier = Modifier
                         .size(screenWidth * 0.12f)
-                        .shadow(
-                            elevation = 10.dp,
-                            shape = RoundedCornerShape(16.dp)
-                        ) // Increased shadow for more visibility
-
+                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(16.dp))
                         .background(
                             brush = Brush.verticalGradient(
                                 colors = listOf(
-                                    Color(0xFF77E4D2), // Bright turquoise
-                                    Color(0xFF4ECDC4)  // Slightly darker shade
+                                    Color(0xFF77E4D2),
+                                    Color(0xFF4ECDC4)
                                 )
                             ),
                             shape = RoundedCornerShape(16.dp)
@@ -307,25 +240,22 @@ fun LearnScreen(
                                 Manifest.permission.RECORD_AUDIO
                             )
                             if (micPermission != PackageManager.PERMISSION_GRANTED) {
-                                Toast
-                                    .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
-                                    .show()
-                            } else
+                                Toast.makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                            } else {
                                 speechRecognizer.startListening(speechIntent)
+                            }
                         }
-
                 ) {
-                    // Glossy effect overlay
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .background(
                                 Brush.radialGradient(
                                     colors = listOf(
-                                        Color.White.copy(alpha = 0.4f), // Shiny highlight
+                                        Color.White.copy(alpha = 0.4f),
                                         Color.Transparent
                                     ),
-                                    center = Offset(30f, 20f), // Light source effect
+                                    center = Offset(30f, 20f),
                                     radius = 120f
                                 ),
                                 shape = RoundedCornerShape(16.dp)
@@ -337,7 +267,7 @@ fun LearnScreen(
                         modifier = Modifier
                             .fillMaxSize()
                             .padding(8.dp),
-                        contentScale = ContentScale.Fit // Ensures it fills the box
+                        contentScale = ContentScale.Fit
                     )
                 }
                 Spacer(modifier = Modifier.height(screenHeight * 0.05f))
@@ -349,13 +279,9 @@ fun LearnScreen(
                             modifier = Modifier.size(screenWidth * 0.055f),
                             alpha = if (index < correctCount) 1.0f else 0.4f
                         )
-                        //index 0 = image1, index1 = image2, index2 = image3
                     }
                 }
-
-
             }
-
         }
         Image(
             painter = painterResource(id = R.drawable.image_frontarrow),
@@ -363,14 +289,10 @@ fun LearnScreen(
             modifier = Modifier
                 .size(screenWidth * 0.155f)
                 .align(Alignment.CenterEnd)
-
-                .clickable(enabled = completedQuestion)
-                { navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}") },
+                .clickable(/*enabled = completedQuestion*/) {
+                    navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}")
+                },
             colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)
-
         )
-
-
     }
 }
-

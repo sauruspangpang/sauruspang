@@ -1,30 +1,12 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -56,7 +38,7 @@ fun QuizScreen(
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
-    var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
+    var progress by remember { mutableFloatStateOf(0.2f) }
 
     val questionId = "$categoryName-$dayIndex-$questionIndex"
     val solvedQuestion by remember { derivedStateOf { viewModel.isQuizSolved(questionId) } }
@@ -75,26 +57,20 @@ fun QuizScreen(
     if (showRetryDialog) {
         LearnRetry(
             onDismiss = { showRetryDialog = false },
-            onRetry = {
-                // 다시쓰기 동작 수행 (예: 캔버스 초기화)
-                // recognizedText = "Recognition Result: "
-                showRetryDialog = false
-            }
+            onRetry = { showRetryDialog = false }
         )
     }
+
     Box(
         modifier = Modifier
             .padding(5.dp)
             .fillMaxSize()
-
-
     ) {
-        // 배경이미지 설정
         Image(
             painter = painterResource(id = R.drawable.confetti_wallpaper),
             contentDescription = " ",
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
         Image(
             painter = painterResource(id = R.drawable.arrow),
@@ -118,7 +94,7 @@ fun QuizScreen(
                         if (questionIndex > 0) {
                             "quiz/$categoryName/$dayIndex/${questionIndex - 1}"
                         } else if (categoryName in listOf("직업")) {
-                            "WordInput/$categoryName/$dayIndex/${questionIndex}"
+                            "WordInput/$categoryName/$dayIndex/$questionIndex"
                         } else {
                             "camera/$categoryName/$dayIndex/${questions.size - 1}"
                         }
@@ -139,16 +115,13 @@ fun QuizScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-
-                    ) {
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Spacer(modifier = Modifier.size(30.dp))
                     Image(
                         painter = painterResource(id = question.imageId),
                         contentDescription = "question image",
-                        modifier = Modifier
-                            .size(200.dp)
-
+                        modifier = Modifier.size(200.dp)
                     )
                     Text(
                         question.korean,
@@ -165,7 +138,6 @@ fun QuizScreen(
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     Spacer(modifier = Modifier.size(50.dp))
-
                     answerOptions.forEach { answer ->
                         Button(
                             onClick = {
@@ -175,8 +147,6 @@ fun QuizScreen(
                                 } else {
                                     showRetryDialog = true
                                 }
-
-
                             },
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
@@ -186,35 +156,22 @@ fun QuizScreen(
                         }
                     }
                 }
-
             }
-
         }
-
         Image(
             painter = painterResource(id = R.drawable.image_frontarrow),
             contentDescription = "next question",
             modifier = Modifier
                 .size(140.dp)
                 .align(Alignment.CenterEnd)
-//                    .clickable(enabled = questionIndex < questions.size - 1)
-//                    {
-//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-//                        }
-//
-//                    }
                 .clickable(enabled = solvedQuestion) {
                     if (questionIndex == questions.size - 1) {
-                        navController.navigate("congrats/${categoryName}")
-
+                        navController.navigate("congrats/$categoryName")
                     } else {
                         navController.navigate("quiz/$categoryName/$dayIndex/${questionIndex + 1}")
                     }
                 },
-
             colorFilter = if (solvedQuestion) null else ColorFilter.tint(Color.Gray)
         )
     }
-
 }

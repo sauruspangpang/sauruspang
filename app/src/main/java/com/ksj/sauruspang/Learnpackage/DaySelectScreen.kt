@@ -3,19 +3,8 @@ package com.ksj.sauruspang.Learnpackage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -53,10 +42,10 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                         .size(80.dp)
                         .offset(y = (-5).dp)
                         .clickable {
-                            navController.popBackStack("home",false)
+                            navController.popBackStack("home", false)
                         }
                 )
-                ProfileBox(scoreViewModel =scoreViewModel, viewModel = viewModel)
+                ProfileBox(scoreViewModel = scoreViewModel, viewModel = viewModel)
             }
             Row(
                 modifier = Modifier
@@ -72,21 +61,16 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
     }
 }
 
-
-
 @Composable
 fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController) {
-    val totalDays = CategoryDayManager.getDay(categoryName) // 카테고리별로 업데이트된 dayNumber 가져오기
-    Row(
-        modifier = Modifier
-            .padding(30.dp)
-    ) {
+    val totalDays = CategoryDayManager.getDay(categoryName)
+    Row(modifier = Modifier.padding(30.dp)) {
         for (i in 0 until totalDays) {
             DayBox(
-                dayIndex = i, // 현재 인덱스를 dayIndex로 전달
-                isTop = i % 2 == 0, // 박스를 위쪽에 배치할지 아래쪽에 배치할지 결정
-                categoryName = categoryName, // 카테고리 이름 전달
-                navController = navController // NavController 전달
+                dayIndex = i,
+                isTop = i % 2 == 0,
+                categoryName = categoryName,
+                navController = navController
             )
         }
     }

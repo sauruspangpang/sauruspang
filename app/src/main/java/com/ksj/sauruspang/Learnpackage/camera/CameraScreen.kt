@@ -6,25 +6,11 @@ import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -66,7 +52,6 @@ fun CameraScreen(
     val categoryname = findCategory?.javaClass?.simpleName ?: "Unknown"
     findCategoryName = categoryname
 
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -88,21 +73,18 @@ fun CameraScreen(
                     .clickable {
                         clickCount++
                         if (clickCount == 1) {
-                            // Navigate to the LearnScreen of the same question index
                             navController.navigate("learn/$categoryName/$dayIndex/$questionIndex") {
                                 popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
                             }
                         } else {
-                            // Navigate to the LearnScreen of the previous question
                             if (questionIndex > 0) {
                                 navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}") {
                                     popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
                                 }
                             }
-                            clickCount = 0 // Reset click count after navigating back
+                            clickCount = 0
                         }
                     }
-
             )
             Box(
                 modifier = Modifier
@@ -111,132 +93,130 @@ fun CameraScreen(
                     .offset(y = (-15).dp)
                     .background(Color.LightGray)
                     .clickable {
-                        val camPermission =
-                            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                        val camPermission = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
                         if (camPermission != PackageManager.PERMISSION_GRANTED) {
-                            Toast
-                                .makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT)
-                                .show()
-                        } else
+                            Toast.makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT).show()
+                        } else {
                             navController.navigate("camerax")
-                        sharedRouteViewModel.sharedCategory = category
-                        sharedRouteViewModel.sharedClickCount = clickCount
-                        sharedRouteViewModel.sharedFront =
-                            "learn/$categoryName/$dayIndex/${questionIndex + 1}"
-                        sharedRouteViewModel.sharedPopUp = "learn/$categoryName/$dayIndex/0"
-                        sharedRouteViewModel.sharedQuestionIndex = questionIndex
-                        sharedRouteViewModel.sharedQuestion = question
-                        sharedRouteViewModel.sharedQuestions = questions
-                        sharedRouteViewModel.sharedBack =
-                            "learn/$categoryName/$dayIndex/${questionIndex - 1}"
-                        sharedRouteViewModel.sharedCategoryName = categoryName
-                        sharedRouteViewModel.sharedQuizStart = "quiz/$categoryName/$dayIndex/0"
-                    }
-
-            ) {
-                Box (modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center){
-                Text("누르면 사진을 찍어요!")
-                }
-            }
-
-                Text(
-                    question.english,
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .offset(y = -(20).dp),
-                    style = TextStyle(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 75.sp
-                    )
-                )
-                camViewModel.answerWord = question.english
-                Image(
-                    painter = painterResource(id = R.drawable.image_frontarrow),
-                    contentDescription = "next question",
-                    modifier = Modifier
-                        .size(140.dp)
-                        .align(Alignment.CenterEnd),
-                    colorFilter = ColorFilter.tint(Color.Gray)
-                )
-                Button(
-                    onClick = { /*todo*/ },
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd) // Move button to bottom end
-                        .size(width = 200.dp, height = 60.dp), // Bigger button
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
-                ) {
-                    Text("넘어가기")
-                }
-            }
-        }
-    }
-
-    @Composable
-    fun BackgroundScreen(category: QuizCategory?, navController: NavController) {
-        Column {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Image(
-                    painter = painterResource(R.drawable.arrow),
-                    contentDescription = "뒤로 가기 버튼",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(10.dp)
-                        .weight(1f)
-                        .clickable {
-                            category?.name?.let { categoryName ->
-                                navController.navigate("stage/$categoryName")
+                            sharedRouteViewModel.apply {
+                                sharedCategory = category
+                                sharedClickCount = clickCount
+                                sharedFront = "learn/$categoryName/$dayIndex/${questionIndex + 1}"
+                                sharedPopUp = "learn/$categoryName/$dayIndex/0"
+                                sharedQuestionIndex = questionIndex
+                                sharedQuestion = question
+                                sharedQuestions = questions
+                                sharedBack = "learn/$categoryName/$dayIndex/${questionIndex - 1}"
+                                sharedCategoryName = categoryName
+                                sharedQuizStart = "quiz/$categoryName/$dayIndex/0"
                             }
                         }
-                )
-                Text(
-                    "사진을 찍어보세요",
-                    fontSize = 50.sp,
-                    textAlign = TextAlign.Center,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier
-                        .weight(5f)
-                        .align(Alignment.CenterVertically)
-                )
-                Spacer(modifier = Modifier.weight(1f))
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(4f),
-                horizontalArrangement = Arrangement.SpaceBetween
+                    }
             ) {
-                Image(
-                    painter = painterResource(R.drawable.background_fruit_2),
-                    contentDescription = "오른쪽 배경",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(0.6f)
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("누르면 사진을 찍어요!")
+                }
+            }
+            Text(
+                question.english,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y = -(20).dp),
+                style = TextStyle(
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 75.sp
                 )
-                Spacer(modifier = Modifier.weight(1f))
-                Image(
-                    painter = painterResource(R.drawable.background_fruit_1),
-                    contentDescription = "왼쪽 배경",
-                    contentScale = ContentScale.Fit,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .weight(0.8f)
-                )
+            )
+            camViewModel.answerWord = question.english
+            Image(
+                painter = painterResource(id = R.drawable.image_frontarrow),
+                contentDescription = "next question",
+                modifier = Modifier
+                    .size(140.dp)
+                    .align(Alignment.CenterEnd),
+                colorFilter = ColorFilter.tint(Color.Gray)
+            )
+            Button(
+                onClick = { /*todo*/ },
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(width = 200.dp, height = 60.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
+            ) {
+                Text("넘어가기")
             }
         }
     }
+}
 
-    fun findCategoryByQuestion(question: QuizQuestion): QuizCategory? {
-        return QuizCategory.allCategories.firstOrNull { category ->
-            category.days.any { day ->
-                day.questions.contains(question)
-            }
+@Composable
+fun BackgroundScreen(category: QuizCategory?, navController: NavController) {
+    Column {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                painter = painterResource(R.drawable.arrow),
+                contentDescription = "뒤로 가기 버튼",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(10.dp)
+                    .weight(1f)
+                    .clickable {
+                        category?.name?.let { categoryName ->
+                            navController.navigate("stage/$categoryName")
+                        }
+                    }
+            )
+            Text(
+                "사진을 찍어보세요",
+                fontSize = 50.sp,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .weight(5f)
+                    .align(Alignment.CenterVertically)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(4f),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Image(
+                painter = painterResource(R.drawable.background_fruit_2),
+                contentDescription = "오른쪽 배경",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.6f)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            Image(
+                painter = painterResource(R.drawable.background_fruit_1),
+                contentDescription = "왼쪽 배경",
+                contentScale = ContentScale.Fit,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.8f)
+            )
         }
     }
+}
+
+fun findCategoryByQuestion(question: QuizQuestion): QuizCategory? {
+    return QuizCategory.allCategories.firstOrNull { category ->
+        category.days.any { day ->
+            day.questions.contains(question)
+        }
+    }
+}

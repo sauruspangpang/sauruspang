@@ -4,20 +4,10 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,7 +31,6 @@ fun CameraAnswerScreen(
     viewModel: CameraViewModel = viewModel(),
     sharedRouteViewModel: SharedRouteViewModel = viewModel(),
     scoreViewModel: ScoreViewModel
-
 ) {
     val capturedImage = viewModel.capturedImage
     val sharedvModel = sharedRouteViewModel.sharedValue
@@ -49,8 +38,6 @@ fun CameraAnswerScreen(
     var clickCount = sharedRouteViewModel.sharedClickCount
     val sharedFront = sharedRouteViewModel.sharedFront
     val sharedQuizStart = sharedRouteViewModel.sharedQuizStart
-
-
     val sharedPopUp = sharedRouteViewModel.sharedPopUp
     val questionIndex = sharedRouteViewModel.sharedQuestionIndex
     val question = sharedRouteViewModel.sharedQuestion
@@ -58,18 +45,14 @@ fun CameraAnswerScreen(
     val sharedBack = sharedRouteViewModel.sharedBack
     val categoryname = sharedRouteViewModel.sharedCategoryName
 
-
     var correct by remember { mutableStateOf(false) }
-
     var retryCount by remember { mutableIntStateOf(0) }
-    // 단일 상태 변수로 다이얼로그 표시 여부를 제어합니다.
     var showDialog by remember { mutableStateOf(false) }
-    // 화면이 처음 구성될 때 다이얼로그를 표시하도록 설정합니다.
+
     LaunchedEffect(Unit) {
         showDialog = true
     }
 
-    // showDialog가 true일 때, viewModel.isCorrect 값에 따라 적절한 다이얼로그 호출
     if (showDialog) {
         if (viewModel.isCorrect) {
             CaptureCorrect(
@@ -94,6 +77,7 @@ fun CameraAnswerScreen(
     BackHandler {
         navController.popBackStack(sharedvModel.toString(), true)
     }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -113,21 +97,18 @@ fun CameraAnswerScreen(
                     .align(Alignment.CenterStart)
                     .clickable {
                         if (clickCount == 1) {
-                            // Navigate to the LearnScreen of the same question index
                             navController.navigate(sharedFront) {
                                 popUpTo(sharedPopUp) { inclusive = false }
                             }
                         } else {
-                            // Navigate to the LearnScreen of the previous question
                             if (questionIndex > 0) {
                                 navController.navigate(sharedBack) {
                                     popUpTo(sharedPopUp) { inclusive = false }
                                 }
                             }
-                            clickCount = 0 // Reset click count after navigating back
+                            clickCount = 0
                         }
                     }
-
             )
             Box(
                 modifier = Modifier
@@ -139,7 +120,6 @@ fun CameraAnswerScreen(
                         navController.navigate("camerax")
                         sharedRouteViewModel.sharedCategory = category
                     }
-
             ) {
                 CapturedImage(capturedImage)
             }
@@ -153,9 +133,6 @@ fun CameraAnswerScreen(
                     fontSize = 75.sp
                 )
             )
-
-//            val nextRoute = TODO()
-
             Image(
                 painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
@@ -184,15 +161,12 @@ fun CameraAnswerScreen(
                     navController.navigate("camerax")
                 },
                 modifier = Modifier
-                    .align(Alignment.BottomStart) // Move button to bottom end
-                    .size(width = 200.dp, height = 60.dp), // Bigger button
-//                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
+                    .align(Alignment.BottomStart)
+                    .size(width = 200.dp, height = 60.dp)
             ) {
                 Text("다시 찍기")
             }
-
             Button(
-                //  enabled = (retryCount != 0 && (questionIndex ==questions.size - 1)),
                 enabled = !correct,
                 onClick = {
                     if (questionIndex == questions.size - 1) {
@@ -208,13 +182,11 @@ fun CameraAnswerScreen(
                     correct = false
                 },
                 modifier = Modifier
-                    .align(Alignment.BottomEnd) // Move button to bottom end
-                    .size(width = 200.dp, height = 60.dp), // Bigger button
-//                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
+                    .align(Alignment.BottomEnd)
+                    .size(width = 200.dp, height = 60.dp)
             ) {
                 Text("넘어가기")
             }
-
         }
     }
 }
