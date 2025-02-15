@@ -54,6 +54,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -174,7 +175,6 @@ fun LearnScreen(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-
             Image(painter = painterResource(id = R.drawable.image_backhome),
                 contentDescription = "",
                 modifier = Modifier
@@ -194,10 +194,11 @@ fun LearnScreen(
     ) {
         // 배경 이미지 설정
         Image(
-            painter = painterResource(id = R.drawable.confetti_wallpaper),
+            painter = painterResource(id = R.drawable.question_wallpaper),
             contentDescription = " ",
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+                .zIndex(-1f)
         )
 
         Image(painter = painterResource(id = R.drawable.image_backarrow),
