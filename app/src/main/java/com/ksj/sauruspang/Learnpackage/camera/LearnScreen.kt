@@ -171,37 +171,28 @@ fun LearnScreen(
     val screenHeight = configuration.screenHeightDp.dp
 
 
-    Column {
-        Box(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.question_wallpaper),
-                contentDescription = " ",
-                contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-                modifier = Modifier
-                    .matchParentSize()  // Box의 크기와 동일하게 설정
-                    .zIndex(-1f)
-            )
-            Image(painter = painterResource(id = R.drawable.image_backhome),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(screenWidth * 0.07f)
-                    .clickable {
-                        category?.name?.let { categoryName ->
-                            navController.popBackStack("stage/$categoryName", false)
-                        }
-                    }
-            )
-        }
-    }
+
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-
+        modifier = Modifier.fillMaxSize()
     ) {
-        // 배경 이미지 설정
-
+        Image(
+            painter = painterResource(id = R.drawable.question_wallpaper),
+            contentDescription = " ",
+            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+            modifier = Modifier
+                .matchParentSize()  // Box의 크기와 동일하게 설정
+                .zIndex(-1f)
+        )
+        Image(painter = painterResource(id = R.drawable.image_backhome),
+            contentDescription = "",
+            modifier = Modifier
+                .size(screenWidth * 0.07f)
+                .clickable {
+                    category?.name?.let { categoryName ->
+                        navController.popBackStack("stage/$categoryName", false)
+                    }
+                }
+        )
 
         Image(painter = painterResource(id = R.drawable.image_backarrow),
             contentDescription = "previous question",

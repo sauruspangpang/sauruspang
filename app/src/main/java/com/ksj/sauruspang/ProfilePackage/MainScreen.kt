@@ -1,5 +1,10 @@
 package com.ksj.sauruspang.ProfilePackage
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,13 +15,28 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -30,13 +50,23 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
+import com.commandiron.wheel_picker_compose.core.SelectorProperties
+import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
+import com.intel.button.WheelDatePicker2
 import com.ksj.sauruspang.R
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var name by remember { mutableStateOf("") }
@@ -99,12 +129,41 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             Row {
                 Column(modifier = Modifier.offset(y = 40.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        TextField(
-                            value = name,
-                            onValueChange = { name = it },
-                            modifier = Modifier.padding(bottom = 10.dp),
-                            placeholder = { Text("이름") }
-                        )
+
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp) // HIGHLIGHTED
+                        ) {
+                            OutlinedTextField(
+                                value = "$name ",
+                                onValueChange = { name = it },
+                                placeholder = { Text("이름") },
+                                label = {
+                                    Text(
+                                        "이름",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 18.sp,
+                                    )
+
+                                },
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.AccountBox,
+                                        contentDescription = "Select date"
+                                    )
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    containerColor = Color.White
+                                ),
+                                modifier = Modifier
+                                    .height(75.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .padding(5.dp)
+                            )
+                        }
+
+
+
                         Spacer(modifier = Modifier.width(60.dp))
                         Box(
                             modifier = Modifier
@@ -138,12 +197,138 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             )
                         }
                     }
-                    TextField(
-                        value = birth,
-                        onValueChange = { birth = it },
-                        modifier = Modifier.padding(bottom = 10.dp),
-                        placeholder = { Text("생년월일") }
-                    )
+                    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+                    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                    var showDatePicker by remember { mutableStateOf(false) }
+
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp) // HIGHLIGHTED
+                            .fillMaxWidth() // HIGHLIGHTED
+                    ) {
+                        //TextField(
+//                            value = birth,
+//                            onValueChange = { birth = it },
+//                            modifier = Modifier.padding(bottom = 10.dp),
+//                            placeholder = { Text("생년월일") }
+                        //     )
+
+                        OutlinedTextField(
+                            value = selectedDate.format(dateFormatter),
+                            onValueChange = { },
+                            label = {
+                                Text(
+                                    "생년월일",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 18.sp
+                                )
+                            },
+                            readOnly = true,
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.DateRange,
+                                    contentDescription = "Select date"
+                                )
+                            },
+                            colors = TextFieldDefaults.outlinedTextFieldColors(
+                                containerColor = Color.White
+                            ),
+                            modifier = Modifier
+                                .height(75.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .padding(5.dp)
+
+
+                        )
+
+                        Box(
+                            modifier = Modifier
+                                .matchParentSize()
+                                .background(Color.Transparent)
+                                .clickable { showDatePicker = !showDatePicker }
+                        )
+                    }
+                    AnimatedVisibility( // HIGHLIGHTED
+                        visible = showDatePicker, // HIGHLIGHTED
+                        enter = fadeIn() + expandVertically(), // HIGHLIGHTED
+                        exit = fadeOut() + shrinkVertically() // HIGHLIGHTED
+                    ) { // HIGHLIGHTED
+                        Popup(
+                            alignment = Alignment.TopStart
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(width = 400.dp, height = 330.dp)
+                                    .align(Alignment.CenterHorizontally)
+                                    .offset(y = -10.dp)
+                                    //   .shadow(elevation = 1.dp)
+                                    .padding(16.dp)
+                                    .clip(RoundedCornerShape(16.dp)) // HIGHLIGHTED
+                                    .background(Color.White, shape = RoundedCornerShape(16.dp))
+                                    .border(2.dp, color = Color.Gray, RoundedCornerShape(16.dp))
+                                    .padding(5.dp)
+
+                            ) {
+                                WheelDatePicker2(
+                                    startDate = selectedDate,
+                                    onSnappedDate = { newDate ->
+                                        selectedDate = newDate
+                                        birth = newDate.format(dateFormatter)
+                                    }
+
+                                )
+                                Divider(
+                                    color = Color.Gray, // You can change the color
+                                    thickness = 1.dp, // You can change the thickness
+                                    modifier = Modifier
+                                        .align(Alignment.BottomCenter)
+                                        .offset(y = -45.dp)
+                                )
+                                Button(
+                                    onClick = { showDatePicker = false },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFFFFFFFF
+                                        )
+                                    ),
+                                    shape = RoundedCornerShape(2.dp),
+                                    modifier = Modifier
+                                        .align(Alignment.BottomEnd)
+                                        .padding(top = 10.dp)
+                                ) {
+                                    Text(
+                                        "완료",
+                                        color = Color.Black,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                                Button(
+                                    onClick = { showDatePicker = false },
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = Color(
+                                            0xFFFFFFFF
+                                        )
+                                    ),
+                                    shape = RoundedCornerShape(2.dp),
+                                    modifier = Modifier
+                                        .align(Alignment.BottomStart)
+                                        .padding(top = 10.dp)
+                                ) {
+                                    Text(
+                                        "취소",
+                                        color = Color.Black,
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 14.sp
+                                    )
+                                }
+                            }
+                        }
+                    }
+
+                    // }
                     Row {
                         DynamicImageLoding { selectedImage = it }
                     }
@@ -183,3 +368,4 @@ fun getDrawableResourceId(resourceName: String): Int {
         0
     }
 }
+

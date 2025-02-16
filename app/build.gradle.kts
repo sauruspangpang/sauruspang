@@ -125,4 +125,6 @@ dependencies {
 
     // Compose 관련 라이브러리 (mutableStateOf 오류 해결)
     implementation("androidx.compose.runtime:runtime:1.6.7")
+
+    implementation ("com.github.commandiron:WheelPickerCompose:1.1.11")
 }

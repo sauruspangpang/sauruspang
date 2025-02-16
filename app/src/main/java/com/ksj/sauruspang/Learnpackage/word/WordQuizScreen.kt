@@ -42,6 +42,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -159,46 +160,46 @@ fun WordQuizScreen(
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
-    Column {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
-            Image(
-                painter = painterResource(id = R.drawable.image_backhome),
-                contentDescription = "",
-                modifier = Modifier
-                    .size(screenWidth * 0.07f)
-                    .clickable {
-                        category?.name?.let { categoryName ->
-                            navController.navigate("stage/$categoryName")
-                        }
-                    }
-            )
-        }
-    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        // 배경이미지 설정
         Image(
-            painter = painterResource(id = R.drawable.confetti_wallpaper),
+            painter = painterResource(id = R.drawable.question_wallpaper),
             contentDescription = " ",
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
+
         Image(
-            painter = painterResource(id = R.drawable.image_backarrow),
+            painter = painterResource(id = R.drawable.image_backhome),
             contentDescription = "",
             modifier = Modifier
-                .size(screenWidth * 0.15f)
+                .size(screenWidth * 0.07f)
+                .clickable {
+                    category?.name?.let { categoryName ->
+                        navController.popBackStack("stage/$categoryName", false)
+                    }
+                }
+        )
+
+
+        // 배경이미지 설정
+
+        Image(
+            painter = painterResource(id = R.drawable.image_backarrow),
+            contentDescription = "previous question",
+            alpha = if (questionIndex==0) 0.0f else 1.0f,
+            modifier = Modifier
+                .size(screenWidth * 0.155f, screenHeight*0.25f)
                 .align(Alignment.CenterStart)
                 .clickable {
                     if (questionIndex > 0) {
                         navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex - 1}")
                     }
                 }
+
         )
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -208,7 +209,7 @@ fun WordQuizScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
 
-                ) {
+            ) {
                 Spacer(modifier = Modifier.height(screenHeight * 0.1f))
                 Image(painter = painterResource(id = question.imageId),
                     contentDescription = "question image",
@@ -349,7 +350,7 @@ fun WordQuizScreen(
                 .size(screenWidth * 0.155f)
                 .align(Alignment.CenterEnd)
                 .offset(x = -(screenWidth * 0.03f))
-                .clickable(enabled = completedQuestion)
+                .clickable//(enabled = completedQuestion)
                 {
                     navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex}")
                 },
