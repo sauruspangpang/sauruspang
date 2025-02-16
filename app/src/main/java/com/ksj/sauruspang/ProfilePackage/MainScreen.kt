@@ -135,7 +135,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 .padding(horizontal = 16.dp) // HIGHLIGHTED
                         ) {
                             OutlinedTextField(
-                                value = "$name ",
+                                value = name ,
                                 onValueChange = { name = it },
                                 placeholder = { Text("이름") },
                                 label = {
