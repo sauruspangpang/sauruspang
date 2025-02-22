@@ -3,8 +3,6 @@ package com.ksj.sauruspang.ProfilePackage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,8 +15,10 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,22 +29,16 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.ProfilePackage.Profile
-import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 
 @Composable
 fun EditProfileDialog(
     profiles: List<Profile>,
     onDismiss: () -> Unit,
-    onDelete: (List<Profile>) -> Unit
+    onDelete: (Profile) -> Unit
 ) {
-    // 선택된 프로필들을 profileId를 key로 저장 (여러 개 선택 가능)
-    val selectedProfiles = remember { mutableStateMapOf<Int, Boolean>() }
-    // 초기값 모두 false
-    profiles.forEach { profile ->
-        if (selectedProfiles[profile.userprofile] == null) {
-            selectedProfiles[profile.userprofile] = false
-        }
-    }
+    // 단일 선택 상태: 현재 선택된 프로필의 userprofile 값을 저장 (없으면 null)
+    var selectedProfileId by remember { mutableStateOf<Int?>(null) }
+
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text("프로필 편집", fontSize = 20.sp) },
@@ -56,7 +50,8 @@ fun EditProfileDialog(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Start
                     ) {
                         Image(
                             painter = painterResource(id = profile.selectedImage),
@@ -73,9 +68,9 @@ fun EditProfileDialog(
                             fontSize = 16.sp
                         )
                         Checkbox(
-                            checked = selectedProfiles[profile.userprofile] ?: false,
+                            checked = selectedProfileId == profile.userprofile,
                             onCheckedChange = { checked ->
-                                selectedProfiles[profile.userprofile] = checked
+                                selectedProfileId = if (checked) profile.userprofile else null
                             }
                         )
                     }
@@ -85,9 +80,12 @@ fun EditProfileDialog(
         confirmButton = {
             Button(
                 onClick = {
-                    // 필터링: 선택된 프로필들을 리스트로 만듭니다.
-                    val toDelete = profiles.filter { selectedProfiles[it.userprofile] == true }
-                    onDelete(toDelete)
+                    selectedProfileId?.let { id ->
+                        val profileToDelete = profiles.find { it.userprofile == id }
+                        if (profileToDelete != null) {
+                            onDelete(profileToDelete)
+                        }
+                    }
                 }
             ) {
                 Text("삭제")

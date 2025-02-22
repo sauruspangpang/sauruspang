@@ -192,15 +192,13 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
         }
     }
 
-    // 편집 다이얼로그 (삭제 기능 포함)
+// 편집 다이얼로그 (삭제 기능 포함)
     if (showEditDialog) {
         EditProfileDialog(
             profiles = profiles,
             onDismiss = { showEditDialog = false },
-            onDelete = { selectedProfiles ->
-                selectedProfiles.forEach { profile ->
-                    viewModel.deleteProfile(profile)
-                }
+            onDelete = { selectedProfile ->
+                viewModel.deleteProfile(selectedProfile)
                 showEditDialog = false
             }
         )
