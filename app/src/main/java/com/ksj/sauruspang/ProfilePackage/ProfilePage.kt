@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.R
-
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 
 @Composable
 fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
@@ -49,8 +49,8 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
         Image(
             painter = painterResource(R.drawable.kidsprofile_wallpaper),
             contentDescription = null,
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
         Box(
             contentAlignment = Alignment.TopCenter,
@@ -69,7 +69,6 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 modifier = Modifier.offset(y = 10.dp)
             )
         }
-
         // 프로필 리스트
         Row(
             modifier = Modifier
@@ -81,12 +80,12 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
             profiles.forEachIndexed { index, profile ->
                 Column(
                     modifier = Modifier
-                        .clip(RoundedCornerShape(12.dp)) // 둥근 모서리
-                        .background(Color(0xFFFFAE64)) // 배경색
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color(0xFFFFAE64))
                         .drawBehind {
                             drawRoundRect(
-                                color = Color(0xFFFDD4AA), // 그림자 색상
-                                topLeft = Offset(-8.dp.toPx(), -8.dp.toPx()), // 우측 하단으로 이동
+                                color = Color(0xFFFDD4AA),
+                                topLeft = Offset(-8.dp.toPx(), -8.dp.toPx()),
                                 size = size,
                                 cornerRadius = CornerRadius(12.dp.toPx())
                             )
@@ -106,7 +105,6 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                             .padding(20.dp)
                             .size(120.dp)
                     )
-
                     Text(
                         text = "이름: ${profile.name}",
                         style = MaterialTheme.typography.bodyLarge
@@ -115,28 +113,31 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                         text = "생년월일: ${profile.birth}",
                         style = MaterialTheme.typography.bodyLarge
                     )
+                    // 추가: 각 프로필의 점수를 보여줌
+                    Text(
+                        text = "Score: ${profile.score}",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
                     Spacer(modifier = Modifier.height(30.dp))
                 }
                 Spacer(modifier = Modifier.padding(30.dp))
             }
-
             // 새 프로필 추가 버튼
             Column(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(12.dp)) // 둥근 모서리
+                    .clip(RoundedCornerShape(12.dp))
                     .width(150.dp)
                     .height(200.dp)
-                    .background(Color(0xFFFFAE64)) // 배경색
+                    .background(Color(0xFFFFAE64))
                     .drawBehind {
                         drawRoundRect(
-                            color = Color(0xFFFDD4AA), // 그림자 색상
-                            topLeft = Offset(-8.dp.toPx(), -8.dp.toPx()), // 우측 하단으로 이동
+                            color = Color(0xFFFDD4AA),
+                            topLeft = Offset(-8.dp.toPx(), -8.dp.toPx()),
                             size = size,
                             cornerRadius = CornerRadius(12.dp.toPx())
                         )
                     }
-                    .clickable { navController.navigate("main") } // 새 프로필 추가 화면으로 이동
-                ,
+                    .clickable { navController.navigate("main") },
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -144,15 +145,15 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                     modifier = Modifier
                         .padding(top = 10.dp)
                         .size(120.dp)
-                        .clip(RoundedCornerShape(12.dp)) // 둥근 모서리 적용
-                        .background(Color.White), // 흰색 배경 추가
-                    contentAlignment = Alignment.Center // 아이콘을 중앙 정렬
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White),
+                    contentAlignment = Alignment.Center
                 ) {
                     Icon(
                         imageVector = Icons.Default.Add,
                         contentDescription = "ADD",
-                        modifier = Modifier.size(80.dp), // 아이콘 크기 조정 (배경보다 작게)
-                        tint = Color.Black // 아이콘 색상 설정 (원하는 색상으로 변경 가능)
+                        modifier = Modifier.size(80.dp),
+                        tint = Color.Black
                     )
                 }
                 Text(

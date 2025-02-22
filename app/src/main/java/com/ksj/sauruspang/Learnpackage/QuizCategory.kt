@@ -324,7 +324,15 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
                     QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
                     QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
                 )
+            ),
+            QuizDay(
+                2, listOf(
+                    QuizQuestion(R.drawable.jobs_teacher, "선생님", "Teacher"),
+                    QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
+                    QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
+                )
             )
+
         )
     )
     object SolarSystem : QuizCategory(

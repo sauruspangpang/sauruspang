@@ -2,7 +2,6 @@
 
 package com.ksj.sauruspang.Learnpackage
 
-import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,15 +22,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,7 +37,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -58,26 +53,23 @@ import com.ksj.sauruspang.R
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: ProfileViewmodel,
-    scoreViewModel: ScoreViewModel
+    viewModel: ProfileViewmodel
 ) {
-    val score by scoreViewModel.correctAnswers
+    // 기존의 scoreViewModel 제거 – 이제 프로필의 score를 viewModel에서 사용
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
-
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.choosecategory_wallpaper),
             contentDescription = null,
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Row(
                 modifier = Modifier
@@ -85,7 +77,6 @@ fun HomeScreen(
                     .padding(start = 30.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Image(
                     painter = painterResource(id = R.drawable.image_backhome),
                     contentDescription = "button to profile screen",
@@ -95,15 +86,14 @@ fun HomeScreen(
                             navController.popBackStack()
                         }
                 )
-
-                ProfileBox(scoreViewModel, viewModel)
+                // ProfileBox 수정 – scoreViewModel 대신 viewModel을 사용하여 선택된 프로필의 score 표시
+                ProfileBox(viewModel = viewModel)
                 Spacer(Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.image_photobook),
                     contentDescription = "",
                     modifier = Modifier
                         .clickable { navController.navigate("pictorial") }
-
                 )
             }
             Spacer(modifier = Modifier.height(30.dp))
@@ -117,7 +107,6 @@ fun HomeScreen(
                     composition = composition,
                     iterations = LottieConstants.IterateForever
                 )
-
                 LottieAnimation(
                     composition = composition,
                     progress = progress,
@@ -125,20 +114,16 @@ fun HomeScreen(
                         .padding(horizontal = 20.dp)
                         .clickable { navController.navigate("randomPhotoTaker") }
                 )
-
-                // Scrollable Row using LazyRow
                 LazyRow(
                     modifier = Modifier
                         .padding(start = 30.dp, bottom = 30.dp),
                     horizontalArrangement = Arrangement.spacedBy(40.dp)
                 ) {
-                    // 반복적으로 카테고리 박스 생성
                     QuizCategory.allCategories.forEachIndexed { index, category ->
                         item(key = index) {
                             CategoryBox(category, navController)
                         }
                     }
-                    // 마지막 Spacer
                     item {
                         Spacer(modifier = Modifier.width(30.dp))
                     }
@@ -148,32 +133,30 @@ fun HomeScreen(
     }
 }
 
-
 @Composable
 fun CategoryBox(category: QuizCategory, navController: NavController) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // 박스 본체
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .shadow(
                     elevation = 8.dp,
                     shape = RoundedCornerShape(12.dp),
-                    spotColor = Color(0xFF000000) // 그림자 색상
+                    spotColor = Color(0xFF000000)
                 )
-                .clip(RoundedCornerShape(12.dp)) // 둥근 모서리 적용
-                .background(Color(0xFFFFFFFF)) // 배경색 적용
+                .clip(RoundedCornerShape(12.dp))
+                .background(Color(0xFFFFFFFF))
                 .clickable { navController.navigate("stage/${category.name}") }
                 .padding(top = 30.dp, start = 30.dp, end = 30.dp)
                 .height(150.dp)
                 .width(110.dp)
         ) {
             Column(
-                horizontalAlignment = Alignment.CenterHorizontally, // 가운데 정렬
+                horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
-                    .fillMaxWidth() // 전체 크기 채우기
+                    .fillMaxWidth()
                     .wrapContentHeight()
             ) {
                 Image(
@@ -183,16 +166,15 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                         .align(Alignment.CenterHorizontally)
                         .scale(1.2f)
                 )
-                Spacer(modifier = Modifier.height(20.dp)) // 20dp 간격 추가
+                Spacer(modifier = Modifier.height(20.dp))
                 Text(
                     category.name,
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Spacer(modifier = Modifier.height(20.dp)) // 20dp 간격 추가
+                Spacer(modifier = Modifier.height(20.dp))
             }
         }
-
         Image(
             painter = painterResource(id = R.drawable.image_cameramark),
             contentDescription = "CameraMark",
@@ -205,29 +187,23 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                 .width(80.dp)
                 .align(Alignment.TopEnd)
         )
-
-
     }
 }
 
-@SuppressLint("MutableCollectionMutableState")
 @Composable
-fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
-    val selectedIndex by viewModel.selectedProfileIndex // 선택된 인덱스 가져오기
-    val profile = viewModel.profiles // 프로필 리스트 가져오기
-    val selectedProfile = profile.getOrNull(selectedIndex)
-
+fun ProfileBox(viewModel: ProfileViewmodel) {
+    val selectedIndex = viewModel.selectedProfileIndex.value
+    val profile = viewModel.profiles.getOrNull(selectedIndex)
     Box(contentAlignment = Alignment.BottomCenter) {
         Image(
             painter = painterResource(R.drawable.image_woodboard),
             contentDescription = "",
         )
-        selectedProfile?.let { profile ->
+        profile?.let { profile ->
             Row(
                 modifier = Modifier
                     .padding(horizontal = 0.dp)
-                    .offset(y = (-10).dp)
-                ,
+                    .offset(y = (-10).dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -246,7 +222,7 @@ fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
                 ) {
                     Text(
                         text = profile.name,
-                        style = TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        style = androidx.compose.ui.text.TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
@@ -255,9 +231,8 @@ fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
                             modifier = Modifier.size(36.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
-                        val score by scoreViewModel.correctAnswers
                         Text(
-                            "${score * 5}",
+                            "${profile.score * 5}",
                             fontSize = 24.sp,
                             fontWeight = FontWeight.Bold
                         )

@@ -9,5 +9,7 @@ data class User(
     @PrimaryKey(autoGenerate = true) val uid: Int = 0,
     val name: String?,
     val birth: String?,
-    @ColumnInfo(name = "selected_image") val selectedImage: Int?
+    @ColumnInfo(name = "selected_image") val selectedImage: Int?,
+    val score: Int = 0,
+    @ColumnInfo(name = "category_day_status") val categoryDayStatus: String? = null
 )

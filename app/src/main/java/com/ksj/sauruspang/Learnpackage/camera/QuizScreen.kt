@@ -1,7 +1,6 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -54,16 +53,26 @@ fun QuizScreen(
     scoreViewModel: ScoreViewModel
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
+    // 현재 day's questions 목록
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
-    var progress by remember { mutableFloatStateOf(0.2f) } // Example progress (50%)
+    var progress by remember { mutableFloatStateOf(0.2f) }
 
+    // 각 질문별 식별자
     val questionId = "$categoryName-$dayIndex-$questionIndex"
+    // QuizCategory의 해당 QuizDay에 포함된 문제 수를 기준으로 정답 횟수 임계치를 결정합니다.
+    val threshold = questions.size
+
+    // 기존 퀴즈 완료 여부 및 정답 횟수를 viewModel에서 가져옴
     val solvedQuestion by remember { derivedStateOf { viewModel.isQuizSolved(questionId) } }
+    val correctCount by remember { derivedStateOf { viewModel.getCorrectCount(questionId) } }
+    // 현재 문제는 정답 횟수가 threshold 이상일 때 완료로 간주
+    val completedQuestion by remember { derivedStateOf { correctCount >= threshold } }
 
     var showCorrectDialog by remember { mutableStateOf(false) }
     var showRetryDialog by remember { mutableStateOf(false) }
 
+    // 보기(정답 항목)는 매번 섞어서 보여줍니다.
     val answerOptions = remember { questions.map { it.english }.shuffled() }
 
     if (showCorrectDialog) {
@@ -75,26 +84,19 @@ fun QuizScreen(
     if (showRetryDialog) {
         LearnRetry(
             onDismiss = { showRetryDialog = false },
-            onRetry = {
-                // 다시쓰기 동작 수행 (예: 캔버스 초기화)
-                // recognizedText = "Recognition Result: "
-                showRetryDialog = false
-            }
+            onRetry = { showRetryDialog = false }
         )
     }
     Box(
         modifier = Modifier
             .padding(5.dp)
             .fillMaxSize()
-
-
     ) {
-        // 배경이미지 설정
         Image(
             painter = painterResource(id = R.drawable.confetti_wallpaper),
-            contentDescription = " ",
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentDescription = "background",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.matchParentSize()
         )
         Image(
             painter = painterResource(id = R.drawable.arrow),
@@ -102,9 +104,7 @@ fun QuizScreen(
             modifier = Modifier
                 .size(50.dp)
                 .clickable {
-                    category?.name?.let { categoryName ->
-                        navController.navigate("stage/$categoryName")
-                    }
+                    category?.name?.let { navController.navigate("stage/$it") }
                 }
         )
         Image(
@@ -118,7 +118,7 @@ fun QuizScreen(
                         if (questionIndex > 0) {
                             "quiz/$categoryName/$dayIndex/${questionIndex - 1}"
                         } else if (categoryName in listOf("직업")) {
-                            "WordInput/$categoryName/$dayIndex/${questionIndex}"
+                            "WordInput/$categoryName/$dayIndex/$questionIndex"
                         } else {
                             "camera/$categoryName/$dayIndex/${questions.size - 1}"
                         }
@@ -139,19 +139,16 @@ fun QuizScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-
-                    ) {
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Spacer(modifier = Modifier.size(30.dp))
                     Image(
                         painter = painterResource(id = question.imageId),
                         contentDescription = "question image",
-                        modifier = Modifier
-                            .size(200.dp)
-
+                        modifier = Modifier.size(200.dp)
                     )
                     Text(
-                        question.korean,
+                        text = question.korean,
                         style = TextStyle(
                             fontWeight = FontWeight.Bold,
                             fontSize = 45.sp
@@ -160,61 +157,51 @@ fun QuizScreen(
                 }
                 Spacer(modifier = Modifier.size(50.dp))
                 Column(
-                    modifier = Modifier
-                        .offset(x = 30.dp, y = (-20).dp),
+                    modifier = Modifier.offset(x = 30.dp, y = (-20).dp),
                     verticalArrangement = Arrangement.spacedBy(20.dp)
                 ) {
                     Spacer(modifier = Modifier.size(50.dp))
-
                     answerOptions.forEach { answer ->
                         Button(
                             onClick = {
                                 if (answer == question.english) {
-                                    viewModel.markQuizAsSolved(questionId)
-                                    showCorrectDialog = true
+                                    // 정답 시, 해당 질문의 정답 횟수를 증가시키고 점수를 5점 추가
+                                    viewModel.increaseCorrectCount(questionId)
+                                    val currentScore = viewModel.profiles.getOrNull(viewModel.selectedProfileIndex.value)?.score ?: 0
+                                    viewModel.updateScore(currentScore + 5)
+                                    // 정답 횟수가 threshold에 도달하면 퀴즈를 완료로 처리
+                                    if (viewModel.getCorrectCount(questionId) >= threshold) {
+                                        viewModel.markQuizAsSolved(questionId)
+                                        showCorrectDialog = true
+                                    }
                                 } else {
                                     showRetryDialog = true
                                 }
-
-
                             },
                             modifier = Modifier
                                 .fillMaxWidth(0.5f)
                                 .padding(4.dp)
                         ) {
-                            Text(answer, fontSize = 24.sp)
+                            Text(text = answer, fontSize = 24.sp)
                         }
                     }
                 }
-
             }
-
         }
-
         Image(
             painter = painterResource(id = R.drawable.image_frontarrow),
             contentDescription = "next question",
             modifier = Modifier
                 .size(140.dp)
                 .align(Alignment.CenterEnd)
-//                    .clickable(enabled = questionIndex < questions.size - 1)
-//                    {
-//                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex + 1}") {
-//                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
-//                        }
-//
-//                    }
                 .clickable(enabled = solvedQuestion) {
                     if (questionIndex == questions.size - 1) {
                         navController.navigate("congrats/${categoryName}")
-
                     } else {
                         navController.navigate("quiz/$categoryName/$dayIndex/${questionIndex + 1}")
                     }
                 },
-
             colorFilter = if (solvedQuestion) null else ColorFilter.tint(Color.Gray)
         )
     }
-
 }

@@ -1,6 +1,5 @@
 package com.ksj.sauruspang
 
-import Learnpackage.camera.LearnScreen
 import android.os.Bundle
 import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
@@ -34,6 +33,7 @@ import com.ksj.sauruspang.Learnpackage.camera.CongratScreen
 import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
 import com.ksj.sauruspang.Learnpackage.camera.GPTCameraViewModel
 import com.ksj.sauruspang.Learnpackage.camera.GPTRandomPhotoTakerScreen
+import com.ksj.sauruspang.Learnpackage.camera.LearnScreen
 import com.ksj.sauruspang.Learnpackage.camera.QuizScreen
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.Learnpackage.camera.ShowCameraPreviewScreen
@@ -124,7 +124,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 fullWidth / 1
             }
         }) {
-            HomeScreen(navController, viewmodel, scoreViewModel)
+            HomeScreen(navController, viewmodel)
         }
         composable("camerax") {
             ShowCameraPreviewScreen(
@@ -142,7 +142,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
-            StageScreen(navController, categoryName, viewmodel, scoreViewModel)
+            StageScreen(navController, categoryName, viewmodel)
             // Set the current category for later use
             CategoryDayManager.setCurrentCategoryName(categoryName)
         }

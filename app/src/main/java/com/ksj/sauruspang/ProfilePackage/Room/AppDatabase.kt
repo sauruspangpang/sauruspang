@@ -7,7 +7,8 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [User::class], version = 3, exportSchema = false)
+// 버전을 4로 올리고 새 컬럼(score, category_day_status)을 추가
+@Database(entities = [User::class], version = 4, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao
 
@@ -21,14 +22,13 @@ abstract class AppDatabase : RoomDatabase() {
                     context,
                     AppDatabase::class.java, "sauruspang.db"
                 )
-                    .addMigrations(MIGRATION_2_3)
+                    .addMigrations(MIGRATION_2_3, MIGRATION_3_4)
                     .build().also { instance = it }
             }
         }
 
         val MIGRATION_2_3 = object : Migration(2, 3) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // 새 컬럼 selected_image_path, catalog_image_path를 추가
                 database.execSQL(
                     """
             CREATE TABLE IF NOT EXISTS User_new (
@@ -40,23 +40,23 @@ abstract class AppDatabase : RoomDatabase() {
             )
         """.trimIndent()
                 )
-
-                // 기존 데이터를 새로운 테이블로 이동 (selectedImage -> selected_image_path, catalogImage -> catalog_image_path)
                 database.execSQL(
                     """
             INSERT INTO User_new (uid, name, birth, selected_image_path, catalog_image_path)
             SELECT uid, name, birth, selectedImage, catalogImage FROM User
         """.trimIndent()
                 )
-
-                // 기존 테이블 삭제 후 새 테이블로 변경
                 database.execSQL("DROP TABLE User")
                 database.execSQL("ALTER TABLE User_new RENAME TO User")
             }
         }
+
+        // 마이그레이션 3 -> 4 : score와 category_day_status 컬럼 추가
+        val MIGRATION_3_4 = object : Migration(3, 4) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE User ADD COLUMN score INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE User ADD COLUMN category_day_status TEXT")
+            }
+        }
     }
 }
-
-
-
-
