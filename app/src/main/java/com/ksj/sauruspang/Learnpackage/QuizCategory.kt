@@ -1,5 +1,6 @@
 package com.ksj.sauruspang.Learnpackage
 
+import android.util.Log
 import com.ksj.sauruspang.R
 
 data class QuizDay(

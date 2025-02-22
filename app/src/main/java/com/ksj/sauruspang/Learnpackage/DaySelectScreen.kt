@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -76,29 +77,38 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
 
 @Composable
 fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavController) {
-    val totalDays = CategoryDayManager.getDay(categoryName) // 카테고리별로 업데이트된 dayNumber 가져오기
+    val totalDays = CategoryDayManager.getDay(categoryName) // 현재 카테고리의 활성화된 최대 day 가져오기
+
     Row(
         modifier = Modifier
             .padding(30.dp)
     ) {
-        for (i in 0 until totalDays) {
+        for (i in 0 until days.size) { // days.size를 기준으로 반복
+            val isActive = i < totalDays // 현재 day가 활성화된 상태인지 확인
+
             DayBox(
                 dayIndex = i, // 현재 인덱스를 dayIndex로 전달
                 isTop = i % 2 == 0, // 박스를 위쪽에 배치할지 아래쪽에 배치할지 결정
                 categoryName = categoryName, // 카테고리 이름 전달
-                navController = navController // NavController 전달
+                navController = navController, // NavController 전달
+                isActive = isActive // 활성화 여부 전달
             )
         }
     }
 }
 
+
 @Composable
-fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: NavController) {
+fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: NavController, isActive: Boolean) {
+    val totalDays = CategoryDayManager.getDay(categoryName) // 현재 활성화된 Day 가져오기
+    val isActive = dayIndex < totalDays // 현재 day가 활성화된 상태인지 확인
+
     Box(
         modifier = Modifier
             .offset(y = if (isTop) (-20).dp else 80.dp)
             .size(width = 140.dp, height = 90.dp)
-            .clickable {
+            .alpha(if (isActive) 1f else 0.3f) // 비활성화된 Day는 투명하게 처리
+            .clickable(enabled = isActive) { // 비활성화된 Day는 클릭 방지
                 navController.navigate("learn/$categoryName/$dayIndex")
             },
         contentAlignment = Alignment.Center
@@ -113,3 +123,4 @@ fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: N
         )
     }
 }
+
