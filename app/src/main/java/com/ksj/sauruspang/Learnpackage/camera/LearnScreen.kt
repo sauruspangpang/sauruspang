@@ -324,7 +324,7 @@ fun LearnScreen(
             modifier = Modifier
                 .size(screenWidth * 0.155f)
                 .align(Alignment.CenterEnd)
-                .clickable(enabled = completedQuestion) {
+                .clickable(/*enabled = completedQuestion*/) {
                     navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}")
                 },
             colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)

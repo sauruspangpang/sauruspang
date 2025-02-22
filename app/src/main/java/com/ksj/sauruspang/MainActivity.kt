@@ -135,10 +135,10 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             )
         }
         composable("answer") {
-            CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel, scoreViewModel)
+            CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel, scoreViewModel, viewmodel)
         }
         composable("pictorial") {
-            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel, cameraViewModel)
+            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""

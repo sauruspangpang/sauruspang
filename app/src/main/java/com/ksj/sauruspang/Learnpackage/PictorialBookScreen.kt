@@ -1,6 +1,6 @@
 package com.ksj.sauruspang.Learnpackage
 
-import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -22,6 +22,7 @@ import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory.Companion.allCategories
-import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 
@@ -46,50 +46,24 @@ import com.ksj.sauruspang.R
 fun PictorialBookScreen(
     navController: NavController,
     categoryName: String,
-    viewModel: ProfileViewmodel,
-    cameraViewModel: CameraViewModel
+    viewModel: ProfileViewmodel
 ) {
+    // 기존 디자인의 탭 및 스케치북 레이아웃 유지
     val categories = allCategories.map { it.name }
     val scrollState = rememberScrollState()
-    var selectedCategory by remember {
-        mutableStateOf(categories.find { it == categoryName } ?: "과일과 야채")
-    }
-    var selectedIndex = categories.indexOf(selectedCategory).coerceAtLeast(0)
-    var indexValue = 0
-    var imageList by remember { mutableStateOf(listOf<Bitmap>()) }
-    var wordList by remember { mutableStateOf(listOf<String>()) }
+    var selectedCategory by remember { mutableStateOf(categoryName) }
+    val selectedIndex = categories.indexOf(selectedCategory).coerceAtLeast(0)
 
-    when (selectedCategory) {
-        "과일과 야채" -> {
-            indexValue = cameraViewModel.correctFruitWordList.size
-            imageList = cameraViewModel.correctFruitImageList
-            wordList = cameraViewModel.correctFruitWordList
-        }
+    // 프로필별 도감 데이터는 ProfileViewmodel의 getCatalogEntries()를 통해 불러옴
+    // (이 Flow는 현재 선택된 프로필의 도감 항목을 반환합니다.)
+    val catalogEntries by viewModel.getCatalogEntries().collectAsState(initial = emptyList())
 
-        "동물" -> {
-            indexValue = cameraViewModel.correctAnimalWordList.size
-            imageList = cameraViewModel.correctAnimalImageList
-            wordList = cameraViewModel.correctAnimalWordList
-        }
-
-        "색" -> {
-            indexValue = cameraViewModel.correctColorWordList.size
-            imageList = cameraViewModel.correctColorImageList
-            wordList = cameraViewModel.correctColorWordList
-        }
-
-        "직업" -> {
-            indexValue = cameraViewModel.correctJobWordList.size
-            imageList = cameraViewModel.correctJobImageList
-            wordList = cameraViewModel.correctJobWordList
-        }
-    }
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.choosecategory_wallpaper),
             contentDescription = "배경 이미지",
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier.fillMaxSize()
         )
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
@@ -109,12 +83,10 @@ fun PictorialBookScreen(
                 )
                 ScrollableTabRow(
                     selectedTabIndex = selectedIndex,
-//                    modifier = Modifier.width(IntrinsicSize.Min), // 내용에 맞게 너비 조절
                     edgePadding = 0.dp,
                     modifier = Modifier.wrapContentWidth(),
                     containerColor = Color.Transparent,
                     contentColor = Color.Black
-
                 ) {
                     categories.forEachIndexed { index, category ->
                         Tab(
@@ -133,7 +105,7 @@ fun PictorialBookScreen(
                     .horizontalScroll(scrollState),
                 horizontalArrangement = Arrangement.Start
             ) {
-                for (index in 0..<indexValue) {
+                catalogEntries.forEach { entry ->
                     Box(
                         modifier = Modifier
                             .width(300.dp)
@@ -156,24 +128,22 @@ fun PictorialBookScreen(
                                 .width(200.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
+                            // Convert ByteArray to Bitmap
+                            val bitmap = BitmapFactory.decodeByteArray(entry.image, 0, entry.image.size)
                             Image(
-                                bitmap = imageList[index].asImageBitmap(),
+                                bitmap = bitmap.asImageBitmap(),
                                 contentDescription = "Captured Image",
                                 contentScale = ContentScale.Fit,
                                 modifier = Modifier
-                                    .weight(3f)
                                     .padding(15.dp)
                                     .fillMaxSize()
                             )
                             Text(
-                                wordList[index],
+                                text = entry.answer,
                                 fontSize = 30.sp,
                                 fontWeight = FontWeight.Bold,
                                 textAlign = TextAlign.Center,
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .width(250.dp)
-                                    .fillMaxSize()
+                                modifier = Modifier.fillMaxWidth()
                             )
                         }
                     }

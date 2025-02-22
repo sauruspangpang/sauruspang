@@ -5,8 +5,11 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
@@ -31,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
+import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.CaptureCorrect
 import com.ksj.sauruspang.util.CaptureRetry
@@ -40,17 +44,16 @@ fun CameraAnswerScreen(
     navController: NavController,
     viewModel: CameraViewModel = viewModel(),
     sharedRouteViewModel: SharedRouteViewModel = viewModel(),
-    scoreViewModel: ScoreViewModel
-
+    scoreViewModel: ScoreViewModel,
+    profileViewmodel: ProfileViewmodel // 프로필별 도감 저장용 뷰모델
 ) {
+    // 기존 CameraViewModel 및 SharedRouteViewModel 값들
     val capturedImage = viewModel.capturedImage
     val sharedvModel = sharedRouteViewModel.sharedValue
     val category = sharedRouteViewModel.sharedCategory
     var clickCount = sharedRouteViewModel.sharedClickCount
     val sharedFront = sharedRouteViewModel.sharedFront
     val sharedQuizStart = sharedRouteViewModel.sharedQuizStart
-
-
     val sharedPopUp = sharedRouteViewModel.sharedPopUp
     val questionIndex = sharedRouteViewModel.sharedQuestionIndex
     val question = sharedRouteViewModel.sharedQuestion
@@ -58,20 +61,19 @@ fun CameraAnswerScreen(
     val sharedBack = sharedRouteViewModel.sharedBack
     val categoryname = sharedRouteViewModel.sharedCategoryName
 
-
     var correct by remember { mutableStateOf(false) }
-
     var retryCount by remember { mutableIntStateOf(0) }
-    // 단일 상태 변수로 다이얼로그 표시 여부를 제어합니다.
     var showDialog by remember { mutableStateOf(false) }
-    // 화면이 처음 구성될 때 다이얼로그를 표시하도록 설정합니다.
     LaunchedEffect(Unit) {
         showDialog = true
     }
 
-    // showDialog가 true일 때, viewModel.isCorrect 값에 따라 적절한 다이얼로그 호출
     if (showDialog) {
         if (viewModel.isCorrect) {
+            // 정답인 경우, 현재 캡처된 이미지와 정답 단어를 도감에 저장 (동일 정답이면 새 이미지로 덮어씀)
+            capturedImage.value?.let { bitmap ->
+                profileViewmodel.updateCatalogEntry(viewModel.answerWord, bitmap)
+            }
             CaptureCorrect(
                 scoreViewModel = scoreViewModel,
                 onDismiss = {
@@ -113,49 +115,42 @@ fun CameraAnswerScreen(
                     .align(Alignment.CenterStart)
                     .clickable {
                         if (clickCount == 1) {
-                            // Navigate to the LearnScreen of the same question index
                             navController.navigate(sharedFront) {
                                 popUpTo(sharedPopUp) { inclusive = false }
                             }
                         } else {
-                            // Navigate to the LearnScreen of the previous question
                             if (questionIndex > 0) {
                                 navController.navigate(sharedBack) {
                                     popUpTo(sharedPopUp) { inclusive = false }
                                 }
                             }
-                            clickCount = 0 // Reset click count after navigating back
+                            clickCount = 0
                         }
                     }
-
             )
             Box(
                 modifier = Modifier
                     .size(height = 200.dp, width = 450.dp)
                     .align(Alignment.Center)
-                    .offset(y = (-15).dp)
+                    .padding(5.dp)
                     .background(Color.LightGray)
                     .clickable {
                         navController.navigate("camerax")
                         sharedRouteViewModel.sharedCategory = category
                     }
-
             ) {
                 CapturedImage(capturedImage)
             }
             Text(
-                question.english,
+                text = question.english,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .offset(y = -(20).dp),
+                    .padding(bottom = 20.dp),
                 style = TextStyle(
                     fontWeight = FontWeight.Bold,
                     fontSize = 75.sp
                 )
             )
-
-//            val nextRoute = TODO()
-
             Image(
                 painter = painterResource(id = R.drawable.image_frontarrow),
                 contentDescription = "next question",
@@ -184,15 +179,13 @@ fun CameraAnswerScreen(
                     navController.navigate("camerax")
                 },
                 modifier = Modifier
-                    .align(Alignment.BottomStart) // Move button to bottom end
-                    .size(width = 200.dp, height = 60.dp), // Bigger button
-//                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
+                    .align(Alignment.BottomStart)
+                    .padding(10.dp)
+                    .size(width = 200.dp, height = 60.dp)
             ) {
                 Text("다시 찍기")
             }
-
             Button(
-                //  enabled = (retryCount != 0 && (questionIndex ==questions.size - 1)),
                 enabled = !correct,
                 onClick = {
                     if (questionIndex == questions.size - 1) {
@@ -208,13 +201,12 @@ fun CameraAnswerScreen(
                     correct = false
                 },
                 modifier = Modifier
-                    .align(Alignment.BottomEnd) // Move button to bottom end
-                    .size(width = 200.dp, height = 60.dp), // Bigger button
-//                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFDBE5FF))
+                    .align(Alignment.BottomEnd)
+                    .padding(10.dp)
+                    .size(width = 200.dp, height = 60.dp)
             ) {
                 Text("넘어가기")
             }
-
         }
     }
 }
