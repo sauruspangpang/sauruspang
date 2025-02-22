@@ -1,5 +1,6 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -74,6 +75,11 @@ fun CameraAnswerScreen(
             capturedImage.value?.let { bitmap ->
                 profileViewmodel.updateCatalogEntry(viewModel.answerWord, bitmap)
             }
+            Toast.makeText(
+                navController.context,
+                "도감에 들어갔어요!",
+                Toast.LENGTH_SHORT
+            ).show()
             CaptureCorrect(
                 scoreViewModel = scoreViewModel,
                 onDismiss = {
