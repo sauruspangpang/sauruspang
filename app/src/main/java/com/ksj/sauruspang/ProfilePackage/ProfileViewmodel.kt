@@ -200,6 +200,21 @@ class ProfileViewmodel(application: Application) : AndroidViewModel(application)
             kotlinx.coroutines.flow.emptyFlow()
         }
     }
+    fun deleteProfile(profile: Profile) {
+        viewModelScope.launch(Dispatchers.IO) {
+            // Room에서 삭제: User 엔티티로 변환하여 삭제합니다.
+            val user = User(
+                uid = profile.userprofile,
+                name = profile.name,
+                birth = profile.birth,
+                selectedImage = profile.selectedImage,
+                score = profile.score,
+                categoryDayStatus = serializeCategoryDayStatus(profile.categoryDayStatus)
+            )
+            userDao.delete(user)
+        }
+        profiles.remove(profile)
+    }
 
     // --- 퀴즈 관련 기능 ---
 
