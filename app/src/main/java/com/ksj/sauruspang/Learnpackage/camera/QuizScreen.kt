@@ -53,26 +53,18 @@ fun QuizScreen(
     scoreViewModel: ScoreViewModel
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
-    // 현재 day's questions 목록
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
     var progress by remember { mutableFloatStateOf(0.2f) }
 
-    // 각 질문별 식별자
     val questionId = "$categoryName-$dayIndex-$questionIndex"
-    // QuizCategory의 해당 QuizDay에 포함된 문제 수를 기준으로 정답 횟수 임계치를 결정합니다.
-    val threshold = questions.size
-
-    // 기존 퀴즈 완료 여부 및 정답 횟수를 viewModel에서 가져옴
+    // 정답 여부를 viewModel에서 가져옴
     val solvedQuestion by remember { derivedStateOf { viewModel.isQuizSolved(questionId) } }
-    val correctCount by remember { derivedStateOf { viewModel.getCorrectCount(questionId) } }
-    // 현재 문제는 정답 횟수가 threshold 이상일 때 완료로 간주
-    val completedQuestion by remember { derivedStateOf { correctCount >= threshold } }
 
     var showCorrectDialog by remember { mutableStateOf(false) }
     var showRetryDialog by remember { mutableStateOf(false) }
 
-    // 보기(정답 항목)는 매번 섞어서 보여줍니다.
+    // 정답 보기 옵션을 섞어서 표시
     val answerOptions = remember { questions.map { it.english }.shuffled() }
 
     if (showCorrectDialog) {
@@ -165,15 +157,11 @@ fun QuizScreen(
                         Button(
                             onClick = {
                                 if (answer == question.english) {
-                                    // 정답 시, 해당 질문의 정답 횟수를 증가시키고 점수를 5점 추가
-                                    viewModel.increaseCorrectCount(questionId)
+                                    // 정답이면 바로 퀴즈 완료 처리 및 점수 5점 추가
+                                    viewModel.markQuizAsSolved(questionId)
                                     val currentScore = viewModel.profiles.getOrNull(viewModel.selectedProfileIndex.value)?.score ?: 0
                                     viewModel.updateScore(currentScore + 5)
-                                    // 정답 횟수가 threshold에 도달하면 퀴즈를 완료로 처리
-                                    if (viewModel.getCorrectCount(questionId) >= threshold) {
-                                        viewModel.markQuizAsSolved(questionId)
-                                        showCorrectDialog = true
-                                    }
+                                    showCorrectDialog = true
                                 } else {
                                     showRetryDialog = true
                                 }
