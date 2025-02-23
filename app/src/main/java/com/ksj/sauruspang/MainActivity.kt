@@ -24,7 +24,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
-import com.ksj.sauruspang.Learnpackage.CategoryDetailScreen
+import com.ksj.sauruspang.Learnpackage.PictorialDetailScreen
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
@@ -159,7 +159,7 @@ fun NaySys(
             route = "categoryDetail/{categoryName}",
             arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
         ) { backStackEntry ->
-            CategoryDetailScreen(navController, backStackEntry, viewmodel)
+            PictorialDetailScreen(navController, backStackEntry, viewmodel)
         }
 
         // StageScreen

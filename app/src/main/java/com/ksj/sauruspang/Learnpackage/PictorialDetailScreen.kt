@@ -27,7 +27,7 @@ import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 
 @Composable
-fun CategoryDetailScreen(
+fun PictorialDetailScreen(
     navController: NavController,
     backStackEntry: NavBackStackEntry,
     viewModel: ProfileViewmodel
