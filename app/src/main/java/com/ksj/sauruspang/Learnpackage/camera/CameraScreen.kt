@@ -191,7 +191,7 @@ fun CameraScreen(
                         .weight(1f)
                         .clickable {
                             category?.name?.let { categoryName ->
-                                navController.navigate("stage/$categoryName")
+                                navController.popBackStack("stage/$categoryName", false)
                             }
                         }
                 )
