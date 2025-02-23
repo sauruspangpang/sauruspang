@@ -22,6 +22,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.ads.MobileAds
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
@@ -47,15 +48,20 @@ import java.util.Locale
 
 class MainActivity : ComponentActivity() {
     private lateinit var tts: TextToSpeech
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // ✅ AdMob 초기화
+        MobileAds.initialize(this) {}
 
         // 앱 콘텐츠가 시스템 창(상태바, 네비게이션바) 뒤에 그려지도록 설정
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         // 상태바와 네비게이션바 숨기기 (전체 시스템 바 숨김)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
-        controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        controller.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
 
         tts = TextToSpeech(this) { status ->
@@ -88,42 +94,41 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
     val detectedResultListViewModel: DetectedResultListViewModel = viewModel()
     val gPTCameraViewModel: GPTCameraViewModel = viewModel()
 
-
-    NavHost(navController = navController,
+    NavHost(
+        navController = navController,
         startDestination = if (viewmodel.profiles.isEmpty()) "main" else "profile",
         enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None }) {
+        exitTransition = { ExitTransition.None }
+    ) {
         composable("main") {
             MainScreen(navController, viewmodel)
         }
-        composable("profile", enterTransition = {
-            slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
-                // Offsets the content by 1/3 of its width to the left, and slide towards right
-                // Overwrites the default animation with tween for this slide animation.
-                fullWidth / -1
+        composable("profile",
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
+                    fullWidth / -1
+                }
+            },
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
+                    fullWidth / 1
+                }
             }
-        }, exitTransition = {
-            slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
-                // Offsets the content by 1/3 of its width to the left, and slide towards right
-                // Overwrites the default animation with tween for this slide animation.
-                fullWidth / 1
-            }
-        }) {
+        ) {
             ProfilePage(navController, viewmodel)
         }
-        composable("home", enterTransition = {
-            slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
-                // Offsets the content by 1/3 of its width to the left, and slide towards right
-                // Overwrites the default animation with tween for this slide animation.
-                fullWidth / -1
+        composable("home",
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
+                    fullWidth / -1
+                }
+            },
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
+                    fullWidth / 1
+                }
             }
-        }, exitTransition = {
-            slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
-                // Offsets the content by 1/3 of its width to the left, and slide towards right
-                // Overwrites the default animation with tween for this slide animation.
-                fullWidth / 1
-            }
-        }) {
+        ) {
             HomeScreen(navController, viewmodel, scoreViewModel)
         }
         composable("camerax") {
@@ -149,16 +154,13 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
         composable("learn/{categoryName}/{dayIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
-
             // Navigate to the first question index (0) when the user reaches the day
             navController.navigate("learn/$categoryName/$dayIndex/0")
         }
-
         composable("learn/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            // Check if the category is not Fruits, Animals, or Colors
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
                 WordQuizScreen(
                     navController,
@@ -169,7 +171,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                     viewmodel,
                     scoreViewModel,
                 )
-
             } else {
                 LearnScreen(
                     navController,
@@ -183,7 +184,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 )
             }
         }
-
         composable("WordInput/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
@@ -198,7 +198,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 scoreViewModel
             )
         }
-
         composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
@@ -213,7 +212,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 sharedRouteViewModel,
             )
         }
-
         composable("quiz/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
@@ -228,23 +226,20 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             )
         }
         composable("congrats/{categoryName}") { backStackEntry ->
-//            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val catgeoryName = CategoryDayManager.getCurrentCategoryName() ?: ""
             CongratScreen(navController, viewmodel, catgeoryName)
         }
         composable("randomPhotoTaker") {
-            GPTRandomPhotoTakerScreen(gPTCameraViewModel,tts,scoreViewModel, navController)
+            GPTRandomPhotoTakerScreen(gPTCameraViewModel, tts, scoreViewModel, navController)
         }
-
     }
 }
 
 @Composable
 fun HideSystemBars() {
     val systemUiController = rememberSystemUiController()
-
     SideEffect {
-        systemUiController.isSystemBarsVisible = false // 네비게이션 바 & 상태 바 숨기기
+        systemUiController.isSystemBarsVisible = false
         systemUiController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         systemUiController.setSystemBarsColor(Color.Transparent)
