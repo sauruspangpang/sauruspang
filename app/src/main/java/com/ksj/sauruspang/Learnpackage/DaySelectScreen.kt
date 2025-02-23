@@ -21,6 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -105,9 +107,15 @@ fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: N
         modifier = Modifier
             .offset(y = if (isTop) (-20).dp else 80.dp)
             .size(width = 140.dp, height = 90.dp)
-            .alpha(if (isActive) 1f else 0.3f)
             .clickable(enabled = isActive) {
                 navController.navigate("learn/$categoryName/$dayIndex")
+            }
+            .drawWithContent {
+                drawContent()
+                if (!isActive) {
+                    // 회색 오버레이를 그려서 비활성 상태임을 표시 (alpha 값 조절로 농도 조절)
+                    drawRect(color = Color.Gray.copy(alpha = 0.5f))
+                }
             },
         contentAlignment = Alignment.Center
     ) {

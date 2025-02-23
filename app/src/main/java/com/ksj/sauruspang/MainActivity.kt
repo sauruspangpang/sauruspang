@@ -67,6 +67,7 @@ class MainActivity : ComponentActivity() {
             }
         }
         val viewModel = ProfileViewmodel(application)
+
         setContent {
             val scoreViewModel: ScoreViewModel = viewModel()
             RequestPermissions()
@@ -84,12 +85,22 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: ScoreViewModel) {
+fun NaySys(
+    viewmodel: ProfileViewmodel,
+    tts: TextToSpeech,
+    scoreViewModel: ScoreViewModel
+) {
     val navController = rememberNavController()
+
+    // 화면 전환 시 사용할 뷰모델들
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
     val detectedResultListViewModel: DetectedResultListViewModel = viewModel()
     val gPTCameraViewModel: GPTCameraViewModel = viewModel()
+
+    // 전환 애니메이션 시간을 500ms → 300ms 로 단축
+    // (필요시 EnterTransition.None / ExitTransition.None 으로 완전히 제거 가능)
+    val transitionTime = 300
 
     NavHost(
         navController = navController,
@@ -97,17 +108,42 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }
     ) {
-        composable("main") { MainScreen(navController, viewmodel) }
-        composable("profile", enterTransition = {
-            slideInHorizontally(animationSpec = tween(500)) { fullWidth -> fullWidth / -1 }
-        }, exitTransition = {
-            slideOutHorizontally(animationSpec = tween(500)) { fullWidth -> fullWidth / 1 }
-        }) { ProfilePage(navController, viewmodel) }
-        composable("home", enterTransition = {
-            slideInHorizontally(animationSpec = tween(500)) { fullWidth -> fullWidth / -1 }
-        }, exitTransition = {
-            slideOutHorizontally(animationSpec = tween(500)) { fullWidth -> fullWidth / 1 }
-        }) { HomeScreen(navController, viewmodel) }
+        composable("main") {
+            MainScreen(navController, viewmodel)
+        }
+        composable(
+            "profile",
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(transitionTime)) { fullWidth ->
+                    // 왼쪽에서 오른쪽으로 밀려 들어옴
+                    fullWidth / -1
+                }
+            },
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(transitionTime)) { fullWidth ->
+                    // 오른쪽으로 밀려 나감
+                    fullWidth / 1
+                }
+            }
+        ) {
+            ProfilePage(navController, viewmodel)
+        }
+        composable(
+            "home",
+            enterTransition = {
+                slideInHorizontally(animationSpec = tween(transitionTime)) { fullWidth ->
+                    fullWidth / -1
+                }
+            },
+            exitTransition = {
+                slideOutHorizontally(animationSpec = tween(transitionTime)) { fullWidth ->
+                    fullWidth / 1
+                }
+            }
+        ) {
+            HomeScreen(navController, viewmodel)
+        }
+
         composable("camerax") {
             ShowCameraPreviewScreen(navController, cameraViewModel, detectedResultListViewModel, sharedRouteViewModel)
         }
@@ -115,9 +151,10 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel, scoreViewModel, viewmodel)
         }
         composable("pictorial") {
+            // 도감(메인) 화면
             PictorialBookScreen(navController, categoryName = "과일과 야채", viewModel = viewmodel)
         }
-        // CategoryDetailScreen 라우트 추가 – 도감 메인 화면에서 카테고리 선택 시 상세 화면으로 이동
+        // 도감 상세 화면
         composable(
             route = "categoryDetail/{categoryName}",
             arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
@@ -125,25 +162,29 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             CategoryDetailScreen(navController, backStackEntry, viewmodel)
         }
 
+        // StageScreen
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             StageScreen(navController, categoryName, viewmodel)
-            // Set the current category for later use
+            // 현재 카테고리 설정
             CategoryDayManager.setCurrentCategoryName(categoryName)
         }
+
+        // LearnScreen 진입점
         composable("learn/{categoryName}/{dayIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
-
-            // Navigate to the first question index (0) when the user reaches the day
+            // 첫 문제(0번)으로 자동 이동
             navController.navigate("learn/$categoryName/$dayIndex/0")
         }
 
+        // LearnScreen 실제 퀴즈
         composable("learn/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            // Check if the category is not Fruits, Animals, or Colors
+
+            // 과일, 동물, 색 카테고리는 LearnScreen 사용
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
                 WordQuizScreen(
                     navController,
@@ -154,7 +195,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                     viewmodel,
                     scoreViewModel,
                 )
-
             } else {
                 LearnScreen(
                     navController,
@@ -169,6 +209,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             }
         }
 
+        // WordInputScreen
         composable("WordInput/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
@@ -184,6 +225,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             )
         }
 
+        // 카메라 촬영(정답 등록) 화면
         composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
@@ -199,6 +241,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             )
         }
 
+        // QuizScreen
         composable("quiz/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
@@ -212,15 +255,17 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 scoreViewModel
             )
         }
+
+        // 최종 완료 화면
         composable("congrats/{categoryName}") { backStackEntry ->
-//            val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val catgeoryName = CategoryDayManager.getCurrentCategoryName() ?: ""
             CongratScreen(navController, viewmodel, catgeoryName)
         }
-        composable("randomPhotoTaker") {
-            GPTRandomPhotoTakerScreen(gPTCameraViewModel,tts,scoreViewModel, navController)
-        }
 
+        // GPT Random Photo Taker
+        composable("randomPhotoTaker") {
+            GPTRandomPhotoTakerScreen(gPTCameraViewModel, tts, scoreViewModel, navController)
+        }
     }
 }
 
@@ -228,9 +273,11 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
 fun HideSystemBars() {
     val systemUiController = rememberSystemUiController()
     SideEffect {
+        // 완전히 숨기기
         systemUiController.isSystemBarsVisible = false
         systemUiController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        // 투명색으로 설정
         systemUiController.setSystemBarsColor(Color.Transparent)
     }
 }
