@@ -41,6 +41,10 @@ import com.ksj.sauruspang.Learnpackage.QuizCategory.Companion.allCategories
 import com.ksj.sauruspang.Learnpackage.camera.CameraViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun PictorialBookScreen(
@@ -49,6 +53,7 @@ fun PictorialBookScreen(
     viewModel: ProfileViewmodel,
     cameraViewModel: CameraViewModel
 ) {
+    var isClickable by remember { mutableStateOf(true) }
     val categories = allCategories.map { it.name }
     val scrollState = rememberScrollState()
     var selectedCategory by remember {
@@ -104,7 +109,15 @@ fun PictorialBookScreen(
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            navController.popBackStack()
+                            if (isClickable) {
+                                isClickable = false
+                                navController.popBackStack()
+
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    delay(300) // 500ms 동안 클릭 방지
+                                    isClickable = true
+                                }
+                            }
                         }
                 )
                 ScrollableTabRow(

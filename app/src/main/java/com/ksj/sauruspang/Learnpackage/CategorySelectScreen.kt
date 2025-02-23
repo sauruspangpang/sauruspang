@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,6 +54,10 @@ import com.airbnb.lottie.compose.animateLottieCompositionAsState
 import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +70,8 @@ fun HomeScreen(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
+    var isClickable by remember { mutableStateOf(true) }
+
 
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -92,7 +99,15 @@ fun HomeScreen(
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            navController.popBackStack()
+                            if (isClickable) {
+                                isClickable = false
+                                navController.popBackStack()
+
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    delay(300) // 500ms 동안 클릭 방지
+                                    isClickable = true
+                                }
+                            }
                         }
                 )
 
@@ -123,9 +138,19 @@ fun HomeScreen(
                     progress = progress,
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
-                        .clickable { navController.navigate("randomPhotoTaker") }
-                )
+                        .clickable {
+                            if (isClickable) {
+                                isClickable = false // 클릭 비활성화
+                                navController.navigate("randomPhotoTaker")
 
+                                // 일정 시간 후 다시 클릭 가능하도록 설정
+                                CoroutineScope(Dispatchers.Main).launch {
+                                    delay(300) // 500ms 동안 클릭 방지
+                                    isClickable = true
+                                }
+                            }
+                        }
+                )
                 // Scrollable Row using LazyRow
                 LazyRow(
                     modifier = Modifier
@@ -226,8 +251,7 @@ fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
             Row(
                 modifier = Modifier
                     .padding(horizontal = 0.dp)
-                    .offset(y = (-10).dp)
-                ,
+                    .offset(y = (-10).dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -273,3 +297,4 @@ fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
         }
     }
 }
+
