@@ -413,7 +413,6 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
         }
 }
 
-// CategoryDayManager를 QuizCategory 외부로 이동
 object CategoryDayManager {
     private val categoryDays = mutableMapOf<String, Int>()
     private var currentCategoryName: String? = null
@@ -428,15 +427,11 @@ object CategoryDayManager {
         categoryDays[categoryName] = categoryDays[categoryName]?.plus(1) ?: 1
     }
 
-    fun getDay(categoryName: String): Int {
-        return categoryDays[categoryName] ?: 1
-    }
+    fun getDay(categoryName: String): Int = categoryDays[categoryName] ?: 1
 
     fun setCurrentCategoryName(categoryName: String) {
         currentCategoryName = categoryName
     }
 
-    fun getCurrentCategoryName(): String? {
-        return currentCategoryName
-    }
+    fun getCurrentCategoryName(): String? = currentCategoryName
 }

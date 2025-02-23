@@ -5,27 +5,13 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -48,7 +34,6 @@ fun CameraAnswerScreen(
     scoreViewModel: ScoreViewModel,
     profileViewmodel: ProfileViewmodel // 프로필별 도감 저장용 뷰모델
 ) {
-    // 기존 CameraViewModel 및 SharedRouteViewModel 값들
     val capturedImage = viewModel.capturedImage
     val sharedvModel = sharedRouteViewModel.sharedValue
     val category = sharedRouteViewModel.sharedCategory
@@ -60,7 +45,6 @@ fun CameraAnswerScreen(
     val question = sharedRouteViewModel.sharedQuestion
     val questions = sharedRouteViewModel.sharedQuestions
     val sharedBack = sharedRouteViewModel.sharedBack
-    val categoryname = sharedRouteViewModel.sharedCategoryName
 
     var correct by remember { mutableStateOf(false) }
     var retryCount by remember { mutableIntStateOf(0) }
@@ -71,8 +55,8 @@ fun CameraAnswerScreen(
 
     if (showDialog) {
         if (viewModel.isCorrect) {
-            // 정답인 경우, 현재 캡처된 이미지와 정답 단어를 도감에 저장 (동일 정답이면 새 이미지로 덮어씀)
             capturedImage.value?.let { bitmap ->
+                // 정답이면 도감에 업데이트 (기존 프로필 데이터는 그대로 유지)
                 profileViewmodel.updateCatalogEntry(viewModel.answerWord, bitmap)
             }
             Toast.makeText(
@@ -176,7 +160,7 @@ fun CameraAnswerScreen(
                         retryCount = 0
                         correct = false
                     },
-                colorFilter = if (correct) null else ColorFilter.tint(Color.Gray)
+                colorFilter = if (correct) null else androidx.compose.ui.graphics.ColorFilter.tint(Color.Gray)
             )
             Button(
                 enabled = (retryCount != 0),

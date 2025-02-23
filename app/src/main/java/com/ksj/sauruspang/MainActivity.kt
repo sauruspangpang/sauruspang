@@ -17,11 +17,14 @@ import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
+import com.ksj.sauruspang.Learnpackage.CategoryDetailScreen
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
@@ -88,58 +91,40 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
     val detectedResultListViewModel: DetectedResultListViewModel = viewModel()
     val gPTCameraViewModel: GPTCameraViewModel = viewModel()
 
-
-    NavHost(navController = navController,
+    NavHost(
+        navController = navController,
         startDestination = if (viewmodel.profiles.isEmpty()) "main" else "profile",
         enterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None }) {
-        composable("main") {
-            MainScreen(navController, viewmodel)
-        }
+        exitTransition = { ExitTransition.None }
+    ) {
+        composable("main") { MainScreen(navController, viewmodel) }
         composable("profile", enterTransition = {
-            slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
-                // Offsets the content by 1/3 of its width to the left, and slide towards right
-                // Overwrites the default animation with tween for this slide animation.
-                fullWidth / -1
-            }
+            slideInHorizontally(animationSpec = tween(500)) { fullWidth -> fullWidth / -1 }
         }, exitTransition = {
-            slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
-                // Offsets the content by 1/3 of its width to the left, and slide towards right
-                // Overwrites the default animation with tween for this slide animation.
-                fullWidth / 1
-            }
-        }) {
-            ProfilePage(navController, viewmodel)
-        }
+            slideOutHorizontally(animationSpec = tween(500)) { fullWidth -> fullWidth / 1 }
+        }) { ProfilePage(navController, viewmodel) }
         composable("home", enterTransition = {
-            slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
-                // Offsets the content by 1/3 of its width to the left, and slide towards right
-                // Overwrites the default animation with tween for this slide animation.
-                fullWidth / -1
-            }
+            slideInHorizontally(animationSpec = tween(500)) { fullWidth -> fullWidth / -1 }
         }, exitTransition = {
-            slideOutHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
-                // Offsets the content by 1/3 of its width to the left, and slide towards right
-                // Overwrites the default animation with tween for this slide animation.
-                fullWidth / 1
-            }
-        }) {
-            HomeScreen(navController, viewmodel)
-        }
+            slideOutHorizontally(animationSpec = tween(500)) { fullWidth -> fullWidth / 1 }
+        }) { HomeScreen(navController, viewmodel) }
         composable("camerax") {
-            ShowCameraPreviewScreen(
-                navController,
-                cameraViewModel,
-                detectedResultListViewModel,
-                sharedRouteViewModel
-            )
+            ShowCameraPreviewScreen(navController, cameraViewModel, detectedResultListViewModel, sharedRouteViewModel)
         }
         composable("answer") {
             CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel, scoreViewModel, viewmodel)
         }
         composable("pictorial") {
-            PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel)
+            PictorialBookScreen(navController, categoryName = "과일과 야채", viewModel = viewmodel)
         }
+        // CategoryDetailScreen 라우트 추가 – 도감 메인 화면에서 카테고리 선택 시 상세 화면으로 이동
+        composable(
+            route = "categoryDetail/{categoryName}",
+            arguments = listOf(navArgument("categoryName") { type = NavType.StringType })
+        ) { backStackEntry ->
+            CategoryDetailScreen(navController, backStackEntry, viewmodel)
+        }
+
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             StageScreen(navController, categoryName, viewmodel)
@@ -242,9 +227,8 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
 @Composable
 fun HideSystemBars() {
     val systemUiController = rememberSystemUiController()
-
     SideEffect {
-        systemUiController.isSystemBarsVisible = false // 네비게이션 바 & 상태 바 숨기기
+        systemUiController.isSystemBarsVisible = false
         systemUiController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         systemUiController.setSystemBarsColor(Color.Transparent)
