@@ -72,8 +72,6 @@ fun HomeScreen(
     val screenHeight = configuration.screenHeightDp.dp
     var isClickable by remember { mutableStateOf(true) }
 
-
-
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(R.drawable.choosecategory_wallpaper),
@@ -99,14 +97,9 @@ fun HomeScreen(
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            if (isClickable) {
-                                isClickable = false
-                                navController.popBackStack()
-
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    delay(300) // 500ms 동안 클릭 방지
-                                    isClickable = true
-                                }
+                            navController.navigate("profile") {
+                                launchSingleTop = true
+                                popUpTo("profile")
                             }
                         }
                 )
@@ -139,7 +132,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
                         .clickable {
-                            navController.navigate("randomPhotoTaker"){
+                            navController.navigate("randomPhotoTaker") {
                                 launchSingleTop = true
                             }
                         }
@@ -169,6 +162,8 @@ fun HomeScreen(
 
 @Composable
 fun CategoryBox(category: QuizCategory, navController: NavController) {
+    val useCamera = listOf<String>("과일과 야채", "색", "동물")
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -211,18 +206,20 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
             }
         }
 
-        Image(
-            painter = painterResource(id = R.drawable.image_cameramark),
-            contentDescription = "CameraMark",
-            modifier = Modifier
-                .clickable {
-                    Log.d("Navigation", "Navigating to gpt_camera_preview")
-                    navController.navigate("gpt_camera_preview")
-                }
-                .offset(x = 10.dp, y = (-20).dp)
-                .width(80.dp)
-                .align(Alignment.TopEnd)
-        )
+        if (useCamera.contains(category.name)) {
+            Image(
+                painter = painterResource(id = R.drawable.image_cameramark),
+                contentDescription = "CameraMark",
+                modifier = Modifier
+                    .clickable {
+                        Log.d("Navigation", "Navigating to gpt_camera_preview")
+                        navController.navigate("gpt_camera_preview")
+                    }
+                    .offset(x = 10.dp, y = (-20).dp)
+                    .width(80.dp)
+                    .align(Alignment.TopEnd)
+            )
+        }
 
 
     }
