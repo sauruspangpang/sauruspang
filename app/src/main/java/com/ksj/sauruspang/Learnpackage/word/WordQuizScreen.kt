@@ -197,7 +197,7 @@ fun WordQuizScreen(
                 .clickable {
                     if (questionIndex > 0) {
                         navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}") {
-                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = true }
+                            popUpTo("learn/$categoryName/$dayIndex/0") { inclusive = false }
                         }
                     }
                 }

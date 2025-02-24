@@ -139,15 +139,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = 20.dp)
                         .clickable {
-                            if (isClickable) {
-                                isClickable = false // 클릭 비활성화
-                                navController.navigate("randomPhotoTaker")
-
-                                // 일정 시간 후 다시 클릭 가능하도록 설정
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    delay(300) // 500ms 동안 클릭 방지
-                                    isClickable = true
-                                }
+                            navController.navigate("randomPhotoTaker"){
+                                launchSingleTop = true
                             }
                         }
                 )

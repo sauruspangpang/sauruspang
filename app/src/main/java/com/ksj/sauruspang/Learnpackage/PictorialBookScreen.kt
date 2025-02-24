@@ -109,14 +109,9 @@ fun PictorialBookScreen(
                     modifier = Modifier
                         .size(50.dp)
                         .clickable {
-                            if (isClickable) {
-                                isClickable = false
-                                navController.popBackStack()
-
-                                CoroutineScope(Dispatchers.Main).launch {
-                                    delay(300) // 500ms 동안 클릭 방지
-                                    isClickable = true
-                                }
+                            navController.navigate("home") {
+                                launchSingleTop = true
+                                popUpTo("home") { inclusive = false }
                             }
                         }
                 )
