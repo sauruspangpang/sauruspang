@@ -1,5 +1,6 @@
 package com.ksj.sauruspang.ProfilePackage
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -46,6 +47,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -65,6 +67,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var birth by remember { mutableStateOf("") }
     var userProfile by remember { mutableIntStateOf(0) }
     var selectedImage by remember { mutableIntStateOf(R.drawable.test1) }
+    val context = LocalContext.current
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -127,8 +130,9 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 .padding(horizontal = 16.dp) // HIGHLIGHTED
                         ) {
                             OutlinedTextField(
-                                value = name ,
+                                value = name,
                                 onValueChange = { name = it },
+                                maxLines = 1,
                                 placeholder = { Text("이름") },
                                 label = {
                                     Text(
@@ -169,15 +173,20 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                     spotColor = Color(0xFF505050) // 그림자 색상
                                 )
                                 .clickable {
-                                    if (name.isNotEmpty() && birth.isNotEmpty()) {
-                                        viewModel.addProfile(
-                                            name,
-                                            birth,
-                                            userProfile++,
-                                            selectedImage
-                                        )
+                                    if (name.length <= 4) {
+                                        if (name.isNotEmpty() && birth.isNotEmpty()) {
+                                            viewModel.addProfile(
+                                                name,
+                                                birth,
+                                                userProfile++,
+                                                selectedImage
+                                            )
+                                        }
+                                        navController.navigate("profile")
+                                    }else{
+                                        Toast.makeText(context,"이름을 네 자리 이하로 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                        name = ""
                                     }
-                                    navController.navigate("profile")
                                 }
                         ) {
                             Text(
@@ -198,13 +207,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             .padding(horizontal = 16.dp) // HIGHLIGHTED
                             .fillMaxWidth() // HIGHLIGHTED
                     ) {
-                        //TextField(
-//                            value = birth,
-//                            onValueChange = { birth = it },
-//                            modifier = Modifier.padding(bottom = 10.dp),
-//                            placeholder = { Text("생년월일") }
-                        //     )
-
                         OutlinedTextField(
                             value = selectedDate.format(dateFormatter),
                             onValueChange = { },
@@ -232,7 +234,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
 
 
                         )
-
                         Box(
                             modifier = Modifier
                                 .matchParentSize()
