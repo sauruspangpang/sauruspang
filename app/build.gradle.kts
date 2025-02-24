@@ -2,22 +2,18 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    // version catalog에 등록된 플러그인 사용 (버전은 catalog에서 관리)
+    // version catalog에 등록된 플러그인을 사용 (catalog에서 버전 관리)
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.android) // catalog에 kotlin 버전 2.0.21가 반영되어 있어야 합니다.
     alias(libs.plugins.kotlin.compose)
-    // KSP는 버전을 직접 지정
     id("com.google.devtools.ksp") version "2.0.21-1.0.27"
-
 }
 
 val localProps = Properties()
 val localFile = rootProject.file("local.properties")
-
 if (localFile.exists()) {
     FileInputStream(localFile).use { localProps.load(it) }
 }
-
 val openAiKey = localProps.getProperty("MY_API_KEY", "")
 
 android {
@@ -30,19 +26,14 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
         // local.properties의 API 키를 BuildConfig.API_KEY로 설정
         buildConfigField("String", "API_KEY", "\"$openAiKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
@@ -78,7 +69,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Guava (ListenableFuture 사용)
+    // Guava (ListenableFuture 관련)
     implementation("com.google.guava:guava:31.1-android")
 
     // 이미지 로딩 라이브러리
@@ -100,7 +91,6 @@ dependencies {
     implementation("com.airbnb.android:lottie-compose:6.6.2")
     implementation(libs.accompanist.permissions)
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.32.0")
-
     val room_version = "2.6.1"
     implementation("androidx.room:room-runtime:$room_version")
     ksp("androidx.room:room-compiler:$room_version")
@@ -127,9 +117,8 @@ dependencies {
     // Gson (JSON 파싱용)
     implementation("com.google.code.gson:gson:2.10.1")
 
-    // Compose 관련 라이브러리 (mutableStateOf 오류 해결)
+    // Compose 관련 라이브러리
     implementation("androidx.compose.runtime:runtime:1.6.7")
-
     implementation("com.github.commandiron:WheelPickerCompose:1.1.11")
 
     // AdMob

@@ -5,7 +5,8 @@ import android.graphics.BitmapFactory
 import android.util.Log
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -18,7 +19,10 @@ import java.io.File
 import java.util.concurrent.Executors
 
 @Composable
-fun GPTCameraCaptureScreen(onImageCaptured: (Bitmap) -> Unit) {
+fun GPTCameraCaptureScreen(
+    remainingUsage: Int,
+    onImageCaptured: (Bitmap) -> Unit
+) {
     val context = LocalContext.current
     val lifecycleOwner = LocalContext.current as LifecycleOwner
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
@@ -41,7 +45,7 @@ fun GPTCameraCaptureScreen(onImageCaptured: (Bitmap) -> Unit) {
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomCenter) {
             Button(onClick = {
-                val photoFile = File.createTempFile("captured", ".jpg")
+                val photoFile = File.createTempFile("captured", ".jpg", context.cacheDir)
                 val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
                 imageCapture?.takePicture(outputOptions, executor, object : ImageCapture.OnImageSavedCallback {
                     override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
@@ -53,7 +57,7 @@ fun GPTCameraCaptureScreen(onImageCaptured: (Bitmap) -> Unit) {
                     }
                 })
             }) {
-                Text("📸 촬영하기")
+                Text("📸 촬영하기 (남은 횟수: $remainingUsage)")
             }
         }
     }
