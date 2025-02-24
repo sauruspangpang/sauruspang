@@ -220,8 +220,6 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                     .align(Alignment.TopEnd)
             )
         }
-
-
     }
 }
 
