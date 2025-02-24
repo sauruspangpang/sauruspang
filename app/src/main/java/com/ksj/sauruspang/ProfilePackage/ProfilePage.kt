@@ -3,6 +3,7 @@ package com.ksj.sauruspang.ProfilePackage
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -43,6 +45,7 @@ import com.ksj.sauruspang.R
 fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
     val profiles = viewModel.profiles
     val configuration = LocalConfiguration.current
+    val scrollState = rememberScrollState()
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
     Box(modifier = Modifier.fillMaxSize()) {
@@ -75,7 +78,8 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 50.dp)
-                .offset(y = 20.dp),
+                .offset(y = 20.dp)
+                .horizontalScroll(scrollState),
             verticalAlignment = Alignment.CenterVertically
         ) {
             profiles.forEachIndexed { index, profile ->

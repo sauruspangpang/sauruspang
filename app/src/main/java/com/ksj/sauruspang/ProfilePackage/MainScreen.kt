@@ -214,10 +214,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             )
                         }
                     }
-
-
-
-
                     Box(
                         modifier = Modifier
                             .padding(horizontal = 16.dp) // HIGHLIGHTED
@@ -336,8 +332,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             }
                         }
                     }
-
-                    // }
                     Row {
                         DynamicImageLoding { selectedImage = it }
                     }
