@@ -67,7 +67,11 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var birth by remember { mutableStateOf("") }
     var userProfile by remember { mutableIntStateOf(0) }
     var selectedImage by remember { mutableIntStateOf(R.drawable.test1) }
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    var showDatePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
+    val today = LocalDate.now()
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -124,7 +128,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             Row {
                 Column(modifier = Modifier.offset(y = 40.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-
                         Box(
                             modifier = Modifier
                                 .padding(horizontal = 16.dp) // HIGHLIGHTED
@@ -157,9 +160,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                     .padding(5.dp)
                             )
                         }
-
-
-
                         Spacer(modifier = Modifier.width(60.dp))
                         Box(
                             modifier = Modifier
@@ -173,19 +173,35 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                     spotColor = Color(0xFF505050) // 그림자 색상
                                 )
                                 .clickable {
-                                    if (name.length <= 4) {
-                                        if (name.isNotEmpty() && birth.isNotEmpty()) {
-                                            viewModel.addProfile(
-                                                name,
-                                                birth,
-                                                userProfile++,
-                                                selectedImage
+                                    if (selectedDate.isAfter(today)) {
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                "날짜를 잘 못 입력하였습니다.",
+                                                Toast.LENGTH_SHORT
                                             )
+                                            .show()
+                                    } else {
+                                        if (name.length <= 4) {
+                                            if (name.isNotEmpty() && birth.isNotEmpty()) {
+                                                viewModel.addProfile(
+                                                    name,
+                                                    birth,
+                                                    userProfile++,
+                                                    selectedImage
+                                                )
+                                            }
+                                            navController.navigate("profile")
+                                        } else {
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "이름을 네 자리 이하로 입력해주세요.",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+                                            name = ""
                                         }
-                                        navController.navigate("profile")
-                                    }else{
-                                        Toast.makeText(context,"이름을 네 자리 이하로 입력해주세요.", Toast.LENGTH_SHORT).show()
-                                        name = ""
                                     }
                                 }
                         ) {
@@ -198,9 +214,9 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             )
                         }
                     }
-                    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-                    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    var showDatePicker by remember { mutableStateOf(false) }
+
+
+
 
                     Box(
                         modifier = Modifier
