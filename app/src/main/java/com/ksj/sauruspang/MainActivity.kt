@@ -52,13 +52,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // ✅ AdMob 초기화
+        // AdMob 초기화
         MobileAds.initialize(this) {}
 
         // 앱 콘텐츠가 시스템 창(상태바, 네비게이션바) 뒤에 그려지도록 설정
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        // 상태바와 네비게이션바 숨기기 (전체 시스템 바 숨김)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
@@ -66,12 +64,13 @@ class MainActivity : ComponentActivity() {
 
         tts = TextToSpeech(this) { status ->
             if (status == TextToSpeech.SUCCESS) {
-                tts.language = Locale.US // Set default language to English
+                tts.language = Locale.US
             }
         }
         val viewModel = ProfileViewmodel(application)
         setContent {
             val scoreViewModel: ScoreViewModel = viewModel()
+            // RequestPermissions(), HideSystemBars()는 프로젝트에서 별도로 구현된 함수라고 가정
             RequestPermissions()
             HideSystemBars()
             SauruspangTheme {
@@ -82,7 +81,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        tts.shutdown() // Release resources when the activity is destroyed
+        tts.shutdown()
     }
 }
 
@@ -100,9 +99,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None }
     ) {
-        composable("main") {
-            MainScreen(navController, viewmodel)
-        }
+        composable("main") { MainScreen(navController, viewmodel) }
         composable("profile",
             enterTransition = {
                 slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
@@ -114,9 +111,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                     fullWidth / 1
                 }
             }
-        ) {
-            ProfilePage(navController, viewmodel)
-        }
+        ) { ProfilePage(navController, viewmodel) }
         composable("home",
             enterTransition = {
                 slideInHorizontally(animationSpec = tween(durationMillis = 500)) { fullWidth ->
@@ -128,16 +123,9 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                     fullWidth / 1
                 }
             }
-        ) {
-            HomeScreen(navController, viewmodel, scoreViewModel)
-        }
+        ) { HomeScreen(navController, viewmodel, scoreViewModel) }
         composable("camerax") {
-            ShowCameraPreviewScreen(
-                navController,
-                cameraViewModel,
-                detectedResultListViewModel,
-                sharedRouteViewModel
-            )
+            ShowCameraPreviewScreen(navController, cameraViewModel, detectedResultListViewModel, sharedRouteViewModel)
         }
         composable("answer") {
             CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel, scoreViewModel)
@@ -148,13 +136,11 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             StageScreen(navController, categoryName, viewmodel, scoreViewModel)
-            // Set the current category for later use
             CategoryDayManager.setCurrentCategoryName(categoryName)
         }
         composable("learn/{categoryName}/{dayIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
-            // Navigate to the first question index (0) when the user reaches the day
             navController.navigate("learn/$categoryName/$dayIndex/0")
         }
         composable("learn/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
@@ -162,68 +148,28 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
             if (categoryName !in listOf("과일과 야채", "동물", "색")) {
-                WordQuizScreen(
-                    navController,
-                    categoryName,
-                    dayIndex,
-                    questionIndex,
-                    tts,
-                    viewmodel,
-                    scoreViewModel,
-                )
+                WordQuizScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel, scoreViewModel)
             } else {
-                LearnScreen(
-                    navController,
-                    categoryName,
-                    dayIndex,
-                    questionIndex,
-                    tts,
-                    viewmodel,
-                    sharedRouteViewModel,
-                    scoreViewModel,
-                )
+                LearnScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel, sharedRouteViewModel, scoreViewModel)
             }
         }
         composable("WordInput/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            WordInputScreen(
-                navController,
-                categoryName,
-                dayIndex,
-                questionIndex,
-                tts,
-                viewmodel,
-                scoreViewModel
-            )
+            WordInputScreen(navController, categoryName, dayIndex, questionIndex, tts, viewmodel, scoreViewModel)
         }
         composable("camera/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            CameraScreen(
-                navController,
-                categoryName,
-                dayIndex,
-                questionIndex,
-                viewmodel,
-                cameraViewModel,
-                sharedRouteViewModel,
-            )
+            CameraScreen(navController, categoryName, dayIndex, questionIndex, viewmodel, cameraViewModel, sharedRouteViewModel)
         }
         composable("quiz/{categoryName}/{dayIndex}/{questionIndex}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
             val dayIndex = backStackEntry.arguments?.getString("dayIndex")?.toInt() ?: 0
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
-            QuizScreen(
-                navController,
-                categoryName,
-                dayIndex,
-                questionIndex,
-                viewmodel,
-                scoreViewModel
-            )
+            QuizScreen(navController, categoryName, dayIndex, questionIndex, viewmodel, scoreViewModel)
         }
         composable("congrats/{categoryName}") { backStackEntry ->
             val catgeoryName = CategoryDayManager.getCurrentCategoryName() ?: ""
@@ -240,8 +186,7 @@ fun HideSystemBars() {
     val systemUiController = rememberSystemUiController()
     SideEffect {
         systemUiController.isSystemBarsVisible = false
-        systemUiController.systemBarsBehavior =
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        systemUiController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         systemUiController.setSystemBarsColor(Color.Transparent)
     }
 }

@@ -3,7 +3,9 @@ package com.ksj.sauruspang.Learnpackage.camera
 import android.app.Activity
 import android.graphics.Bitmap
 import android.speech.tts.TextToSpeech
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -12,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.google.android.gms.ads.AdRequest
@@ -20,6 +23,7 @@ import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
+import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.CameraUsageManager
 
 @Composable
@@ -32,19 +36,19 @@ fun GPTRandomPhotoTakerScreen(
     val context = LocalContext.current
     val activity = context as? Activity
 
-    // 1) 카메라 사용 횟수 매니저 (자동 충전 로직은 내부에 구현)
+    // 1) 카메라 사용 횟수
     val usageManager = remember { CameraUsageManager(context) }
     var usageCount by remember { mutableStateOf(usageManager.getUsageCount()) }
 
-    // 2) 촬영된 이미지 및 결과 화면 제어
+    // 2) 촬영된 이미지 및 결과 화면
     var capturedImage by remember { mutableStateOf<Bitmap?>(null) }
     var showResultScreen by remember { mutableStateOf(false) }
 
-    // 3) 리워드 광고 관련 변수
+    // 3) 리워드 광고
     var rewardedAd by remember { mutableStateOf<RewardedAd?>(null) }
     var adLoadingError by remember { mutableStateOf("") }
 
-    // 화면 진입 시 광고 로드
+    // 광고 로드
     LaunchedEffect(Unit) {
         loadRewardAd(context) { ad, error ->
             rewardedAd = ad
@@ -52,14 +56,14 @@ fun GPTRandomPhotoTakerScreen(
         }
     }
 
-    // 리워드 광고 보여주기 함수 (광고 하나 시청 시 4회 충전)
     fun showRewardAd() {
         val ad = rewardedAd
         if (ad != null && activity != null) {
             ad.show(activity) { _: RewardItem ->
-                usageManager.addUsage(4) // 광고 시 4회 충전
+                // 광고 시청 → 4회 충전
+                usageManager.addUsage(4)
                 usageCount = usageManager.getUsageCount()
-                // 광고 후 재로드
+                // 광고 본 뒤 재로드
                 loadRewardAd(context) { newAd, error ->
                     rewardedAd = newAd
                     adLoadingError = error ?: ""
@@ -68,13 +72,28 @@ fun GPTRandomPhotoTakerScreen(
         }
     }
 
+    // ✅ Scaffold 대신 Box로 전체 화면 구성
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color(0xFFFDD4AA))
     ) {
+        // 상단 좌측 홈 아이콘 (TopStart)
+        Image(
+            painter = painterResource(id = R.drawable.image_backhome),
+            contentDescription = "홈으로",
+            modifier = Modifier
+                .padding(16.dp)
+                .size(40.dp)
+                .align(Alignment.TopStart)
+                .clickable {
+                    navController.popBackStack("home", false)
+                }
+        )
+
+        // 본문 로직
         when {
-            // 결과 화면 표시
+            // 결과 화면
             showResultScreen && capturedImage != null -> {
                 GPTCameraResultScreen(
                     capturedImage = capturedImage!!,
@@ -85,10 +104,12 @@ fun GPTRandomPhotoTakerScreen(
                     },
                     tts = tts,
                     scoreViewModel = scoreViewModel,
-                    navController = navController
+                    navController = navController,
+                    remainingUsage = usageCount
                 )
             }
-            // 촬영 가능 횟수가 남으면 촬영 화면 표시 (남은 횟수를 버튼에 전달)
+
+            // 촬영 가능 횟수가 남아있으면 촬영
             usageCount > 0 -> {
                 GPTCameraCaptureScreen(
                     remainingUsage = usageCount,
@@ -101,7 +122,8 @@ fun GPTRandomPhotoTakerScreen(
                     }
                 )
             }
-            // 촬영 횟수가 0이면 광고 유도 화면 표시
+
+            // 횟수 0 → 광고 유도
             else -> {
                 Column(
                     modifier = Modifier.fillMaxSize(),
@@ -123,6 +145,7 @@ fun GPTRandomPhotoTakerScreen(
     }
 }
 
+// 리워드 광고 로드 함수
 private fun loadRewardAd(
     context: android.content.Context,
     onResult: (RewardedAd?, String?) -> Unit
@@ -130,7 +153,7 @@ private fun loadRewardAd(
     val adRequest = AdRequest.Builder().build()
     RewardedAd.load(
         context,
-        "ca-app-pub-3940256099942544/5224354917", // 테스트용 리워드 광고 단위 (출시 시 본인 ID로 교체)
+        "ca-app-pub-3940256099942544/5224354917", // 테스트용; 출시 시 교체
         adRequest,
         object : RewardedAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
