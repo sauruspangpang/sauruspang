@@ -9,6 +9,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +24,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.DateRange
@@ -30,12 +34,9 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -48,23 +49,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.navigation.NavController
-import com.commandiron.wheel_picker_compose.core.SelectorProperties
-import com.commandiron.wheel_picker_compose.core.WheelPickerDefaults
 import com.intel.button.WheelDatePicker2
 import com.ksj.sauruspang.R
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -73,6 +72,8 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var birth by remember { mutableStateOf("") }
     var userProfile by remember { mutableIntStateOf(0) }
     var selectedImage by remember { mutableIntStateOf(R.drawable.test1) }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val focusManager = LocalFocusManager.current
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -80,8 +81,14 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
         Image(
             painter = painterResource(R.drawable.createprofile_wallpaper),
             contentDescription = null,
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .matchParentSize()
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = {
+                        focusManager.clearFocus()
+                    })
+                }
         )
         Image(
             painter = painterResource(id = R.drawable.image_backhome),
@@ -129,22 +136,28 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             Row {
                 Column(modifier = Modifier.offset(y = 40.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-
                         Box(
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp) // HIGHLIGHTED
+                            modifier = Modifier.padding(horizontal = 16.dp)
                         ) {
                             OutlinedTextField(
-                                value = name ,
+                                value = name,
                                 onValueChange = { name = it },
                                 placeholder = { Text("이름") },
+                                keyboardOptions = KeyboardOptions.Default.copy(
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        keyboardController?.hide()
+                                        focusManager.clearFocus()
+                                    }
+                                ),
                                 label = {
                                     Text(
                                         "이름",
                                         fontWeight = FontWeight.Bold,
                                         fontSize = 18.sp,
                                     )
-
                                 },
                                 trailingIcon = {
                                     Icon(
@@ -162,22 +175,21 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             )
                         }
 
-
-
                         Spacer(modifier = Modifier.width(60.dp))
                         Box(
                             modifier = Modifier
                                 .background(
                                     Color(0xFF0022B2),
                                     shape = RoundedCornerShape(12.dp)
-                                ) // 배경색 및 둥근 모서리
+                                )
                                 .shadow(
-                                    elevation = 8.dp, // 그림자 강도
-                                    shape = RoundedCornerShape(12.dp), // 그림자 모양
-                                    spotColor = Color(0xFF505050) // 그림자 색상
+                                    elevation = 8.dp,
+                                    shape = RoundedCornerShape(12.dp),
+                                    spotColor = Color(0xFF505050)
                                 )
                                 .clickable {
                                     if (name.isNotEmpty() && birth.isNotEmpty()) {
+                                        // 프로필 생성 시 score는 0, 각 카테고리 day는 기본 활성 상태(day1)로 설정
                                         viewModel.addProfile(
                                             name,
                                             birth,
@@ -192,8 +204,8 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 text = "만들기",
                                 fontSize = 28.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFFFFFF) // 글자색 (흰색)
-                                , modifier = Modifier.padding(16.dp)
+                                color = Color(0xFFFFFFFF),
+                                modifier = Modifier.padding(16.dp)
                             )
                         }
                     }
@@ -203,16 +215,9 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
 
                     Box(
                         modifier = Modifier
-                            .padding(horizontal = 16.dp) // HIGHLIGHTED
-                            .fillMaxWidth() // HIGHLIGHTED
+                            .padding(horizontal = 16.dp)
+                            .fillMaxWidth()
                     ) {
-                        //TextField(
-//                            value = birth,
-//                            onValueChange = { birth = it },
-//                            modifier = Modifier.padding(bottom = 10.dp),
-//                            placeholder = { Text("생년월일") }
-                        //     )
-
                         OutlinedTextField(
                             value = selectedDate.format(dateFormatter),
                             onValueChange = { },
@@ -237,10 +242,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 .height(75.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .padding(5.dp)
-
-
                         )
-
                         Box(
                             modifier = Modifier
                                 .matchParentSize()
@@ -248,11 +250,11 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 .clickable { showDatePicker = !showDatePicker }
                         )
                     }
-                    AnimatedVisibility( // HIGHLIGHTED
-                        visible = showDatePicker, // HIGHLIGHTED
-                        enter = fadeIn() + expandVertically(), // HIGHLIGHTED
-                        exit = fadeOut() + shrinkVertically() // HIGHLIGHTED
-                    ) { // HIGHLIGHTED
+                    AnimatedVisibility(
+                        visible = showDatePicker,
+                        enter = fadeIn() + expandVertically(),
+                        exit = fadeOut() + shrinkVertically()
+                    ) {
                         Popup(
                             alignment = Alignment.TopStart
                         ) {
@@ -261,13 +263,11 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                     .size(width = 400.dp, height = 330.dp)
                                     .align(Alignment.CenterHorizontally)
                                     .offset(y = -10.dp)
-                                    //   .shadow(elevation = 1.dp)
                                     .padding(16.dp)
-                                    .clip(RoundedCornerShape(16.dp)) // HIGHLIGHTED
+                                    .clip(RoundedCornerShape(16.dp))
                                     .background(Color.White, shape = RoundedCornerShape(16.dp))
                                     .border(2.dp, color = Color.Gray, RoundedCornerShape(16.dp))
                                     .padding(5.dp)
-
                             ) {
                                 WheelDatePicker2(
                                     startDate = selectedDate,
@@ -275,11 +275,10 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                         selectedDate = newDate
                                         birth = newDate.format(dateFormatter)
                                     }
-
                                 )
                                 Divider(
-                                    color = Color.Gray, // You can change the color
-                                    thickness = 1.dp, // You can change the thickness
+                                    color = Color.Gray,
+                                    thickness = 1.dp,
                                     modifier = Modifier
                                         .align(Alignment.BottomCenter)
                                         .offset(y = -45.dp)
@@ -287,9 +286,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 Button(
                                     onClick = { showDatePicker = false },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0xFFFFFFFF
-                                        )
+                                        containerColor = Color(0xFFFFFFFF)
                                     ),
                                     shape = RoundedCornerShape(2.dp),
                                     modifier = Modifier
@@ -307,9 +304,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 Button(
                                     onClick = { showDatePicker = false },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(
-                                            0xFFFFFFFF
-                                        )
+                                        containerColor = Color(0xFFFFFFFF)
                                     ),
                                     shape = RoundedCornerShape(2.dp),
                                     modifier = Modifier
@@ -327,8 +322,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             }
                         }
                     }
-
-                    // }
                     Row {
                         DynamicImageLoding { selectedImage = it }
                     }
@@ -338,7 +331,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     }
 }
 
-// 프로필 이미지 선택
 @Composable
 fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
     for (i in 1..4) {
@@ -359,7 +351,6 @@ fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
     }
 }
 
-// 리소스 ID 가져오기
 fun getDrawableResourceId(resourceName: String): Int {
     return try {
         val resourceId = R.drawable::class.java.getField(resourceName).getInt(null)
@@ -368,4 +359,3 @@ fun getDrawableResourceId(resourceName: String): Int {
         0
     }
 }
-

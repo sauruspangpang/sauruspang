@@ -35,15 +35,12 @@ import com.ksj.sauruspang.R
 
 @Composable
 fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, categoryName: String) {
-    // 로그를 추가하여 호출을 추적
-    Log.e("CongratScreen", "CategoryDayManager.incrementDay($categoryName) called")
-
-    // LaunchedEffect를 사용하여 컴포저블이 처음 구성될 때만 호출되도록 설정
+    // 프로필에 저장된 현재 활성 day를 가져와 +1 한 후 DB에 업데이트
     LaunchedEffect(key1 = categoryName) {
-        CategoryDayManager.incrementDay(categoryName)
-        val currentDay = CategoryDayManager.getDay(categoryName)
-        Log.e("CongratScreen", "CategoryDayManager.getDay($categoryName): $currentDay")
-
+        val currentDay = viewModel.getActiveDay(categoryName)
+        val newDay = currentDay + 1
+        viewModel.updateCategoryDayStatus(categoryName, newDay)
+        Log.e("CongratScreen", "Updated $categoryName day to: $newDay")
     }
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     Box(modifier = Modifier.fillMaxSize()) {
@@ -57,8 +54,7 @@ fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, cat
                 .wrapContentHeight()
         )
         Column(
-            modifier = Modifier
-                .fillMaxSize()
+            modifier = Modifier.fillMaxSize()
         ) {
             Image(painter = painterResource(id = R.drawable.image_backhome),
                 contentDescription = "",
@@ -73,11 +69,9 @@ fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, cat
             Box(modifier = Modifier.fillMaxSize()) {
                 CongratAnimation()
             }
-
         }
     }
 }
-
 @Composable
 fun CongratAnimation() {
 
