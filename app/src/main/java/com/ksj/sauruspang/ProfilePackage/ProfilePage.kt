@@ -2,6 +2,7 @@ package com.ksj.sauruspang.ProfilePackage
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -59,42 +60,27 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.kidsprofile_wallpaper),
+            painter = painterResource(R.drawable.wallpaper_profile_select),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
-        Box(
-            contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = 15.dp)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.image_banner),
-                contentDescription = "banner",
-            )
-            Text(
-                text = "아이 프로필 선택하기",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.offset(y = 10.dp)
-            )
-        }
         // 우측 상단 편집 버튼
         Box(
             modifier = Modifier
                 .align(Alignment.TopEnd)
-                .padding(16.dp)
+                .padding(20.dp)
+                .background(Color(0xFFFFFFFF), shape = RoundedCornerShape(20.dp))
+                .border(5.dp, Color(0xFF163a13), shape = RoundedCornerShape(20.dp))
+                .clickable { showEditDialog = true },
         ) {
             Text(
-                text = "편집",
-                color = Color.White,
-                fontSize = 16.sp,
+                text = "학습관리",
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 28.sp,
+                color = Color(0xFF163a13),
                 modifier = Modifier
-                    .background(Color(0xFF0022B2), shape = RoundedCornerShape(8.dp))
-                    .padding(horizontal = 8.dp, vertical = 4.dp)
-                    .clickable { showEditDialog = true }
+                    .padding(horizontal = 15.dp, vertical = 10.dp)
             )
         }
         // 프로필 리스트
@@ -109,19 +95,14 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 Column(
                     modifier = Modifier
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFFFAE64))
-                        .drawBehind {
-                            drawRoundRect(
-                                color = Color(0xFFFDD4AA),
-                                topLeft = Offset(-8.dp.toPx(), -8.dp.toPx()),
-                                size = size,
-                                cornerRadius = CornerRadius(12.dp.toPx())
-                            )
-                        }
+                        .background(Color(0xFFfefff3))
                         .clickable {
                             viewModel.selectProfile(index)
                             navController.navigate("home")
-                        },
+                        }
+                        .width(170.dp)
+                        .height(230.dp)
+                        .border(3.dp, Color(0xFF00bb2f), shape = RoundedCornerShape(12.dp)),
                     verticalArrangement = Arrangement.SpaceEvenly,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
@@ -138,7 +119,7 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
-                        text = "생년월일: ${profile.birth}",
+                        text = "생일: ${profile.birth}",
                         style = MaterialTheme.typography.bodyLarge
                     )
                     Text(
@@ -153,41 +134,21 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(12.dp))
-                    .width(150.dp)
-                    .height(200.dp)
-                    .background(Color(0xFFFFAE64))
-                    .drawBehind {
-                        drawRoundRect(
-                            color = Color(0xFFFDD4AA),
-                            topLeft = Offset(-8.dp.toPx(), -8.dp.toPx()),
-                            size = size,
-                            cornerRadius = CornerRadius(12.dp.toPx())
-                        )
-                    }
-                    .clickable { navController.navigate("main") },
-                verticalArrangement = Arrangement.Top,
+                    .width(170.dp)
+                    .height(230.dp)
+                    .background(Color(0xFFfefff3))
+                    .clickable { navController.navigate("main") }
+                    .border(3.dp, Color(0xFF00bb2f), shape = RoundedCornerShape(12.dp)),
+                verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
                     modifier = Modifier
-                        .padding(top = 10.dp)
-                        .size(120.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(Color.White),
+                        .clip(RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = "ADD",
-                        modifier = Modifier.size(80.dp),
-                        tint = Color.Black
-                    )
+                    Image(painter = painterResource(R.drawable.icon_createprofile), contentDescription = "ADD",)
                 }
-                Text(
-                    text = "새로운 프로필 만들기",
-                    fontWeight = FontWeight.ExtraBold,
-                    modifier = Modifier.padding(vertical = 20.dp)
-                )
             }
         }
     }

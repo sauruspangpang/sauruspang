@@ -79,7 +79,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            painter = painterResource(R.drawable.createprofile_wallpaper),
+            painter = painterResource(R.drawable.wallpaper_profile_create),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
@@ -100,23 +100,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                 }
                 .align(Alignment.TopStart)
         )
-        Box(
-            contentAlignment = Alignment.TopCenter,
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = 15.dp)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.image_banner),
-                contentDescription = "banner",
-            )
-            Text(
-                text = "아이 프로필 만들기",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.ExtraBold,
-                modifier = Modifier.offset(y = 10.dp)
-            )
-        }
         Row(
             modifier = Modifier
                 .fillMaxSize(),

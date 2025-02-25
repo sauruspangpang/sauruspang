@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -92,20 +93,19 @@ fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavContr
             val isActive = i < totalDays
             DayBox(
                 dayIndex = i,
-                isTop = i % 2 == 0,
                 categoryName = categoryName,
                 navController = navController,
                 isActive = isActive
             )
+            Spacer(modifier = Modifier.width(100.dp))
         }
     }
 }
 
 @Composable
-fun DayBox(dayIndex: Int, isTop: Boolean, categoryName: String, navController: NavController, isActive: Boolean) {
+fun DayBox(dayIndex: Int, categoryName: String, navController: NavController, isActive: Boolean) {
     Box(
         modifier = Modifier
-            .offset(y = if (isTop) (-20).dp else 80.dp)
             .size(width = 140.dp, height = 90.dp)
             .clickable(enabled = isActive) {
                 navController.navigate("learn/$categoryName/$dayIndex")
