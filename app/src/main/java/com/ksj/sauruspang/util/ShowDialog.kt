@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -26,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.R
 import kotlinx.coroutines.delay
 
@@ -76,12 +73,10 @@ fun LoadingDialog(message: String) {
 
 @Composable
 fun DialogCorrect(
-    scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
     // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
     LaunchedEffect(Unit) {
-        scoreViewModel.incrementScore()
         delay(delayTimeMs)
         onDismiss()
     }
@@ -134,12 +129,10 @@ fun DialogRetry(
 
 @Composable
 fun LearnCorrect(
-    scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
     // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
     LaunchedEffect(Unit) {
-        scoreViewModel.incrementScore()
         delay(delayTimeMs)
         onDismiss()
     }
@@ -199,12 +192,10 @@ fun LearnRetry(
 
 @Composable
 fun CaptureCorrect(
-    scoreViewModel: ScoreViewModel,
     onDismiss: () -> Unit
 ) {
     // 다이얼로그가 열리면 2초 후 자동으로 onDismiss() 호출
     LaunchedEffect(Unit) {
-        scoreViewModel.incrementScore()
         delay(delayTimeMs)
         onDismiss()
     }

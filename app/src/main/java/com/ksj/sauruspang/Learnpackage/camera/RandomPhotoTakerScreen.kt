@@ -8,14 +8,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 
 @Composable
 fun GPTRandomPhotoTakerScreen(
     camViewModel: GPTCameraViewModel,
     tts: TextToSpeech?,
-    scoreViewModel: ScoreViewModel,
     navController: NavController
 ) {
     var capturedImage by remember { mutableStateOf<Bitmap?>(null) }
@@ -35,7 +33,6 @@ fun GPTRandomPhotoTakerScreen(
                     camViewModel.predictionResult.value = ""
                 },
                 tts = tts,
-                scoreViewModel = scoreViewModel,
                 navController = navController
 
             )

@@ -25,7 +25,6 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
 import com.ksj.sauruspang.Learnpackage.HomeScreen
 import com.ksj.sauruspang.Learnpackage.PictorialBookScreen
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.StageScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraAnswerScreen
 import com.ksj.sauruspang.Learnpackage.camera.CameraScreen
@@ -65,11 +64,10 @@ class MainActivity : ComponentActivity() {
         }
         val viewModel = ProfileViewmodel(application)
         setContent {
-            val scoreViewModel: ScoreViewModel = viewModel()
             RequestPermissions()
             HideSystemBars()
             SauruspangTheme {
-                NaySys(viewModel, tts, scoreViewModel)
+                NaySys(viewModel, tts)
             }
         }
     }
@@ -81,7 +79,7 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: ScoreViewModel) {
+fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
     val navController = rememberNavController()
     val cameraViewModel: CameraViewModel = viewModel()
     val sharedRouteViewModel: SharedRouteViewModel = viewModel()
@@ -124,7 +122,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 fullWidth / 1
             }
         }) {
-            HomeScreen(navController, viewmodel, scoreViewModel)
+            HomeScreen(navController, viewmodel)
         }
         composable("camerax") {
             ShowCameraPreviewScreen(
@@ -135,14 +133,14 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             )
         }
         composable("answer") {
-            CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel, scoreViewModel)
+            CameraAnswerScreen(navController, cameraViewModel, sharedRouteViewModel)
         }
         composable("pictorial") {
             PictorialBookScreen(navController, categoryName = "과일과 야채", viewmodel, cameraViewModel)
         }
         composable("stage/{categoryName}") { backStackEntry ->
             val categoryName = backStackEntry.arguments?.getString("categoryName") ?: ""
-            StageScreen(navController, categoryName, viewmodel, scoreViewModel)
+            StageScreen(navController, categoryName, viewmodel)
             // Set the current category for later use
             CategoryDayManager.setCurrentCategoryName(categoryName)
         }
@@ -167,7 +165,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                     questionIndex,
                     tts,
                     viewmodel,
-                    scoreViewModel,
                 )
 
             } else {
@@ -179,7 +176,6 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                     tts,
                     viewmodel,
                     sharedRouteViewModel,
-                    scoreViewModel,
                 )
             }
         }
@@ -194,8 +190,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 dayIndex,
                 questionIndex,
                 tts,
-                viewmodel,
-                scoreViewModel
+                viewmodel
             )
         }
 
@@ -223,8 +218,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
                 categoryName,
                 dayIndex,
                 questionIndex,
-                viewmodel,
-                scoreViewModel
+                viewmodel
             )
         }
         composable("congrats/{categoryName}") { backStackEntry ->
@@ -233,7 +227,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech, scoreViewModel: Score
             CongratScreen(navController, viewmodel, catgeoryName)
         }
         composable("randomPhotoTaker") {
-            GPTRandomPhotoTakerScreen(gPTCameraViewModel,tts,scoreViewModel, navController)
+            GPTRandomPhotoTakerScreen(gPTCameraViewModel,tts, navController)
         }
 
     }
@@ -261,7 +255,6 @@ fun DefaultPreview() {
             dayIndex = 0,
             questionIndex = 0,
             viewModel = viewModel(),
-            scoreViewModel = viewModel(),
             tts = TextToSpeech(null, null)
         )
     }

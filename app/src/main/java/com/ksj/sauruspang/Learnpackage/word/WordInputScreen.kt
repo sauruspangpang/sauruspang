@@ -57,7 +57,6 @@ import com.google.mlkit.vision.digitalink.DigitalInkRecognizer
 import com.google.mlkit.vision.digitalink.DigitalInkRecognizerOptions
 import com.google.mlkit.vision.digitalink.Ink
 import com.ksj.sauruspang.Learnpackage.QuizCategory
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.DialogCorrect
@@ -76,7 +75,6 @@ fun WordInputScreen(
     questionIndex: Int,
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
-    scoreViewModel: ScoreViewModel
 ) {
     var hitNumber by remember { mutableIntStateOf(0) }
     val inkManager = remember { InkManager() }
@@ -357,7 +355,6 @@ fun WordInputScreen(
         // 최상위 레벨에서 상태에 따라 다이얼로그 표시
         if (showCorrectDialog) {
             DialogCorrect(
-                scoreViewModel = scoreViewModel,
                 onDismiss = { showCorrectDialog = false }
             )
 

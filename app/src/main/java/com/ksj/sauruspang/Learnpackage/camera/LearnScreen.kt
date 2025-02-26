@@ -4,6 +4,8 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -19,19 +21,16 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
@@ -41,6 +40,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -59,13 +59,12 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ksj.sauruspang.Learnpackage.QuizCategory
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
-import com.ksj.sauruspang.RequestPermissions
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 
@@ -78,8 +77,7 @@ fun LearnScreen(
     questionIndex: Int,
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
-    sharedRouteViewModel: SharedRouteViewModel,
-    scoreViewModel: ScoreViewModel
+    sharedRouteViewModel: SharedRouteViewModel
 ) {
 
     val category = QuizCategory.allCategories.find { it.name == categoryName }
@@ -112,7 +110,6 @@ fun LearnScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            scoreViewModel = scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }
@@ -169,9 +166,16 @@ fun LearnScreen(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
+    var isRecording by remember { mutableStateOf(false) }
 
-
-
+    if (isRecording) {
+        LottieLoadingAnimation(R.drawable.recording)
+//        Image(
+//            painter = painterResource(id = R.drawable.recording), // Replace with your actual image resource
+//            contentDescription = "Recording in progress",
+//            modifier = Modifier.size(100.dp)
+//        )
+    }
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -196,6 +200,7 @@ fun LearnScreen(
 
         Image(painter = painterResource(id = R.drawable.image_backarrow),
             contentDescription = "previous question",
+            alpha = if (questionIndex==0) 0.0f else 1.0f,
             modifier = Modifier
                 .size(screenWidth * 0.15f)
                 .align(Alignment.CenterStart)
@@ -305,7 +310,15 @@ fun LearnScreen(
                                     .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
                                     .show()
                             } else
-                                speechRecognizer.startListening(speechIntent)
+                                isRecording = true
+                            speechRecognizer.startListening(speechIntent)
+
+                            // Stop listening after 5 seconds
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                speechRecognizer.stopListening()
+                                isRecording = false
+                            }, 4000) // 5000ms = 5 seconds
+
                         }
 
                 ) {
@@ -366,5 +379,37 @@ fun LearnScreen(
 
 
     }
+
+
 }
 
+@Composable
+fun LottieLoadingAnimation(image: Int) {
+    var rotationAngle by remember { mutableStateOf(0f) }
+    var isAnimating by remember { mutableStateOf(true) }
+
+    // 애니메이션 실행
+    LaunchedEffect(isAnimating) {
+        while (isAnimating) {
+            rotationAngle += 1f  // 1도씩 증가
+            if (rotationAngle >= 360f) {
+                rotationAngle = 0f // 한 바퀴 돌면 초기화
+            }
+            delay(1L) // 0.001초(1ms) 동안 대기
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(image),
+            contentDescription = "Rotating Image",
+            modifier = Modifier.rotate(rotationAngle),
+            tint = Color.Unspecified
+        )
+    }
+}

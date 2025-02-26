@@ -1,7 +1,6 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
@@ -51,7 +49,6 @@ fun QuizScreen(
     dayIndex: Int,
     questionIndex: Int,
     viewModel: ProfileViewmodel,
-    scoreViewModel: ScoreViewModel
 ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -68,7 +65,6 @@ fun QuizScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            scoreViewModel = scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }

@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,7 +29,7 @@ import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 
 @Composable
-fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel, scoreViewModel: ScoreViewModel) {
+fun StageScreen(navController: NavController, categoryName: String, viewModel: ProfileViewmodel) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -56,7 +55,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                             navController.popBackStack("home",false)
                         }
                 )
-                ProfileBox(scoreViewModel =scoreViewModel, viewModel = viewModel)
+                ProfileBox( viewModel = viewModel)
             }
             Row(
                 modifier = Modifier

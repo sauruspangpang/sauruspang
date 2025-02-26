@@ -20,17 +20,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -44,6 +40,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
@@ -55,7 +52,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
@@ -69,7 +65,6 @@ fun GPTCameraResultScreen(
     prediction: String,
     onRetake: () -> Unit,
     tts: TextToSpeech?,
-    scoreViewModel: ScoreViewModel,
     navController: NavController
 ) {
     var words = prediction.split(",").map { it.trim() }
@@ -140,7 +135,6 @@ fun GPTCameraResultScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            scoreViewModel= scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }
@@ -186,182 +180,173 @@ fun GPTCameraResultScreen(
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
-    Scaffold(topBar = {
-        TopAppBar(
-            title = {
-                Box(
-                    modifier = Modifier.fillMaxWidth()
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+
+    ) {
+        Image(
+            painter = painterResource(R.drawable.question_wallpaper),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
+            modifier = Modifier.matchParentSize()
+               // Box의 크기와 동일하게 설정
+        )
+
+        Image(painter = painterResource(id = R.drawable.image_backhome),
+            contentDescription = "",
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .size(screenWidth * 0.07f)
+                .clickable {
+                    navController.popBackStack("home", false)
+                }
+        )
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+
                 ) {
-                    Image(painter = painterResource(id = R.drawable.image_backhome),
-                        contentDescription = "",
+                Image(
+                    bitmap = capturedImage.asImageBitmap(),
+                    contentDescription = "Captured Image",
+                    modifier = Modifier
+                        .size(screenWidth * 0.27f)
+                        .clickable { listen(englishWord, Locale.US) }
+                )
+                Spacer(modifier = Modifier.height(screenHeight * 0.02f))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        koreanWord,
+                        modifier = Modifier.clickable {
+                            listen(
+                                koreanWord,
+                                Locale.KOREAN
+                            )
+                        },
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold, fontSize = 50.sp
+                        )
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.listen_btn),
+                        contentDescription = "listen button",
                         modifier = Modifier
                             .size(screenWidth * 0.07f)
-                            .clickable {
-                                navController.popBackStack("home",false)
-                            }
+                            .padding(start = screenWidth * 0.02f)
+                            .clickable { listen(koreanWord, Locale.KOREAN) }
                     )
-
-
-
                 }
-            },
 
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color(0xFFFDD4AA)
-            )
-        )
-    }) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-                .background(Color(0xFFFDD4AA))
-
-        ) {
-
-            Row(
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier.align(Alignment.Center)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-
-                    ) {
-                    Image(
-                        bitmap = capturedImage.asImageBitmap(),
-                        contentDescription = "Captured Image",
-                        modifier = Modifier
-                            .size(screenWidth * 0.2f)
-                            .clickable { listen(englishWord, Locale.US) }
-                    )
-                    Spacer(modifier = Modifier.height(screenHeight * 0.02f))
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            koreanWord,
-                            modifier = Modifier.clickable {
-                                listen(
-                                    koreanWord,
-                                    Locale.KOREAN
-                                )
-                            },
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold, fontSize = 50.sp
-                            )
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.listen_btn),
-                            contentDescription = "listen button",
-                            modifier = Modifier
-                                .size(screenWidth * 0.07f)
-                                .padding(start = screenWidth * 0.02f)
-                                .clickable { listen(koreanWord, Locale.KOREAN) }
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            englishWord,
-                            modifier = Modifier.clickable { listen(englishWord, Locale.US) },
-                            style = TextStyle(
-                                fontWeight = FontWeight.Bold, fontSize = 60.sp
-                            )
-                        )
-                        Image(painter = painterResource(id = R.drawable.listen_btn),
-                            contentDescription = "listen button",
-                            modifier = Modifier
-                                .size(screenWidth * 0.07f)
-                                .padding(start = screenWidth * 0.02f)
-                                .clickable { listen(englishWord, Locale.US) })
-                    }
-                }
-                Spacer(modifier = Modifier.width(screenWidth * 0.08f))
-                Column(
-                    modifier = Modifier.fillMaxHeight(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Spacer(modifier = Modifier.height(screenHeight * 0.23f))
+                    Text(
+                        englishWord,
+                        modifier = Modifier.clickable { listen(englishWord, Locale.US) },
+                        style = TextStyle(
+                            fontWeight = FontWeight.Bold, fontSize = 60.sp
+                        )
+                    )
+                    Image(painter = painterResource(id = R.drawable.listen_btn),
+                        contentDescription = "listen button",
+                        modifier = Modifier
+                            .size(screenWidth * 0.07f)
+                            .padding(start = screenWidth * 0.02f)
+                            .clickable { listen(englishWord, Locale.US) })
+                }
+            }
+            Spacer(modifier = Modifier.width(screenWidth * 0.08f))
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(screenHeight * 0.26f))
+                Box(
+                    modifier = Modifier
+                        .size(screenWidth * 0.12f)
+                        .shadow(
+                            elevation = 10.dp,
+                            shape = RoundedCornerShape(16.dp)
+                        ) // Increased shadow for more visibility
+
+                        .background(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0xFF77E4D2), // Bright turquoise
+                                    Color(0xFF4ECDC4)  // Slightly darker shade
+                                )
+                            ),
+                            shape = RoundedCornerShape(16.dp)
+                        )
+                        .clickable {
+                            val micPermission = ContextCompat.checkSelfPermission(
+                                context,
+                                Manifest.permission.RECORD_AUDIO
+                            )
+                            if (micPermission != PackageManager.PERMISSION_GRANTED) {
+                                Toast
+                                    .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else
+                                speechRecognizer.startListening(speechIntent)
+                        }
+
+                ) {
+                    // Glossy effect overlay
                     Box(
                         modifier = Modifier
-                            .size(screenWidth * 0.12f)
-                            .shadow(
-                                elevation = 10.dp,
-                                shape = RoundedCornerShape(16.dp)
-                            ) // Increased shadow for more visibility
-
+                            .fillMaxSize()
                             .background(
-                                brush = Brush.verticalGradient(
+                                Brush.radialGradient(
                                     colors = listOf(
-                                        Color(0xFF77E4D2), // Bright turquoise
-                                        Color(0xFF4ECDC4)  // Slightly darker shade
-                                    )
+                                        Color.White.copy(alpha = 0.4f), // Shiny highlight
+                                        Color.Transparent
+                                    ),
+                                    center = Offset(30f, 20f), // Light source effect
+                                    radius = 120f
                                 ),
                                 shape = RoundedCornerShape(16.dp)
                             )
-                            .clickable {
-                                val micPermission = ContextCompat.checkSelfPermission(
-                                    context,
-                                    Manifest.permission.RECORD_AUDIO
-                                )
-                                if (micPermission != PackageManager.PERMISSION_GRANTED) {
-                                    Toast
-                                        .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
-                                        .show()
-                                } else
-                                    speechRecognizer.startListening(speechIntent)
-                            }
-
-                    ) {
-                        // Glossy effect overlay
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.radialGradient(
-                                        colors = listOf(
-                                            Color.White.copy(alpha = 0.4f), // Shiny highlight
-                                            Color.Transparent
-                                        ),
-                                        center = Offset(30f, 20f), // Light source effect
-                                        radius = 120f
-                                    ),
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        )
-                        Image(
-                            painter = painterResource(id = R.drawable.speakbutton),
-                            contentDescription = "Speak button",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(8.dp),
-                            contentScale = ContentScale.Fit // Ensures it fills the box
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(screenHeight * 0.05f))
-                    Row {
-                        repeat(3) { index ->
-                            Image(
-                                painter = painterResource(id = R.drawable.baseline_check_24),
-                                contentDescription = "listen button",
-                                modifier = Modifier.size(screenWidth * 0.055f),
-                                alpha = if (index < correctCount) 1.0f else 0.4f
-                            )
-                            //index 0 = image1, index1 = image2, index2 = image3
-                        }
-                    }
-
-
+                    )
+                    Image(
+                        painter = painterResource(id = R.drawable.speakbutton),
+                        contentDescription = "Speak button",
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(8.dp),
+                        contentScale = ContentScale.Fit // Ensures it fills the box
+                    )
                 }
+                Spacer(modifier = Modifier.height(screenHeight * 0.05f))
+                Row {
+                    repeat(3) { index ->
+                        Image(
+                            painter = painterResource(id = R.drawable.red),
+                            contentDescription = "listen button",
+                            modifier = Modifier.size(screenWidth * 0.055f),
+                            colorFilter = if(index<correctCount)null else ColorFilter.tint(Color.Gray)
+                        )
+                        //index 0 = image1, index1 = image2, index2 = image3
+                    }
+                }
+
 
             }
 
-
         }
 
+
     }
+
 
 }

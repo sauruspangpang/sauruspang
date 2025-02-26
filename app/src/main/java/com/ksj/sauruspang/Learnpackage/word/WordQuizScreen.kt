@@ -54,12 +54,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
@@ -76,8 +79,6 @@ fun WordQuizScreen(
     questionIndex: Int,
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
-    scoreViewModel: ScoreViewModel,
-
     ) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
@@ -109,7 +110,6 @@ fun WordQuizScreen(
 
     if (showCorrectDialog) {
         LearnCorrect(
-            scoreViewModel = scoreViewModel,
             onDismiss = { showCorrectDialog = false }
         )
     }
@@ -194,7 +194,7 @@ fun WordQuizScreen(
             modifier = Modifier
                 .size(screenWidth * 0.155f, screenHeight*0.25f)
                 .align(Alignment.CenterStart)
-                .clickable {
+                .clickable (enabled = questionIndex > 0) {
                     if (questionIndex > 0) {
                         navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex - 1}")
                     }
@@ -358,5 +358,4 @@ fun WordQuizScreen(
         )
     }
 }
-
 

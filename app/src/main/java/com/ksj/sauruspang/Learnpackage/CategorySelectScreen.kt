@@ -7,7 +7,6 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,16 +21,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -58,10 +52,8 @@ import com.ksj.sauruspang.R
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: ProfileViewmodel,
-    scoreViewModel: ScoreViewModel
+    viewModel: ProfileViewmodel
 ) {
-    val score by scoreViewModel.correctAnswers
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
@@ -96,7 +88,7 @@ fun HomeScreen(
                         }
                 )
 
-                ProfileBox(scoreViewModel, viewModel)
+                ProfileBox(viewModel)
                 Spacer(Modifier.weight(1f))
                 Image(
                     painter = painterResource(id = R.drawable.image_photobook),
@@ -193,18 +185,23 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
             }
         }
 
-        Image(
-            painter = painterResource(id = R.drawable.image_cameramark),
-            contentDescription = "CameraMark",
-            modifier = Modifier
-                .clickable {
-                    Log.d("Navigation", "Navigating to gpt_camera_preview")
-                    navController.navigate("gpt_camera_preview")
-                }
-                .offset(x = 10.dp, y = (-20).dp)
-                .width(80.dp)
-                .align(Alignment.TopEnd)
-        )
+        if (category.name in listOf("과일과 야채", "색", "동물", "이동수단", "학용품", "옷")) {
+            Image(
+                painter = painterResource(id = R.drawable.image_cameramark),
+                contentDescription = "CameraMark",
+                modifier = Modifier
+                    .clickable {
+                        Log.d("Navigation", "Navigating to gpt_camera_preview")
+                        navController.navigate("gpt_camera_preview")
+                    }
+                    .offset(x = 10.dp, y = (-20).dp)
+                    .width(80.dp)
+                    .align(Alignment.TopEnd)
+            )
+
+        }
+
+
 
 
     }
@@ -212,7 +209,7 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
 
 @SuppressLint("MutableCollectionMutableState")
 @Composable
-fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
+fun ProfileBox( viewModel: ProfileViewmodel) {
     val selectedIndex by viewModel.selectedProfileIndex // 선택된 인덱스 가져오기
     val profile = viewModel.profiles // 프로필 리스트 가져오기
     val selectedProfile = profile.getOrNull(selectedIndex)
@@ -255,12 +252,6 @@ fun ProfileBox(scoreViewModel: ScoreViewModel, viewModel: ProfileViewmodel) {
                             modifier = Modifier.size(36.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
-                        val score by scoreViewModel.correctAnswers
-                        Text(
-                            "${score * 5}",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
-                        )
                     }
                 }
             }

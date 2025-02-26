@@ -30,7 +30,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.CaptureCorrect
 import com.ksj.sauruspang.util.CaptureRetry
@@ -39,8 +38,7 @@ import com.ksj.sauruspang.util.CaptureRetry
 fun CameraAnswerScreen(
     navController: NavController,
     viewModel: CameraViewModel = viewModel(),
-    sharedRouteViewModel: SharedRouteViewModel = viewModel(),
-    scoreViewModel: ScoreViewModel
+    sharedRouteViewModel: SharedRouteViewModel = viewModel()
 
 ) {
     val capturedImage = viewModel.capturedImage
@@ -73,7 +71,6 @@ fun CameraAnswerScreen(
     if (showDialog) {
         if (viewModel.isCorrect) {
             CaptureCorrect(
-                scoreViewModel = scoreViewModel,
                 onDismiss = {
                     viewModel.isCorrect = false
                     showDialog = false
