@@ -49,16 +49,12 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
         Column(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 30.dp),
-                verticalAlignment = Alignment.CenterVertically
+                    .fillMaxWidth(),
             ) {
                 Image(
                     painter = painterResource(id = R.drawable.icon_changecategory),
                     contentDescription = "button to stagescreen",
                     modifier = Modifier
-                        .size(80.dp)
-                        .offset(y = (-5).dp)
                         .clickable {
                             navController.popBackStack("home", false)
                         }
@@ -126,7 +122,7 @@ fun DayBox(dayIndex: Int, categoryName: String, navController: NavController, is
             color = if (isActive) {Color.White} else {Color.LightGray},
             fontWeight = FontWeight.ExtraBold,
             fontSize = 48.sp,
-            modifier = Modifier.align(Alignment.Center)
+            modifier = Modifier.align(Alignment.TopEnd).padding(top = 35.dp, end = 30.dp)
         )
     }
 }

@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -115,9 +116,20 @@ fun CameraScreen(
             modifier = Modifier
                 .align(Alignment.TopCenter),
             fontWeight = FontWeight.Bold,
-            fontSize = 75.sp
+            fontSize = 48.sp
 
         )
+        Box(modifier = Modifier.align(Alignment.CenterStart)) {
+            Image(
+                painter = painterResource(R.drawable.image_frame), contentDescription = "frame",
+                modifier = Modifier.align(Alignment.Center)
+            )
+            Image(
+                painter = painterResource(id = question.imageId),
+                contentDescription = "question image",
+                modifier = Modifier.align(Alignment.Center)
+            )
+        }
         Box(
             modifier = Modifier
                 .align(Alignment.Center)
@@ -157,26 +169,16 @@ fun CameraScreen(
             )
         }
 
-        Text(
-            question.english,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .offset(y = -(20).dp),
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 75.sp
-            )
-        )
         camViewModel.answerWord = question.english
         Image(
             painter = painterResource(id = R.drawable.icon_arrow_right),
             contentDescription = "next question",
             modifier = Modifier
                 .align(Alignment.CenterEnd),
-            colorFilter = ColorFilter.colorMatrix(
-                ColorMatrix().apply {
-                    setToSaturation(0.1f)
-                })
+//            colorFilter = ColorFilter.colorMatrix(
+//                ColorMatrix().apply {
+//                    setToSaturation(0.1f)
+//                })
 
         )
         Image(
@@ -185,29 +187,6 @@ fun CameraScreen(
             modifier = Modifier.clickable { }
                 .align(Alignment.TopEnd))
 
-    }
-}
-
-@Composable
-fun BackgroundScreen(category: QuizCategory?, navController: NavController) {
-    Column {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                "사진을 찍어보세요",
-                fontSize = 50.sp,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                    .weight(5f)
-                    .align(Alignment.CenterVertically)
-            )
-            Spacer(modifier = Modifier.weight(1f))
-        }
     }
 }
 

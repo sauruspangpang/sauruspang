@@ -177,7 +177,6 @@ fun LearnScreen(
         Image(painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "",
             modifier = Modifier
-                .size(screenWidth * 0.07f)
                 .clickable {
                     category?.name?.let { categoryName ->
                         navController.popBackStack("stage/$categoryName", false)
@@ -188,7 +187,6 @@ fun LearnScreen(
         Image(painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
             modifier = Modifier
-                .size(screenWidth * 0.15f)
                 .align(Alignment.CenterStart)
                 .clickable(enabled = questionIndex > 0) {
                     if (questionIndex > 0) {

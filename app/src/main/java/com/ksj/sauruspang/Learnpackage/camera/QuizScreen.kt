@@ -101,7 +101,6 @@ fun QuizScreen(
             painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
             modifier = Modifier
-                .size(140.dp)
                 .align(Alignment.CenterStart)
                 .clickable {
                     navController.navigate(
@@ -178,7 +177,6 @@ fun QuizScreen(
             painter = painterResource(id = R.drawable.icon_arrow_right),
             contentDescription = "next question",
             modifier = Modifier
-                .size(140.dp)
                 .align(Alignment.CenterEnd)
                 .clickable(enabled = solvedQuestion) {
                     if (questionIndex == questions.size - 1) {

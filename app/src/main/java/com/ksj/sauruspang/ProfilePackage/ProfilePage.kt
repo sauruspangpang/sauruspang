@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -88,7 +90,8 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 50.dp)
-                .offset(y = 20.dp),
+                .offset(y = 20.dp)
+                .horizontalScroll(rememberScrollState()),
             verticalAlignment = Alignment.CenterVertically
         ) {
             profiles.forEachIndexed { index, profile ->
@@ -126,6 +129,7 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                         text = "Score: ${profile.score}",
                         style = MaterialTheme.typography.bodyLarge
                     )
+
                     Spacer(modifier = Modifier.height(30.dp))
                 }
                 Spacer(modifier = Modifier.padding(30.dp))

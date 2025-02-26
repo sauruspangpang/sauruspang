@@ -165,7 +165,7 @@ fun DummyScreen(
                             )
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.listen_btn),
+                            painter = painterResource(id = R.drawable.icon_readword),
                             contentDescription = "listen button",
                             modifier = Modifier
                                 .size(screenWidth * 0.07f)
@@ -182,7 +182,7 @@ fun DummyScreen(
                             )
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.listen_btn),
+                            painter = painterResource(id = R.drawable.icon_readword),
                             contentDescription = "listen button",
                             modifier = Modifier
                                 .size(screenWidth * 0.07f)

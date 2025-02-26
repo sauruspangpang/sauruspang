@@ -41,7 +41,6 @@ fun EditProfileDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("프로필 편집", fontSize = 20.sp) },
         text = {
             LazyColumn {
                 items(profiles.size) { index ->
@@ -64,6 +63,17 @@ fun EditProfileDialog(
                         Spacer(modifier = Modifier.size(16.dp))
                         Text(
                             text = profile.name,
+                            modifier = Modifier.weight(1f),
+                            fontSize = 16.sp
+                        )
+                        Image(painter = painterResource(id = R.drawable.image_star),contentDescription = "star")
+                        Text(
+                            text = profile.score.toString(),
+                            modifier = Modifier.weight(1f),
+                            fontSize = 16.sp
+                        )
+                        Text(
+                            text = profile.categoryDayStatus.toString(),
                             modifier = Modifier.weight(1f),
                             fontSize = 16.sp
                         )

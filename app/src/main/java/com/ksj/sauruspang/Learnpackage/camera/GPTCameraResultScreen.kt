@@ -161,7 +161,7 @@ fun GPTCameraResultScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFDD4AA)
+                    containerColor = Color.Transparent
                 )
             )
         }
@@ -171,8 +171,8 @@ fun GPTCameraResultScreen(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
-                .background(Color(0xFFFDD4AA))
         ) {
+            Image(painter = painterResource(id = R.drawable.wallpaper_learnscreen), contentDescription = "background", contentScale = ContentScale.Crop, modifier = Modifier.matchParentSize())
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.align(Alignment.Center)
@@ -196,7 +196,7 @@ fun GPTCameraResultScreen(
                             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 50.sp)
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.listen_btn),
+                            painter = painterResource(id = R.drawable.icon_readword),
                             contentDescription = "listen button",
                             modifier = Modifier
                                 .size(screenWidth * 0.07f)
@@ -213,7 +213,7 @@ fun GPTCameraResultScreen(
                             style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 60.sp)
                         )
                         Image(
-                            painter = painterResource(id = R.drawable.listen_btn),
+                            painter = painterResource(id = R.drawable.icon_readword),
                             contentDescription = "listen button",
                             modifier = Modifier
                                 .size(screenWidth * 0.07f)

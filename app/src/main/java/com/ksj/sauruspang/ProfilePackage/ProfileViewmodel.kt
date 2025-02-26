@@ -44,9 +44,6 @@ class ProfileViewmodel(application: Application) : AndroidViewModel(application)
 
     private fun defaultCategoryStatus(): MutableMap<String, Int> {
         val status = mutableMapOf<String, Int>()
-        listOf("Math", "Science", "History", "Language").forEach { category ->
-            status[category] = 1
-        }
         return status
     }
 
