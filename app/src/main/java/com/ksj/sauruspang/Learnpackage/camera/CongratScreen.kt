@@ -56,7 +56,7 @@ fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, cat
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Image(painter = painterResource(id = R.drawable.image_backhome),
+            Image(painter = painterResource(id = R.drawable.icon_backtochooseda),
                 contentDescription = "",
                 modifier = Modifier
                     .size(80.dp)

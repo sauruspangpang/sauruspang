@@ -91,7 +91,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                 }
         )
         Image(
-            painter = painterResource(id = R.drawable.image_backhome),
+            painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "button to stagescreen",
             modifier = Modifier
                 .size(50.dp)
@@ -110,10 +110,9 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                 painter = painterResource(selectedImage),
                 contentDescription = "background",
                 modifier = Modifier
-                    .padding(10.dp)
-                    .size(180.dp)
-                    .border(3.dp, Color(0xFFE8A59C), RoundedCornerShape(16.dp))
-                    .clip(RoundedCornerShape(16.dp))
+                    .background(Color(0xFFFFFFFF), RoundedCornerShape(12.dp))
+                    .border(3.dp, Color(0xFF00bb2f), RoundedCornerShape(12.dp))
+                    .clip(RoundedCornerShape(12.dp))
             )
             Spacer(modifier = Modifier.width(20.dp))
             Row {
@@ -162,7 +161,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                         Box(
                             modifier = Modifier
                                 .background(
-                                    Color(0xFF0022B2),
+                                    Color(0xFF0e299c),
                                     shape = RoundedCornerShape(12.dp)
                                 )
                                 .shadow(
@@ -324,8 +323,10 @@ fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
                 contentDescription = "foreground",
                 modifier = Modifier
                     .padding(10.dp)
-                    .border(2.dp, Color(0xFFE8A59C), RoundedCornerShape(16.dp))
-                    .clip(RoundedCornerShape(16.dp))
+                    .border(3.dp, Color(0xFF00bb2f), RoundedCornerShape(12.dp))
+                    .background(Color(0xFFFFFFFF), RoundedCornerShape(12.dp))
+
+                    .clip(RoundedCornerShape(12.dp))
                     .clickable {
                         onImageSelected(resourceId)
                     }

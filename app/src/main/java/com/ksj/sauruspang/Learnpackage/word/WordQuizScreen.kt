@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -27,11 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -42,7 +37,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -166,14 +160,14 @@ fun WordQuizScreen(
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.question_wallpaper),
+            painter = painterResource(id = R.drawable.wallpaper_learnscreen),
             contentDescription = " ",
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
 
         Image(
-            painter = painterResource(id = R.drawable.image_backhome),
+            painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "",
             modifier = Modifier
                 .size(screenWidth * 0.07f)
@@ -188,7 +182,7 @@ fun WordQuizScreen(
         // 배경이미지 설정
 
         Image(
-            painter = painterResource(id = R.drawable.image_backarrow),
+            painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
             alpha = if (questionIndex==0) 0.0f else 1.0f,
             modifier = Modifier
@@ -344,7 +338,7 @@ fun WordQuizScreen(
 
         }
         Image(
-            painter = painterResource(id = R.drawable.image_frontarrow),
+            painter = painterResource(id = R.drawable.icon_arrow_right),
             contentDescription = "",
             modifier = Modifier
                 .size(screenWidth * 0.155f)

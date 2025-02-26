@@ -19,18 +19,13 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -46,6 +41,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -60,10 +56,8 @@ import androidx.navigation.NavController
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.ScoreViewModel
-import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
-import com.ksj.sauruspang.RequestPermissions
 import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
 import java.util.Locale
@@ -157,17 +151,16 @@ fun LearnScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.question_wallpaper),
+            painter = painterResource(id = R.drawable.wallpaper_learnscreen),
             contentDescription = " ",
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .matchParentSize()
                 .zIndex(-1f)
         )
-        Image(painter = painterResource(id = R.drawable.image_backhome),
+        Image(painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "",
             modifier = Modifier
-                .size(screenWidth * 0.07f)
                 .clickable {
                     category?.name?.let { categoryName ->
                         navController.popBackStack("stage/$categoryName", false)
@@ -175,10 +168,9 @@ fun LearnScreen(
                 }
         )
 
-        Image(painter = painterResource(id = R.drawable.image_backarrow),
+        Image(painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
             modifier = Modifier
-                .size(screenWidth * 0.15f)
                 .align(Alignment.CenterStart)
                 .clickable(enabled = questionIndex > 0) {
                     if (questionIndex > 0) {
@@ -219,7 +211,7 @@ fun LearnScreen(
                         )
                     )
                     Image(
-                        painter = painterResource(id = R.drawable.listen_btn),
+                        painter = painterResource(id = R.drawable.icon_readword),
                         contentDescription = "listen button",
                         modifier = Modifier
                             .size(screenWidth * 0.07f)
@@ -237,7 +229,7 @@ fun LearnScreen(
                             fontWeight = FontWeight.Bold, fontSize = 60.sp
                         )
                     )
-                    Image(painter = painterResource(id = R.drawable.listen_btn),
+                    Image(painter = painterResource(id = R.drawable.icon_readword),
                         contentDescription = "listen button",
                         modifier = Modifier
                             .size(screenWidth * 0.07f)
@@ -254,20 +246,6 @@ fun LearnScreen(
                 Spacer(modifier = Modifier.height(screenHeight * 0.23f))
                 Box(
                     modifier = Modifier
-                        .size(screenWidth * 0.12f)
-                        .shadow(
-                            elevation = 10.dp,
-                            shape = RoundedCornerShape(16.dp)
-                        )
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color(0xFF77E4D2),
-                                    Color(0xFF4ECDC4)
-                                )
-                            ),
-                            shape = RoundedCornerShape(16.dp)
-                        )
                         .clickable {
                             val micPermission = ContextCompat.checkSelfPermission(
                                 context,
@@ -281,53 +259,40 @@ fun LearnScreen(
                                 speechRecognizer.startListening(speechIntent)
                         }
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.radialGradient(
-                                    colors = listOf(
-                                        Color.White.copy(alpha = 0.4f),
-                                        Color.Transparent
-                                    ),
-                                    center = Offset(30f, 20f),
-                                    radius = 120f
-                                ),
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                    )
                     Image(
-                        painter = painterResource(id = R.drawable.speakbutton),
+                        painter = painterResource(id = R.drawable.icon_speakword),
                         contentDescription = "Speak button",
                         modifier = Modifier
-                            .fillMaxSize()
                             .padding(8.dp),
-                        contentScale = ContentScale.Fit
                     )
                 }
-                Spacer(modifier = Modifier.height(screenHeight * 0.05f))
                 Row {
                     repeat(3) { index ->
                         Image(
                             painter = painterResource(id = question.imageId),
                             contentDescription = "listen button",
                             modifier = Modifier.size(screenWidth * 0.055f),
-                            alpha = if (index < correctCount) 1.0f else 0.4f
+                            colorFilter = if (index < correctCount) null else ColorFilter.colorMatrix(
+                                ColorMatrix().apply {
+                                    setToSaturation(0.3f)
+                                }
+                            ),
                         )
                     }
                 }
             }
         }
         Image(
-            painter = painterResource(id = R.drawable.image_frontarrow),
+            painter = painterResource(id = R.drawable.icon_arrow_right),
             contentDescription = "next question",
             modifier = Modifier
-                .size(screenWidth * 0.155f)
                 .align(Alignment.CenterEnd)
                 .clickable(/*enabled = completedQuestion*/) {
                     navController.navigate("camera/$categoryName/$dayIndex/${questionIndex}")
                 },
-            colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)
+                    colorFilter = if (completedQuestion) null else ColorFilter.colorMatrix(ColorMatrix().apply {
+                setToSaturation(0.1f)
+            })
         )
     }
 }

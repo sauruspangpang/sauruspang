@@ -35,7 +35,7 @@ fun PictorialBookScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         // 배경
         Image(
-            painter = painterResource(R.drawable.choosecategory_wallpaper),
+            painter = painterResource(R.drawable.wallpaper_choosecategory),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -53,18 +53,13 @@ fun PictorialBookScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.image_backhome),
+                    painter = painterResource(id = R.drawable.icon_backtochooseda),
                     contentDescription = "뒤로가기",
                     modifier = Modifier
                         .size(50.dp)
                         .clickable { navController.popBackStack() }
                 )
                 Spacer(modifier = Modifier.width(20.dp))
-                Text(
-                    text = "도감",
-                    fontSize = 32.sp,
-                    fontWeight = FontWeight.ExtraBold
-                )
             }
 
             // 상단과 그리드 사이에 추가 간격
@@ -104,14 +99,17 @@ fun PictorialBookScreen(
                     Box(
                         modifier = Modifier
                             // 크기를 좀 더 크게(혹은 작게) 조정 가능
-                            .size(180.dp)
-                            .background(Color(0xFFFEE8CA)) // 예시 배경
                             .clickable {
                                 // 클릭 시 카테고리 상세 화면으로 이동
                                 navController.navigate("categoryDetail/${category.name}")
                             },
                         contentAlignment = Alignment.Center
                     ) {
+                        Image(
+                            painter = painterResource(R.drawable.image_dogam_category),
+                            contentDescription = category.name,
+                            contentScale = ContentScale.Fit
+                        )
                         // 타일 내부 UI
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,

@@ -81,7 +81,7 @@ fun ShowCameraPreviewScreen(
                 contentAlignment = Alignment.BottomCenter
             ) {
                 Image(
-                    painter = painterResource(R.drawable.choosecategory_wallpaper),
+                    painter = painterResource(R.drawable.wallpaper_learnscreen),
                     contentDescription = "배경 이미지",
                     contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
                     modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
@@ -259,11 +259,11 @@ fun SelectViewModelList(
 }
 
 @Composable
-fun CapturedImage(capturedImage: MutableState<Bitmap?>) {
+fun CapturedImage(capturedImage: MutableState<Bitmap?>, modifier: Modifier) {
     Image(
         bitmap = capturedImage.value!!.asImageBitmap(),
         contentDescription = "Captured Image",
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier
     )
 }
 

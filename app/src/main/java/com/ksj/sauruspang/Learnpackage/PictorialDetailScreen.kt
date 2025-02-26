@@ -1,13 +1,16 @@
 package com.ksj.sauruspang.Learnpackage
 
 import android.graphics.BitmapFactory
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -18,6 +21,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +55,7 @@ fun PictorialDetailScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         // 배경
         Image(
-            painter = painterResource(R.drawable.choosecategory_wallpaper),
+            painter = painterResource(R.drawable.wallpaper_dogaminside),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -67,16 +71,28 @@ fun PictorialDetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(R.drawable.image_backhome),
+                    painter = painterResource(R.drawable.icon_backtochooseda),
                     contentDescription = "뒤로가기",
                     modifier = Modifier
                         .size(50.dp)
                         .clickable { navController.popBackStack() }
                 )
                 Text(
-                    text = "${currentCategory.name} 도감",
+                    text = currentCategory.name,
                     fontSize = 24.sp,
-                    modifier = Modifier.padding(end = 16.dp)
+                    color = Color(0xFF00BB2F), // 제목색 00bb2f (알파값 FF 추가)
+                    fontWeight = FontWeight.ExtraBold,
+                    modifier = Modifier
+                        .padding(end = 16.dp)
+                        .background(
+                            color = Color(0xFFFFFede), // 배경색 fffede (알파값 FF 추가)
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .border(
+                            BorderStroke(3.dp, Color(0xFF00BB2F)), // 테두리색 00bb2f (알파값 FF 추가)
+                            shape = RoundedCornerShape(10.dp)
+                        )
+                        .padding(horizontal = 10.dp, vertical = 5.dp) // 내부 여백
                 )
             }
 
@@ -100,6 +116,8 @@ fun PictorialDetailScreen(
                             .height(120.dp),
                         contentAlignment = Alignment.Center
                     ) {
+                        Image(painter = painterResource(id = R.drawable.image_dogam_item),
+                            contentDescription = null,)
                         Column(
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center
@@ -112,16 +130,13 @@ fun PictorialDetailScreen(
                                 Image(
                                     bitmap = bitmap.asImageBitmap(),
                                     contentDescription = question.korean,
-                                    modifier = Modifier.size(60.dp),
                                     contentScale = ContentScale.Fit
                                 )
                             } else {
                                 // 미등록이면 QuizQuestion의 imageId를 활용하여
                                 // 베이지색 박스 배경 위에 그레이스케일 이미지 표시
                                 Box(
-                                    modifier = Modifier
-                                        .size(100.dp)
-                                        .background(Color(0xFFF5F5DC)), // 베이지색 배경
+                                    modifier = Modifier, // 베이지색 배경
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Column {

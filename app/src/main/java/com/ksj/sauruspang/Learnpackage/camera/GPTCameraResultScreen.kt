@@ -192,7 +192,7 @@ fun GPTCameraResultScreen(
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Image(painter = painterResource(id = R.drawable.image_backhome),
+                    Image(painter = painterResource(id = R.drawable.icon_backtochooseda),
                         contentDescription = "",
                         modifier = Modifier
                             .size(screenWidth * 0.07f)

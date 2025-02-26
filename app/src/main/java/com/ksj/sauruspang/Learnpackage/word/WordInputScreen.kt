@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -122,7 +121,7 @@ fun WordInputScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         // 배경이미지 설정
         Image(
-            painter = painterResource(id = R.drawable.question_wallpaper),
+            painter = painterResource(id = R.drawable.wallpaper_learnscreen),
             contentDescription = " ",
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
@@ -134,7 +133,7 @@ fun WordInputScreen(
 //        ) {
 
         Image(
-            painter = painterResource(id = R.drawable.arrow),
+            painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "button to stagescreen",
             modifier = Modifier
                 .size(screenWidth * 0.07f)
@@ -143,7 +142,7 @@ fun WordInputScreen(
                 }
         )
         Image(
-            painter = painterResource(id = R.drawable.image_backarrow),
+            painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
             modifier = Modifier
                 .size(screenWidth * 0.1f)
@@ -220,7 +219,7 @@ fun WordInputScreen(
         }
         // 다음 문제 넘어가기 (정답 시 활성화)
         Image(
-            painter = painterResource(id = R.drawable.image_frontarrow),
+            painter = painterResource(id = R.drawable.icon_arrow_right),
             //  id = if (isCorrect) R.drawable.image_frontarrow else R.drawable.frontnull
             contentDescription = "next question",
             modifier = Modifier

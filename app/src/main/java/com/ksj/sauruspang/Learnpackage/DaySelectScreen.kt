@@ -24,9 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -39,7 +42,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
     val totalDays = viewModel.getActiveDay(categoryName)
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.day_wallpaper),
+            painter = painterResource(R.drawable.wallpaper_chooseday),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
@@ -52,7 +55,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.image_home),
+                    painter = painterResource(id = R.drawable.icon_changecategory),
                     contentDescription = "button to stagescreen",
                     modifier = Modifier
                         .size(80.dp)
@@ -64,19 +67,19 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                 // 기존 ProfileBox 재사용 (Score 관련은 viewModel의 score 사용)
                 ProfileBox(viewModel = viewModel)
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .horizontalScroll(rememberScrollState())
-            ) {
-                // category?.days 대신 totalDays와 days 리스트를 활용 (QuizCategory를 그대로 사용)
-                // QuizCategory.allCategories에서 categoryName에 해당하는 카테고리를 찾는다고 가정
-                val category = QuizCategory.allCategories.find { it.name == categoryName }
-                category?.days?.let { days ->
-                    ZigzagRow(days, categoryName, navController, viewModel)
-                }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .horizontalScroll(rememberScrollState())
+        ) {
+            // category?.days 대신 totalDays와 days 리스트를 활용 (QuizCategory를 그대로 사용)
+            // QuizCategory.allCategories에서 categoryName에 해당하는 카테고리를 찾는다고 가정
+            val category = QuizCategory.allCategories.find { it.name == categoryName }
+            category?.days?.let { days ->
+                ZigzagRow(days, categoryName, navController, viewModel)
             }
-            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }
@@ -86,7 +89,7 @@ fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavContr
     // 선택된 프로필의 활성화된 Day 수를 viewModel에서 가져옴
     val totalDays = viewModel.getActiveDay(categoryName)
     Row(
-        modifier = Modifier.padding(30.dp)
+        modifier = Modifier.padding(horizontal = 30.dp)
     ) {
         for (i in 0 until days.size) {
             // 현재 day가 활성화되었는지 viewModel의 값을 기준으로 확인
@@ -106,26 +109,25 @@ fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavContr
 fun DayBox(dayIndex: Int, categoryName: String, navController: NavController, isActive: Boolean) {
     Box(
         modifier = Modifier
-            .size(width = 140.dp, height = 90.dp)
             .clickable(enabled = isActive) {
                 navController.navigate("learn/$categoryName/$dayIndex")
             }
-            .drawWithContent {
-                drawContent()
-                if (!isActive) {
-                    // 회색 오버레이를 그려서 비활성 상태임을 표시 (alpha 값 조절로 농도 조절)
-                    drawRect(color = Color.Gray.copy(alpha = 0.5f))
-                }
-            },
-        contentAlignment = Alignment.Center
     ) {
         Image(
-            painter = painterResource(id = R.drawable.image_whiteboard),
+            painter = painterResource(id = R.drawable.card_day),
             contentDescription = "null",
+            colorFilter = if (!isActive) {
+                ColorFilter.colorMatrix(ColorMatrix().apply {
+                    setToSaturation(0.1f)
+                })
+            } else null,
         )
         Text(
             "Day ${dayIndex + 1}",
-            style = TextStyle(fontSize = 40.sp)
+            color = if (isActive) {Color.White} else {Color.LightGray},
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 48.sp,
+            modifier = Modifier.align(Alignment.Center)
         )
     }
 }

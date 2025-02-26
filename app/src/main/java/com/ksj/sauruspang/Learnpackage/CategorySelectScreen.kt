@@ -40,6 +40,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieAnimation
 import com.airbnb.lottie.compose.LottieCompositionSpec
@@ -62,26 +63,48 @@ fun HomeScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.choosecategory_wallpaper),
+            painter = painterResource(R.drawable.wallpaper_choosecategory),
             contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
-
+        Box(modifier = Modifier.align(Alignment.CenterEnd).zIndex(1f)){
+            Image(painter = painterResource(R.drawable.card_gptcamera), contentDescription = "GPT Camera", modifier = Modifier
+                .align(Alignment.CenterEnd)
+            )
+            // Lottie Animation
+            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
+            val progress by animateLottieCompositionAsState(
+                composition = composition,
+                iterations = LottieConstants.IterateForever
+            )
+            LottieAnimation(
+                composition = composition,
+                progress = progress,
+                modifier = Modifier
+                    .clickable { navController.navigate("randomPhotoTaker") }
+            )
+        }
+        Image(
+            painter = painterResource(id = R.drawable.image_photobook),
+            contentDescription = "",
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .clickable { navController.navigate("pictorial") }
+        )
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 30.dp),
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.image_backhome),
+                    painter = painterResource(id = R.drawable.icon_changeprofile),
                     contentDescription = "button to profile screen",
                     modifier = Modifier
-                        .size(50.dp)
+                        .align(Alignment.Top)
                         .clickable {
                             navController.popBackStack()
                         }
@@ -89,34 +112,16 @@ fun HomeScreen(
                 // ProfileBox 수정 – scoreViewModel 대신 viewModel을 사용하여 선택된 프로필의 score 표시
                 ProfileBox(viewModel = viewModel)
                 Spacer(Modifier.weight(1f))
-                Image(
-                    painter = painterResource(id = R.drawable.image_photobook),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .clickable { navController.navigate("pictorial") }
-                )
+
             }
-            Spacer(modifier = Modifier.height(30.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                // Lottie Animation
-                val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
-                val progress by animateLottieCompositionAsState(
-                    composition = composition,
-                    iterations = LottieConstants.IterateForever
-                )
-                LottieAnimation(
-                    composition = composition,
-                    progress = progress,
-                    modifier = Modifier
-                        .padding(horizontal = 20.dp)
-                        .clickable { navController.navigate("randomPhotoTaker") }
-                )
+                Spacer(modifier = Modifier.width(30.dp))
                 LazyRow(
                     modifier = Modifier
-                        .padding(start = 30.dp, bottom = 30.dp),
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(40.dp)
                 ) {
                     QuizCategory.allCategories.forEachIndexed { index, category ->
@@ -141,18 +146,9 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .shadow(
-                    elevation = 8.dp,
-                    shape = RoundedCornerShape(12.dp),
-                    spotColor = Color(0xFF000000)
-                )
-                .clip(RoundedCornerShape(12.dp))
-                .background(Color(0xFFFFFFFF))
                 .clickable { navController.navigate("stage/${category.name}") }
-                .padding(top = 30.dp, start = 30.dp, end = 30.dp)
-                .height(150.dp)
-                .width(110.dp)
         ) {
+            Image(painter = painterResource(id = R.drawable.card_category), contentDescription = "category background")
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -194,16 +190,14 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
 fun ProfileBox(viewModel: ProfileViewmodel) {
     val selectedIndex = viewModel.selectedProfileIndex.value
     val profile = viewModel.profiles.getOrNull(selectedIndex)
-    Box(contentAlignment = Alignment.BottomCenter) {
+    Box(contentAlignment = Alignment.Center) {
         Image(
-            painter = painterResource(R.drawable.image_woodboard),
+            painter = painterResource(R.drawable.card_profile_02),
             contentDescription = "",
         )
         profile?.let { profile ->
             Row(
-                modifier = Modifier
-                    .padding(horizontal = 0.dp)
-                    .offset(y = (-10).dp),
+                modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
@@ -213,28 +207,28 @@ fun ProfileBox(viewModel: ProfileViewmodel) {
                     Modifier
                         .size(80.dp)
                         .clip(RoundedCornerShape(12.dp))
-                        .padding(end = 15.dp)
                 )
                 Column(
-                    modifier = Modifier.padding(bottom = 0.dp),
+                    modifier = Modifier,
                     verticalArrangement = Arrangement.SpaceBetween,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Text(
                         text = profile.name,
-                        style = androidx.compose.ui.text.TextStyle(fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                        color = Color.White,
+                        fontWeight = FontWeight.ExtraBold,
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Image(
-                            painter = painterResource(R.drawable.image_starpoint),
+                            painter = painterResource(R.drawable.image_star),
                             contentDescription = "",
                             modifier = Modifier.size(36.dp)
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
                             "${profile.score * 5}",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                            color = Color.White,
+                            fontWeight = FontWeight.ExtraBold,
                         )
                     }
                 }

@@ -6,11 +6,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -90,7 +88,6 @@ fun DialogCorrect(
             shape = RoundedCornerShape(8.dp),
             color = correctDialogColor,
             modifier = Modifier
-                .padding(16.dp)
         ) { MarkCorrect() }
     }
 }
@@ -244,17 +241,15 @@ fun CaptureRetry(
 @Composable
 fun MarkCorrect() {
     Image(
-        painter = painterResource(id = R.drawable.mark_correct),
+        painter = painterResource(id = R.drawable.icon_correct),
         contentDescription = null,
-        modifier = Modifier.padding(16.dp)
     )
 }
 
 @Composable
 fun MarkWrong() {
     Image(
-        painter = painterResource(id = R.drawable.mark_wrong),
+        painter = painterResource(id = R.drawable.icon_wrong),
         contentDescription = null,
-        modifier = Modifier.padding(16.dp)
     )
 }
