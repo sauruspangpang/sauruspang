@@ -85,7 +85,6 @@ fun DialogCorrect(
             shape = RoundedCornerShape(8.dp),
             color = correctDialogColor,
             modifier = Modifier
-                .padding(16.dp)
         ) { MarkCorrect() }
     }
 }
@@ -235,17 +234,15 @@ fun CaptureRetry(
 @Composable
 fun MarkCorrect() {
     Image(
-        painter = painterResource(id = R.drawable.mark_correct),
+        painter = painterResource(id = R.drawable.icon_correct),
         contentDescription = null,
-        modifier = Modifier.padding(16.dp)
     )
 }
 
 @Composable
 fun MarkWrong() {
     Image(
-        painter = painterResource(id = R.drawable.mark_wrong),
+        painter = painterResource(id = R.drawable.icon_wrong),
         contentDescription = null,
-        modifier = Modifier.padding(16.dp)
     )
 }

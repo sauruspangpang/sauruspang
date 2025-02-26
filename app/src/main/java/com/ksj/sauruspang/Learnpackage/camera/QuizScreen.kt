@@ -28,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -88,7 +89,7 @@ fun QuizScreen(
             modifier = Modifier.matchParentSize()
         )
         Image(
-            painter = painterResource(id = R.drawable.arrow),
+            painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "button to stagescreen",
             modifier = Modifier
                 .size(50.dp)
@@ -97,7 +98,7 @@ fun QuizScreen(
                 }
         )
         Image(
-            painter = painterResource(id = R.drawable.image_backarrow),
+            painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
             modifier = Modifier
                 .size(140.dp)
@@ -174,7 +175,7 @@ fun QuizScreen(
             }
         }
         Image(
-            painter = painterResource(id = R.drawable.image_frontarrow),
+            painter = painterResource(id = R.drawable.icon_arrow_right),
             contentDescription = "next question",
             modifier = Modifier
                 .size(140.dp)
@@ -186,7 +187,9 @@ fun QuizScreen(
                         navController.navigate("quiz/$categoryName/$dayIndex/${questionIndex + 1}")
                     }
                 },
-            colorFilter = if (solvedQuestion) null else ColorFilter.tint(Color.Gray)
+            colorFilter = if (solvedQuestion) null else ColorFilter.colorMatrix(ColorMatrix().apply {
+                setToSaturation(0.1f)
+            })
         )
     }
 }

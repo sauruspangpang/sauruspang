@@ -1,7 +1,6 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
 import android.os.Bundle
-import android.speech.tts.TextToSpeech
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -35,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
@@ -48,14 +46,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
-import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.ui.theme.SauruspangTheme
-import java.util.Locale
 
 class DummyActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -97,7 +92,7 @@ fun DummyScreen(
                 Box(
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Image(painter = painterResource(id = R.drawable.image_backhome),
+                    Image(painter = painterResource(id = R.drawable.icon_backtochooseda),
                         contentDescription = "",
                         modifier = Modifier
                             .size(screenWidth * 0.07f)
@@ -130,7 +125,7 @@ fun DummyScreen(
                 .background(Color(0xFFFDD4AA))
 
         ) {
-            Image(painter = painterResource(id = R.drawable.image_backarrow),
+            Image(painter = painterResource(id = R.drawable.icon_arrow_left),
                 contentDescription = "previous question",
                 modifier = Modifier
                     //  .size(140.dp)
@@ -265,7 +260,7 @@ fun DummyScreen(
                 }
             }
 
-            Image(painter = painterResource(id = R.drawable.image_frontarrow),
+            Image(painter = painterResource(id = R.drawable.icon_arrow_right),
                 contentDescription = "next question",
                 modifier = Modifier
                     .size(screenWidth * 0.155f)
