@@ -1,26 +1,21 @@
 pluginManagement {
     repositories {
-        google {
-            content {
-                includeGroupByRegex("com\\.android.*")
-                includeGroupByRegex("com\\.google.*")
-                includeGroupByRegex("androidx.*")
-            }
-        }
-        mavenCentral()
+        // Gradle 플러그인 관련
         gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven("https://jitpack.io")
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
         google()
         mavenCentral()
-        maven { setUrl("https://jitpack.io") }
-
+        maven("https://jitpack.io")
     }
 }
 
 rootProject.name = "sauruspang"
 include(":app")
- 
