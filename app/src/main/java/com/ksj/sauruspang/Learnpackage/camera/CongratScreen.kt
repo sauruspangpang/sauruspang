@@ -45,7 +45,7 @@ fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, cat
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(R.drawable.confetti_wallpaper),
+            painter = painterResource(R.drawable.wallpaper_congratulations),
             contentDescription = "conftti",
             contentScale = ContentScale.Fit,
             modifier = Modifier

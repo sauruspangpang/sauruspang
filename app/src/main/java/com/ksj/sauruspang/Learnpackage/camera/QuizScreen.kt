@@ -83,7 +83,7 @@ fun QuizScreen(
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.confetti_wallpaper),
+            painter = painterResource(id = R.drawable.wallpaper_learnscreen),
             contentDescription = "background",
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
@@ -151,23 +151,32 @@ fun QuizScreen(
                 ) {
                     Spacer(modifier = Modifier.size(50.dp))
                     answerOptions.forEach { answer ->
-                        Button(
-                            onClick = {
-                                if (answer == question.english) {
-                                    // 정답이면 바로 퀴즈 완료 처리 및 점수 5점 추가
-                                    viewModel.markQuizAsSolved(questionId)
-                                    val currentScore = viewModel.profiles.getOrNull(viewModel.selectedProfileIndex.value)?.score ?: 0
-                                    viewModel.updateScore(currentScore + 5)
-                                    showCorrectDialog = true
-                                } else {
-                                    showRetryDialog = true
-                                }
-                            },
-                            modifier = Modifier
-                                .fillMaxWidth(0.5f)
-                                .padding(4.dp)
-                        ) {
-                            Text(text = answer, fontSize = 24.sp)
+
+                        Box() {
+                            Image(
+                                painter = painterResource(R.drawable.image_choosewordbutton),
+                                contentDescription = "button",
+                                modifier = Modifier.clickable {
+                                    if (answer == question.english) {
+                                        // 정답이면 바로 퀴즈 완료 처리 및 점수 5점 추가
+                                        viewModel.markQuizAsSolved(questionId)
+                                        val currentScore =
+                                            viewModel.profiles.getOrNull(viewModel.selectedProfileIndex.value)?.score
+                                                ?: 0
+                                        viewModel.updateScore(currentScore + 5)
+                                        showCorrectDialog = true
+                                    } else {
+                                        showRetryDialog = true
+                                    }
+                                })
+                            Text(
+                                text = answer,
+                                fontSize = 24.sp,
+                                color = Color(0xFFf0ffee),
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.align(Alignment.Center)
+
+                            )
                         }
                     }
                 }

@@ -28,8 +28,8 @@ import com.ksj.sauruspang.R
 import kotlinx.coroutines.delay
 
 const val delayTimeMs = 2000L
-val correctDialogColor = Color(0xFFDBE5FF)
-val retryDialogColor = Color(0xFFFFDBDB)
+val correctDialogColor = Color.Transparent
+val retryDialogColor = Color.Transparent
 
 @Composable
 fun LoadingDialog(message: String) {
@@ -119,7 +119,7 @@ fun DialogRetry(
                 Column {
                     MarkWrong()
                     Spacer(modifier = Modifier.width(16.dp))
-                    Text(text = wrongLetters)
+//                    Text(text = wrongLetters)
                 }
             }
         }

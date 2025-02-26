@@ -143,7 +143,6 @@ fun WordInputScreen(
             painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
             modifier = Modifier
-                .size(screenWidth * 0.1f)
                 .align(Alignment.CenterStart)
                 .clickable {
                     if (questionIndex > 0) {
@@ -159,6 +158,7 @@ fun WordInputScreen(
             verticalAlignment = Alignment.CenterVertically
         )
         {
+
             Image(
                 painter = painterResource(question.imageId),
                 contentDescription = "Question Image",
@@ -192,10 +192,10 @@ fun WordInputScreen(
                     //.align(Alignment.CenterEnd)
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.real_sketchbook),
+                        painter = painterResource(R.drawable.image_notepadforwritingword),
                         contentDescription = "Sketchbook",
                         contentScale = ContentScale.FillBounds,
-                        modifier = Modifier.fillMaxSize() // 박스를 가득 채우도록 설정
+//                        modifier = Modifier.fillMaxSize() // 박스를 가득 채우도록 설정
                     )
 
                     Text(
@@ -221,8 +221,7 @@ fun WordInputScreen(
             //  id = if (isCorrect) R.drawable.image_frontarrow else R.drawable.frontnull
             contentDescription = "next question",
             modifier = Modifier
-                .size(screenWidth * 0.1f)
-                .align(Alignment.BottomEnd)
+                .align(Alignment.CenterEnd)
                 .clickable(enabled = isCorrect) {
                     if (questionIndex == questions.size - 1) {
                         // Navigate to the first question of the quiz screen
@@ -246,100 +245,66 @@ fun WordInputScreen(
                 .fillMaxWidth()
                 .align(Alignment.BottomEnd),
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-            FilledTonalButton(
-                onClick = {
-                    inkManager.clearCanvas()
-                },
+            //다시 쓰기 버튼
+            Image(painter = painterResource(R.drawable.icon_eraser), contentDescription = "Eraser",
                 modifier = Modifier
-//                        .width(120.dp)
-//                        .height(50.dp)
-                    .width(screenWidth * 0.13f) // Adjusted width
-                    .height(screenHeight * 0.125f)
-                    .padding(top = 10.dp),
-                border = BorderStroke(2.dp, Color.Black)
-            ) {
-                Text(
-                    "다시쓰기",
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontWeight = FontWeight.Bold,
-                    )
-                )
-            }
-
-            Spacer(modifier = Modifier.size(5.dp))
-            // 정답 확인 버튼
-            FilledTonalButton(
-                onClick = {
-                    if (isModelDownloaded) {
-                        coroutineScope.launch {
-                            // recognizedText와 리스트 초기화
-                            val result = withContext(Dispatchers.IO) {
-                                inkManager.recognizeInk().uppercase()
-                            }
-                            // Main 스레드에서 상태 업데이트
-                            recognizedText = result
-
-                            // 안전하게 결과 분리
-                            val recognizedSplit = result.split(",").take(2)
-                            if (recognizedSplit.size < 2) {
-                                // 인식 결과가 부족할 경우 추가 처리
-                                recognizedText = "인식 결과가 부족합니다. 다시 시도해 주세요."
-                                return@launch
-                            }
-                            recognizedList = recognizedSplit
-                            Log.e("recognizedList", recognizedList.toString())
-
-                            val candidate1 = recognizedList[0]
-                            val candidate2 = recognizedList[1]
-
-                            val mismatchedIndexes1 = compareWords(targetWord, candidate1)
-                            val mismatchedIndexes2 = compareWords(targetWord, candidate2)
-
-                            // 두 후보가 targetWord와 길이가 같고 모두 일치해야 정답으로 판단
-                            // 정답 조건식 변경 가능 (candidate1 == targetWord || candidate2 == targetWord)
-                            if ((candidate1.length == targetWord.length && mismatchedIndexes1.isEmpty()) ||
-                                (candidate2.length == targetWord.length && mismatchedIndexes2.isEmpty())
-                            ) {
-                                recognizedText = "정답입니다."  // TODO 로깅 텍스트
-                                showCorrectDialog = true
-                                isCorrect = true
-                                hitNumber++
-                            } else {
-                                // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
-                                wrongLettersInfo = "틀린 글자: " +
-                                        "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
-                                        "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
-                                recognizedText = wrongLettersInfo  // TODO 로깅 텍스트
-                                showRetryDialog = true
-                                incorrectAnswerCount++
-                            }
-                        }
-                    } else {
-                        recognizedText =
-                            "Model is not yet downloaded. Please try again later."
+                    .clickable {
+                        inkManager.clearCanvas()
                     }
-                },
-                modifier = Modifier
-//                        .width(120.dp)
-//                        .height(50.dp)
-                    .width(screenWidth * 0.13f) // Adjusted width
-                    .height(screenHeight * 0.125f)
-                    .padding(top = 10.dp),
-                shape = RoundedCornerShape(10.dp),
-                border = BorderStroke(2.dp, Color.Black), // Black outline
+            )
+            // 정답 확인 버튼
+            Image(painter = painterResource(R.drawable.icon_grading), contentDescription = "Grading",
+            modifier = Modifier
+                .clickable {if (isModelDownloaded) {
+                    coroutineScope.launch {
+                        // recognizedText와 리스트 초기화
+                        val result = withContext(Dispatchers.IO) {
+                            inkManager.recognizeInk().uppercase()
+                        }
+                        // Main 스레드에서 상태 업데이트
+                        recognizedText = result
 
-            ) {
-                Text(
-                    "정답확인",
-                    style = TextStyle(
-                        color = Color.DarkGray,
-                        fontWeight = FontWeight.Bold,
-                    )
-                )
-            }
-            Spacer(modifier = Modifier.weight(0.5f))
+                        // 안전하게 결과 분리
+                        val recognizedSplit = result.split(",").take(2)
+                        if (recognizedSplit.size < 2) {
+                            // 인식 결과가 부족할 경우 추가 처리
+                            recognizedText = "인식 결과가 부족합니다. 다시 시도해 주세요."
+                            return@launch
+                        }
+                        recognizedList = recognizedSplit
+                        Log.e("recognizedList", recognizedList.toString())
+
+                        val candidate1 = recognizedList[0]
+                        val candidate2 = recognizedList[1]
+
+                        val mismatchedIndexes1 = compareWords(targetWord, candidate1)
+                        val mismatchedIndexes2 = compareWords(targetWord, candidate2)
+
+                        // 두 후보가 targetWord와 길이가 같고 모두 일치해야 정답으로 판단
+                        // 정답 조건식 변경 가능 (candidate1 == targetWord || candidate2 == targetWord)
+                        if ((candidate1.length == targetWord.length && mismatchedIndexes1.isEmpty()) ||
+                            (candidate2.length == targetWord.length && mismatchedIndexes2.isEmpty())
+                        ) {
+                            recognizedText = "정답입니다."  // TODO 로깅 텍스트
+                            showCorrectDialog = true
+                            isCorrect = true
+                            hitNumber++
+                        }
+                        else
+                        {
+                            // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
+                            wrongLettersInfo = "틀린 글자: " +
+                                    "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
+                                    "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
+                            recognizedText = wrongLettersInfo  // TODO 로깅 텍스트
+                            showRetryDialog = true
+                            incorrectAnswerCount++
+                        }
+                    }
+                } else {
+                    recognizedText =
+                        "Model is not yet downloaded. Please try again later."
+                }  })
         }
 
 

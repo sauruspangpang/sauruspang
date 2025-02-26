@@ -207,12 +207,30 @@ fun LearnScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Spacer(modifier = Modifier.height(screenHeight * 0.1f))
-                Image(painter = painterResource(id = question.imageId),
-                    contentDescription = "question image",
-                    modifier = Modifier
-                        .size(screenWidth * 0.2f)
-                        .clickable { listen(question.english, Locale.US) }
-                )
+//                Image(painter = painterResource(id = question.imageId),
+//                    contentDescription = "question image",
+//                    modifier = Modifier
+//                        .size(screenWidth * 0.2f)
+//                        .clickable { listen(question.english, Locale.US) }
+//                )
+
+                Box() {
+                    // 배경 이미지로 image_whiteboard.xml 적용
+                    Image(
+                        painter = painterResource(id = R.drawable.image_whiteboard),
+                        contentDescription = "background",
+                        modifier = Modifier.matchParentSize()
+                    )
+                    // 실제 표시할 이미지
+                    Image(
+                        painter = painterResource(id = question.imageId),
+                        contentDescription = "question image",
+                        modifier = Modifier.align(Alignment.Center)
+                            .clickable { listen(question.english, Locale.US) }
+
+                    )
+                }
+
                 Spacer(modifier = Modifier.height(screenHeight * 0.02f))
                 Row(
                     verticalAlignment = Alignment.CenterVertically
@@ -259,7 +277,6 @@ fun LearnScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Spacer(modifier = Modifier.height(screenHeight * 0.23f))
                 Box(
                     modifier = Modifier
                         .clickable {
@@ -342,7 +359,8 @@ fun LottieLoadingAnimation(image: Int) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp),
+            .padding(16.dp)
+            .zIndex(1f),
         contentAlignment = Alignment.Center
     ) {
         Icon(

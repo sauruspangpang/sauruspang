@@ -89,11 +89,11 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 50.dp)
                 .offset(y = 20.dp)
                 .horizontalScroll(rememberScrollState()),
             verticalAlignment = Alignment.CenterVertically
         ) {
+            Spacer(modifier = Modifier.width(50.dp))
             profiles.forEachIndexed { index, profile ->
                 Column(
                     modifier = Modifier
@@ -154,6 +154,7 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                     Image(painter = painterResource(R.drawable.icon_createprofile), contentDescription = "ADD",)
                 }
             }
+            Spacer(modifier = Modifier.width(50.dp))
         }
     }
 

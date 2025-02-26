@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -65,9 +66,16 @@ fun HomeScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
-        Box(modifier = Modifier.align(Alignment.CenterEnd).zIndex(1f)){
-            Image(painter = painterResource(R.drawable.card_gptcamera), contentDescription = "GPT Camera", modifier = Modifier
+        Box(
+            modifier = Modifier
                 .align(Alignment.CenterEnd)
+                .zIndex(1f)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.card_gptcamera),
+                contentDescription = "GPT Camera",
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
             )
             // Lottie Animation
             val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
@@ -82,6 +90,7 @@ fun HomeScreen(
                     .clickable { navController.navigate("randomPhotoTaker") }
             )
         }
+
         Image(
             painter = painterResource(id = R.drawable.image_photobook),
             contentDescription = "",
@@ -89,48 +98,32 @@ fun HomeScreen(
                 .align(Alignment.TopEnd)
                 .clickable { navController.navigate("pictorial") }
         )
-        Column(
-            modifier = Modifier.fillMaxSize()
+        Row(){
+        Image(
+            painter = painterResource(id = R.drawable.icon_changeprofile),
+            contentDescription = "button to profile screen",
+            modifier = Modifier
+//                .align(Alignment.TopStart)
+                .clickable {
+                    navController.popBackStack()
+                }
+        )
+        ProfileBox(viewModel = viewModel)}
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .horizontalScroll(rememberScrollState())
+                .padding(bottom = 30.dp)
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.icon_changeprofile),
-                    contentDescription = "button to profile screen",
-                    modifier = Modifier
-                        .align(Alignment.Top)
-                        .clickable {
-                            navController.popBackStack()
-                        }
-                )
-
-                ProfileBox(viewModel = viewModel)
-                Spacer(Modifier.weight(1f))
-
-            }
-
-            Row(
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Spacer(modifier = Modifier.width(30.dp))
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(40.dp)
-                ) {
-                    QuizCategory.allCategories.forEachIndexed { index, category ->
-                        item(key = index) {
-                            CategoryBox(category, navController)
-                        }
-                    }
-                    item {
-                        Spacer(modifier = Modifier.width(30.dp))
-                    }
+            Spacer(modifier = Modifier.width(30.dp))
+            QuizCategory.allCategories.forEachIndexed { index, category ->
+                CategoryBox(category, navController)
+                if (index != QuizCategory.allCategories.lastIndex) {
+                    Spacer(modifier = Modifier.width(40.dp))
                 }
             }
+            Spacer(modifier = Modifier.width(30.dp))
         }
     }
 }
@@ -138,14 +131,17 @@ fun HomeScreen(
 @Composable
 fun CategoryBox(category: QuizCategory, navController: NavController) {
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxWidth()
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
                 .clickable { navController.navigate("stage/${category.name}") }
         ) {
-            Image(painter = painterResource(id = R.drawable.card_category), contentDescription = "category background")
+            Image(
+                painter = painterResource(id = R.drawable.card_category),
+                contentDescription = "category background"
+            )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
@@ -184,8 +180,6 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
             )
 
         }
-
-
 
 
     }
