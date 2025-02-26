@@ -94,219 +94,211 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "button to stagescreen",
             modifier = Modifier
-                .size(50.dp)
                 .clickable {
                     navController.navigate("profile")
                 }
-                .align(Alignment.TopStart)
+                .align(Alignment.TopEnd)
         )
         Row(
-            modifier = Modifier
-                .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
-        ) {
+            horizontalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center)
+                .offset(y = 50.dp),
+
+            ) {
             Image(
                 painter = painterResource(selectedImage),
                 contentDescription = "background",
                 modifier = Modifier
+                    .width(200.dp)
+                    .height(240.dp)
                     .background(Color(0xFFFFFFFF), RoundedCornerShape(12.dp))
                     .border(3.dp, Color(0xFF00bb2f), RoundedCornerShape(12.dp))
+                    .padding(horizontal = 10.dp, vertical = 30.dp)
                     .clip(RoundedCornerShape(12.dp))
             )
-            Spacer(modifier = Modifier.width(20.dp))
-            Row {
-                Column(modifier = Modifier.offset(y = 40.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier.padding(horizontal = 16.dp)
-                        ) {
-                            OutlinedTextField(
-                                value = name,
-                                onValueChange = { name = it },
-                                placeholder = { Text("이름") },
-                                keyboardOptions = KeyboardOptions.Default.copy(
-                                    imeAction = ImeAction.Done
-                                ),
-                                keyboardActions = KeyboardActions(
-                                    onDone = {
-                                        keyboardController?.hide()
-                                        focusManager.clearFocus()
-                                    }
-                                ),
-                                label = {
-                                    Text(
-                                        "이름",
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 18.sp,
-                                    )
-                                },
-                                trailingIcon = {
-                                    Icon(
-                                        imageVector = Icons.Default.AccountBox,
-                                        contentDescription = "Select date"
-                                    )
-                                },
-                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                    containerColor = Color.White
-                                ),
-                                modifier = Modifier
-                                    .height(75.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .padding(5.dp)
-                            )
-                        }
-
-                        Spacer(modifier = Modifier.width(60.dp))
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    Color(0xFF0e299c),
-                                    shape = RoundedCornerShape(12.dp)
-                                )
-                                .shadow(
-                                    elevation = 8.dp,
-                                    shape = RoundedCornerShape(12.dp),
-                                    spotColor = Color(0xFF505050)
-                                )
-                                .clickable {
-                                    if (name.isNotEmpty() && birth.isNotEmpty()) {
-                                        // 프로필 생성 시 score는 0, 각 카테고리 day는 기본 활성 상태(day1)로 설정
-                                        viewModel.addProfile(
-                                            name,
-                                            birth,
-                                            userProfile++,
-                                            selectedImage
-                                        )
-                                    }
-                                    navController.navigate("profile")
-                                }
-                        ) {
-                            Text(
-                                text = "만들기",
-                                fontSize = 28.sp,
-                                fontWeight = FontWeight.Bold,
-                                color = Color(0xFFFFFFFF),
-                                modifier = Modifier.padding(16.dp)
-                            )
-                        }
-                    }
-                    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-                    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                    var showDatePicker by remember { mutableStateOf(false) }
-
-                    Box(
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .fillMaxWidth()
-                    ) {
+            Spacer(modifier = Modifier.width(40.dp))
+            Column() {
+                Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                    Column(modifier = Modifier) {
                         OutlinedTextField(
-                            value = selectedDate.format(dateFormatter),
-                            onValueChange = { },
+                            value = name,
+                            onValueChange = { name = it },
+                            placeholder = { Text("이름") },
+                            keyboardOptions = KeyboardOptions.Default.copy(
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(
+                                onDone = {
+                                    keyboardController?.hide()
+                                    focusManager.clearFocus()
+                                }
+                            ),
                             label = {
                                 Text(
-                                    "생년월일",
+                                    "이름",
                                     fontWeight = FontWeight.Bold,
-                                    fontSize = 18.sp
+                                    fontSize = 18.sp,
                                 )
                             },
-                            readOnly = true,
                             trailingIcon = {
                                 Icon(
-                                    imageVector = Icons.Default.DateRange,
+                                    imageVector = Icons.Default.AccountBox,
                                     contentDescription = "Select date"
                                 )
                             },
                             colors = TextFieldDefaults.outlinedTextFieldColors(
-                                containerColor = Color.White
+                                containerColor = Color(0xFFfefff3)
                             ),
                             modifier = Modifier
                                 .height(75.dp)
                                 .clip(RoundedCornerShape(16.dp))
                                 .padding(5.dp)
                         )
+
+
+                        var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+                        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+                        var showDatePicker by remember { mutableStateOf(false) }
+
                         Box(
                             modifier = Modifier
-                                .matchParentSize()
-                                .background(Color.Transparent)
-                                .clickable { showDatePicker = !showDatePicker }
-                        )
-                    }
-                    AnimatedVisibility(
-                        visible = showDatePicker,
-                        enter = fadeIn() + expandVertically(),
-                        exit = fadeOut() + shrinkVertically()
-                    ) {
-                        Popup(
-                            alignment = Alignment.TopStart
                         ) {
+                            OutlinedTextField(
+                                value = selectedDate.format(dateFormatter),
+                                onValueChange = { },
+                                label = {
+                                    Text(
+                                        "생년월일",
+                                        fontWeight = FontWeight.Bold,
+                                        fontSize = 18.sp
+                                    )
+                                },
+                                readOnly = true,
+                                trailingIcon = {
+                                    Icon(
+                                        imageVector = Icons.Default.DateRange,
+                                        contentDescription = "Select date"
+                                    )
+                                },
+                                colors = TextFieldDefaults.outlinedTextFieldColors(
+                                    containerColor = Color(0xFFfefff3)
+                                ),
+                                modifier = Modifier
+                                    .height(75.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .padding(5.dp)
+                            )
                             Box(
                                 modifier = Modifier
-                                    .size(width = 400.dp, height = 330.dp)
-                                    .align(Alignment.CenterHorizontally)
-                                    .offset(y = -10.dp)
-                                    .padding(16.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .background(Color.White, shape = RoundedCornerShape(16.dp))
-                                    .border(2.dp, color = Color.Gray, RoundedCornerShape(16.dp))
-                                    .padding(5.dp)
+                                    .matchParentSize()
+                                    .background(Color.Transparent)
+                                    .clickable { showDatePicker = !showDatePicker }
+                            )
+                        }
+                        AnimatedVisibility(
+                            visible = showDatePicker,
+                            enter = fadeIn() + expandVertically(),
+                            exit = fadeOut() + shrinkVertically()
+                        ) {
+                            Popup(
+                                alignment = Alignment.TopStart
                             ) {
-                                WheelDatePicker2(
-                                    startDate = selectedDate,
-                                    onSnappedDate = { newDate ->
-                                        selectedDate = newDate
-                                        birth = newDate.format(dateFormatter)
+                                Box(
+                                    modifier = Modifier
+                                        .size(width = 400.dp, height = 330.dp)
+                                        .align(Alignment.CenterHorizontally)
+                                        .offset(y = -10.dp)
+                                        .padding(16.dp)
+                                        .clip(RoundedCornerShape(16.dp))
+                                        .background(Color.White, shape = RoundedCornerShape(16.dp))
+                                        .border(2.dp, color = Color.Gray, RoundedCornerShape(16.dp))
+                                        .padding(5.dp)
+                                ) {
+                                    WheelDatePicker2(
+                                        startDate = selectedDate,
+                                        onSnappedDate = { newDate ->
+                                            selectedDate = newDate
+                                            birth = newDate.format(dateFormatter)
+                                        }
+                                    )
+                                    Divider(
+                                        color = Color.Gray,
+                                        thickness = 1.dp,
+                                        modifier = Modifier
+                                            .align(Alignment.BottomCenter)
+                                            .offset(y = -45.dp)
+                                    )
+                                    Button(
+                                        onClick = { showDatePicker = false },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFFFFFFF)
+                                        ),
+                                        shape = RoundedCornerShape(2.dp),
+                                        modifier = Modifier
+                                            .align(Alignment.BottomEnd)
+                                            .padding(top = 10.dp)
+                                    ) {
+                                        Text(
+                                            "완료",
+                                            color = Color.Black,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 14.sp
+                                        )
                                     }
-                                )
-                                Divider(
-                                    color = Color.Gray,
-                                    thickness = 1.dp,
-                                    modifier = Modifier
-                                        .align(Alignment.BottomCenter)
-                                        .offset(y = -45.dp)
-                                )
-                                Button(
-                                    onClick = { showDatePicker = false },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFFFFFFF)
-                                    ),
-                                    shape = RoundedCornerShape(2.dp),
-                                    modifier = Modifier
-                                        .align(Alignment.BottomEnd)
-                                        .padding(top = 10.dp)
-                                ) {
-                                    Text(
-                                        "완료",
-                                        color = Color.Black,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp
-                                    )
-                                }
-                                Button(
-                                    onClick = { showDatePicker = false },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFFFFFFFF)
-                                    ),
-                                    shape = RoundedCornerShape(2.dp),
-                                    modifier = Modifier
-                                        .align(Alignment.BottomStart)
-                                        .padding(top = 10.dp)
-                                ) {
-                                    Text(
-                                        "취소",
-                                        color = Color.Black,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        fontSize = 14.sp
-                                    )
+                                    Button(
+                                        onClick = { showDatePicker = false },
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = Color(0xFFFFFFFF)
+                                        ),
+                                        shape = RoundedCornerShape(2.dp),
+                                        modifier = Modifier
+                                            .align(Alignment.BottomStart)
+                                            .padding(top = 10.dp)
+                                    ) {
+                                        Text(
+                                            "취소",
+                                            color = Color.Black,
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 14.sp
+                                        )
+                                    }
                                 }
                             }
                         }
+
                     }
-                    Row {
-                        DynamicImageLoding { selectedImage = it }
-                    }
+                    Text(
+                        text = "만들기",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFFFFFFFF),
+                        modifier = Modifier
+                            .background(
+                                Color(0xFF0e299c),
+                                shape = RoundedCornerShape(12.dp)
+                            )
+                            .padding(vertical = 15.dp, horizontal = 20.dp)
+                            .clickable {
+                                if (name.isNotEmpty() && birth.isNotEmpty()) {
+                                    // 프로필 생성 시 score는 0, 각 카테고리 day는 기본 활성 상태(day1)로 설정
+                                    viewModel.addProfile(
+                                        name,
+                                        birth,
+                                        userProfile++,
+                                        selectedImage
+                                    )
+                                }
+                                navController.navigate("profile")
+                            }
+                    )
+                }
+                Row {
+                    DynamicImageLoding { selectedImage = it }
                 }
             }
         }
@@ -322,16 +314,17 @@ fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
                 painter = painterResource(resourceId),
                 contentDescription = "foreground",
                 modifier = Modifier
-                    .padding(10.dp)
+                    .size(100.dp)
                     .border(3.dp, Color(0xFF00bb2f), RoundedCornerShape(12.dp))
                     .background(Color(0xFFFFFFFF), RoundedCornerShape(12.dp))
-
                     .clip(RoundedCornerShape(12.dp))
+                    .padding(15.dp)
                     .clickable {
                         onImageSelected(resourceId)
                     }
             )
         }
+        Spacer(modifier = Modifier.width(30.dp))
     }
 }
 
