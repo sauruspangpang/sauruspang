@@ -23,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.google.android.gms.ads.MobileAds
 import com.ksj.sauruspang.Learnpackage.CategoryDayManager
 import com.ksj.sauruspang.Learnpackage.PictorialDetailScreen
 import com.ksj.sauruspang.Learnpackage.HomeScreen
@@ -54,11 +55,13 @@ class MainActivity : ComponentActivity() {
 
         // 앱 콘텐츠가 시스템 창(상태바, 네비게이션바) 뒤에 그려지도록 설정
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
+        // AdMob 초기화
+        MobileAds.initialize(this) {}
         // 상태바와 네비게이션바 숨기기 (전체 시스템 바 숨김)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
         controller.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         controller.hide(WindowInsetsCompat.Type.systemBars())
+
 
         tts = TextToSpeech(this) { status ->
             if (status == TextToSpeech.SUCCESS) {

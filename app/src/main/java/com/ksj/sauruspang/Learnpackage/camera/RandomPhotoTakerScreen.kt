@@ -22,7 +22,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.rewarded.RewardItem
 import com.google.android.gms.ads.rewarded.RewardedAd
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback
-import com.ksj.sauruspang.Learnpackage.ScoreViewModel
+
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.CameraUsageManager
 
@@ -30,7 +30,7 @@ import com.ksj.sauruspang.util.CameraUsageManager
 fun GPTRandomPhotoTakerScreen(
     camViewModel: GPTCameraViewModel,
     tts: TextToSpeech?,
-    scoreViewModel: ScoreViewModel,
+
     navController: NavController
 ) {
     val context = LocalContext.current
@@ -80,7 +80,7 @@ fun GPTRandomPhotoTakerScreen(
     ) {
         // 상단 좌측 홈 아이콘 (TopStart)
         Image(
-            painter = painterResource(id = R.drawable.image_backhome),
+            painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "홈으로",
             modifier = Modifier
                 .padding(16.dp)
@@ -103,7 +103,6 @@ fun GPTRandomPhotoTakerScreen(
                         camViewModel.predictionResult.value = ""
                     },
                     tts = tts,
-                    scoreViewModel = scoreViewModel,
                     navController = navController,
                     remainingUsage = usageCount
                 )
