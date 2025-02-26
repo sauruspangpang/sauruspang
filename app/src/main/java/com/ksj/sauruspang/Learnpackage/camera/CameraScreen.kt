@@ -22,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
@@ -35,6 +36,11 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.QuizQuestion
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
@@ -74,7 +80,6 @@ fun CameraScreen(
                 .matchParentSize()
                 .zIndex(-1f)
         )
-
         Image(
             painter = painterResource(R.drawable.icon_backtochooseda),
             contentDescription = "뒤로 가기 버튼",
@@ -86,7 +91,6 @@ fun CameraScreen(
                 }
         )
         camViewModel.clearImage()
-
         Image(
             painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
@@ -109,64 +113,85 @@ fun CameraScreen(
                         clickCount = 0 // Reset click count after navigating back
                     }
                 }
-
         )
         Text(
-            text = "${question.korean}을(를) 찍어보세요",
+            text = "사진을 찍어보세요",
             modifier = Modifier
                 .align(Alignment.TopCenter),
             fontWeight = FontWeight.Bold,
             fontSize = 48.sp
-
         )
-        Box(modifier = Modifier.align(Alignment.CenterStart)) {
-            Image(
-                painter = painterResource(R.drawable.image_frame), contentDescription = "frame",
-                modifier = Modifier.align(Alignment.Center)
-            )
-            Image(
-                painter = painterResource(id = question.imageId),
-                contentDescription = "question image",
-                modifier = Modifier.align(Alignment.Center)
-            )
-        }
-        Box(
+        Row(
+            horizontalArrangement = Arrangement.Center,
             modifier = Modifier
+                .fillMaxWidth()
                 .align(Alignment.Center)
-
         ) {
-            Image(
-                painter = painterResource(R.drawable.icon_camera),
-                contentDescription = "camera icon",
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .clickable {
-                        val camPermission =
-                            ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                        if (camPermission != PackageManager.PERMISSION_GRANTED) {
-                            Toast
-                                .makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT)
-                                .show()
-                        } else
-                            navController.navigate("camerax")
-                        sharedRouteViewModel.sharedCategory = category
-                        sharedRouteViewModel.sharedClickCount = clickCount
-                        sharedRouteViewModel.sharedFront =
-                            "learn/$categoryName/$dayIndex/${questionIndex + 1}"
-                        sharedRouteViewModel.sharedPopUp = "learn/$categoryName/$dayIndex/0"
-                        sharedRouteViewModel.sharedQuestionIndex = questionIndex
-                        sharedRouteViewModel.sharedQuestion = question
-                        sharedRouteViewModel.sharedQuestions = questions
-                        sharedRouteViewModel.sharedBack =
-                            "learn/$categoryName/$dayIndex/${questionIndex - 1}"
-                        sharedRouteViewModel.sharedCategoryName = categoryName
-                        sharedRouteViewModel.sharedQuizStart = "quiz/$categoryName/$dayIndex/0"
-                    }
-            )
-            Image(
-                painter = painterResource(R.drawable.image_frame), contentDescription = "frame",
-                modifier = Modifier.align(Alignment.Center)
-            )
+            Box(modifier = Modifier) {
+                Image(
+                    painter = painterResource(R.drawable.image_frame),
+                    contentDescription = "frame",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .scale(0.7f)
+                )
+                Image(
+                    painter = painterResource(id = question.imageId),
+                    contentDescription = "question image",
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .scale(0.6f)
+                )
+                Text(
+                    question.korean,
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.BottomCenter),
+                )
+            }
+            Box(modifier = Modifier) {
+                Image(
+                    painter = painterResource(R.drawable.image_frame), contentDescription = "frame",
+                    modifier = Modifier.align(Alignment.Center)
+                )
+                // Lottie Animation
+                val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
+                val progress by animateLottieCompositionAsState(
+                    composition = composition,
+                    iterations = LottieConstants.IterateForever
+                )
+                LottieAnimation(
+                    composition = composition,
+                    progress = progress,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .clickable {
+                            val camPermission =
+                                ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.CAMERA
+                                )
+                            if (camPermission != PackageManager.PERMISSION_GRANTED) {
+                                Toast
+                                    .makeText(context, "카메라 권한이 필요합니다.", Toast.LENGTH_SHORT)
+                                    .show()
+                            } else
+                                navController.navigate("camerax")
+                            sharedRouteViewModel.sharedCategory = category
+                            sharedRouteViewModel.sharedClickCount = clickCount
+                            sharedRouteViewModel.sharedFront =
+                                "learn/$categoryName/$dayIndex/${questionIndex + 1}"
+                            sharedRouteViewModel.sharedPopUp = "learn/$categoryName/$dayIndex/0"
+                            sharedRouteViewModel.sharedQuestionIndex = questionIndex
+                            sharedRouteViewModel.sharedQuestion = question
+                            sharedRouteViewModel.sharedQuestions = questions
+                            sharedRouteViewModel.sharedBack =
+                                "learn/$categoryName/$dayIndex/${questionIndex - 1}"
+                            sharedRouteViewModel.sharedCategoryName = categoryName
+                            sharedRouteViewModel.sharedQuizStart = "quiz/$categoryName/$dayIndex/0"
+                        }
+                )
+            }
         }
 
         camViewModel.answerWord = question.english
@@ -184,7 +209,8 @@ fun CameraScreen(
         Image(
             painter = painterResource(R.drawable.icon_camera_skip),
             contentDescription = "",
-            modifier = Modifier.clickable { }
+            modifier = Modifier
+                .clickable { }
                 .align(Alignment.TopEnd))
 
     }

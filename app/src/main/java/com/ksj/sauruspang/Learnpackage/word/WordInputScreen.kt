@@ -36,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.input.pointer.pointerInput
@@ -124,17 +125,11 @@ fun WordInputScreen(
             contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
             modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
         )
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//
-//        ) {
 
         Image(
             painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "button to stagescreen",
             modifier = Modifier
-                .size(screenWidth * 0.07f)
                 .clickable {
                     navController.navigate("stage/$categoryName")
                 }
@@ -163,15 +158,10 @@ fun WordInputScreen(
                 painter = painterResource(question.imageId),
                 contentDescription = "Question Image",
                 modifier = Modifier
-                    .size(screenWidth * 0.3f)
-//                            .align(Alignment.CenterStart)
-//                            .offset(x = screenWidth * -0.1f)
             )
 
             Box(
                 modifier = Modifier
-//                        .width(600.dp)
-//                        .height(250.dp)
                     .width(screenWidth * 0.7f)
                     .height(screenHeight * 0.7f)
                     .offset(y=(-10.dp))
@@ -187,15 +177,11 @@ fun WordInputScreen(
             {
                 Box(
                     modifier = Modifier
-//                            .width(450.dp) // 스케치북 크기에 맞춤
-                   //     .width(screenWidth * 0.5f)
-                    //.align(Alignment.CenterEnd)
                 ) {
                     Image(
                         painter = painterResource(R.drawable.image_notepadforwritingword),
                         contentDescription = "Sketchbook",
                         contentScale = ContentScale.FillBounds,
-//                        modifier = Modifier.fillMaxSize() // 박스를 가득 채우도록 설정
                     )
 
                     Text(
@@ -236,7 +222,9 @@ fun WordInputScreen(
                         }
                     }
                 },
-            colorFilter = if (isCorrect) null else ColorFilter.tint(Color.Gray)
+            colorFilter = if (isCorrect) null else ColorFilter.colorMatrix(ColorMatrix().apply {
+                setToSaturation(0.1f)
+            })
 
         )
 

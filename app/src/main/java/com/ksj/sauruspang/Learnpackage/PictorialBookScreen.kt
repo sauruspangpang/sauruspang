@@ -56,7 +56,6 @@ fun PictorialBookScreen(
                     painter = painterResource(id = R.drawable.icon_backtochooseda),
                     contentDescription = "뒤로가기",
                     modifier = Modifier
-                        .size(50.dp)
                         .clickable { navController.popBackStack() }
                 )
                 Spacer(modifier = Modifier.width(20.dp))
@@ -67,7 +66,7 @@ fun PictorialBookScreen(
 
             // 2행 x 3열(또는 동적으로 여러 행) Grid
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = GridCells.Fixed(5),
                 modifier = Modifier
                     .fillMaxSize()
                     // 전체 그리드 영역에 추가 패딩

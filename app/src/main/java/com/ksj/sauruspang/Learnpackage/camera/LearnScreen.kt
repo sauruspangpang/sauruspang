@@ -186,6 +186,7 @@ fun LearnScreen(
 
         Image(painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
+            alpha = if (questionIndex==0) 0.0f else 1.0f,
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .clickable(enabled = questionIndex > 0) {
@@ -207,19 +208,13 @@ fun LearnScreen(
                 verticalArrangement = Arrangement.Center
             ) {
                 Spacer(modifier = Modifier.height(screenHeight * 0.1f))
-//                Image(painter = painterResource(id = question.imageId),
-//                    contentDescription = "question image",
-//                    modifier = Modifier
-//                        .size(screenWidth * 0.2f)
-//                        .clickable { listen(question.english, Locale.US) }
-//                )
 
                 Box() {
                     // 배경 이미지로 image_whiteboard.xml 적용
                     Image(
                         painter = painterResource(id = R.drawable.image_whiteboard),
                         contentDescription = "background",
-                        modifier = Modifier.matchParentSize()
+//                        modifier = Modifier.matchParentSize()
                     )
                     // 실제 표시할 이미지
                     Image(
@@ -248,7 +243,6 @@ fun LearnScreen(
                         painter = painterResource(id = R.drawable.icon_readword),
                         contentDescription = "listen button",
                         modifier = Modifier
-                            .size(screenWidth * 0.07f)
                             .padding(start = screenWidth * 0.02f)
                             .clickable { listen(question.korean, Locale.KOREAN) }
                     )
@@ -266,7 +260,6 @@ fun LearnScreen(
                     Image(painter = painterResource(id = R.drawable.icon_readword),
                         contentDescription = "listen button",
                         modifier = Modifier
-                            .size(screenWidth * 0.07f)
                             .padding(start = screenWidth * 0.02f)
                             .clickable { listen(question.english, Locale.US) })
                 }

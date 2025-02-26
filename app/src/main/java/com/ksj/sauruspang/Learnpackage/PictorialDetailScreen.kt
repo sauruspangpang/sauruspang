@@ -74,7 +74,6 @@ fun PictorialDetailScreen(
                     painter = painterResource(R.drawable.icon_backtochooseda),
                     contentDescription = "뒤로가기",
                     modifier = Modifier
-                        .size(50.dp)
                         .clickable { navController.popBackStack() }
                 )
                 Text(
@@ -98,7 +97,7 @@ fun PictorialDetailScreen(
 
             // 그리드 레이아웃으로 모든 항목 표시
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = GridCells.Fixed(5),
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp)

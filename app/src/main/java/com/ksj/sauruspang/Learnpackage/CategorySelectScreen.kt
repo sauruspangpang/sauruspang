@@ -66,31 +66,6 @@ fun HomeScreen(
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
-        Box(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .zIndex(1f)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.card_gptcamera),
-                contentDescription = "GPT Camera",
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-            )
-            // Lottie Animation
-            val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
-            val progress by animateLottieCompositionAsState(
-                composition = composition,
-                iterations = LottieConstants.IterateForever
-            )
-            LottieAnimation(
-                composition = composition,
-                progress = progress,
-                modifier = Modifier
-                    .clickable { navController.navigate("randomPhotoTaker") }
-            )
-        }
-
         Image(
             painter = painterResource(id = R.drawable.image_photobook),
             contentDescription = "",
@@ -103,7 +78,6 @@ fun HomeScreen(
             painter = painterResource(id = R.drawable.icon_changeprofile),
             contentDescription = "button to profile screen",
             modifier = Modifier
-//                .align(Alignment.TopStart)
                 .clickable {
                     navController.popBackStack()
                 }
@@ -114,17 +88,37 @@ fun HomeScreen(
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .horizontalScroll(rememberScrollState())
-                .padding(bottom = 30.dp)
+                .padding(bottom = 40.dp)
         ) {
             Spacer(modifier = Modifier.width(30.dp))
             QuizCategory.allCategories.forEachIndexed { index, category ->
                 CategoryBox(category, navController)
                 if (index != QuizCategory.allCategories.lastIndex) {
-                    Spacer(modifier = Modifier.width(40.dp))
+                    Spacer(modifier = Modifier.width(60.dp))
                 }
             }
             Spacer(modifier = Modifier.width(30.dp))
         }
+        Image(
+            painter = painterResource(R.drawable.card_gptcamera),
+            contentDescription = "GPT Camera",
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+        )
+        // Lottie Animation
+        val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cameravibrate))
+        val progress by animateLottieCompositionAsState(
+            composition = composition,
+            iterations = LottieConstants.IterateForever
+        )
+        LottieAnimation(
+            composition = composition,
+            progress = progress,
+            modifier = Modifier
+                .size(70.dp)
+                .align(Alignment.CenterEnd)
+                .clickable { navController.navigate("randomPhotoTaker") }
+        )
     }
 }
 
@@ -153,7 +147,6 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                     contentDescription = "category thumbnail",
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
-                        .scale(1.2f)
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
@@ -161,7 +154,6 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier.align(Alignment.CenterHorizontally)
                 )
-                Spacer(modifier = Modifier.height(20.dp))
             }
         }
 
@@ -171,11 +163,10 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
                 contentDescription = "CameraMark",
                 modifier = Modifier
                     .clickable {
-                        Log.d("Navigation", "Navigating to gpt_camera_preview")
-                        navController.navigate("gpt_camera_preview")
+//                        Log.d("Navigation", "Navigating to gpt_camera_preview")
+//                        navController.navigate("gpt_camera_preview")
                     }
-                    .offset(x = 10.dp, y = (-20).dp)
-                    .width(80.dp)
+                    .offset(x = 30.dp, y = (-20).dp)
                     .align(Alignment.TopEnd)
             )
 

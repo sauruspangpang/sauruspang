@@ -116,7 +116,7 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
         listOf(
             QuizDay(
                 1, listOf(
-                    QuizQuestion(R.drawable.fruitvegies_apple, "사과", "Apple"),
+                    QuizQuestion(R.drawable.image_newapple, "사과", "Apple"),
                     QuizQuestion(R.drawable.fruitvegies_banana, "바나나", "Banana"),
                     QuizQuestion(R.drawable.fruitvegies_watermelon, "수박", "Watermelon"),
                 )

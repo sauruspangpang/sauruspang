@@ -4,13 +4,14 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +25,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,26 +37,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
+import com.ksj.sauruspang.Learnpackage.camera.LottieLoadingAnimation
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
@@ -73,7 +68,7 @@ fun WordQuizScreen(
     questionIndex: Int,
     tts: TextToSpeech?,
     viewModel: ProfileViewmodel,
-    ) {
+) {
     val category = QuizCategory.allCategories.find { it.name == categoryName }
     val questions = category?.days?.get(dayIndex)?.questions ?: emptyList()
     val question = questions[questionIndex]
@@ -147,13 +142,17 @@ fun WordQuizScreen(
         override fun onPartialResults(partialResults: Bundle?) {}
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
-//    var hasPermission by remember { mutableStateOf(false) }
 
     speechRecognizer.setRecognitionListener(recognitionListener)
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
+    var isRecording by remember { mutableStateOf(false) }
+
+    if (isRecording) {
+        LottieLoadingAnimation(R.drawable.recording)
+    }
 
     Box(
         modifier = Modifier
@@ -162,15 +161,16 @@ fun WordQuizScreen(
         Image(
             painter = painterResource(id = R.drawable.wallpaper_learnscreen),
             contentDescription = " ",
-            contentScale = ContentScale.Crop,  // 화면에 맞게 꽉 채우기
-            modifier = Modifier.matchParentSize()  // Box의 크기와 동일하게 설정
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .matchParentSize()
+                .zIndex(-1f)
         )
 
         Image(
             painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "",
             modifier = Modifier
-                .size(screenWidth * 0.07f)
                 .clickable {
                     category?.name?.let { categoryName ->
                         navController.popBackStack("stage/$categoryName", false)
@@ -178,22 +178,17 @@ fun WordQuizScreen(
                 }
         )
 
-
-        // 배경이미지 설정
-
         Image(
             painter = painterResource(id = R.drawable.icon_arrow_left),
             contentDescription = "previous question",
-            alpha = if (questionIndex==0) 0.0f else 1.0f,
+            alpha = if (questionIndex == 0) 0.0f else 1.0f,
             modifier = Modifier
-                .size(screenWidth * 0.155f, screenHeight*0.25f)
                 .align(Alignment.CenterStart)
-                .clickable (enabled = questionIndex > 0) {
+                .clickable(enabled = questionIndex > 0) {
                     if (questionIndex > 0) {
                         navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex - 1}")
                     }
                 }
-
         )
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -205,15 +200,22 @@ fun WordQuizScreen(
 
             ) {
                 Spacer(modifier = Modifier.height(screenHeight * 0.1f))
-                Image(painter = painterResource(id = question.imageId),
-                    contentDescription = "question image",
-                    modifier = Modifier
-                        .size(screenWidth * 0.2f)
-                        .clickable { listen(question.english, Locale.US) }
+                Box() {
+                    // 배경 이미지로 image_whiteboard.xml 적용
+                    Image(
+                        painter = painterResource(id = R.drawable.image_whiteboard),
+                        contentDescription = "background",
+                    )
+                    Image(
+                        painter = painterResource(id = question.imageId),
+                        contentDescription = "question image",
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .clickable { listen(question.english, Locale.US) }
+                    )
+                }
 
-                )
                 Spacer(modifier = Modifier.height(screenHeight * 0.02f))
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -233,12 +235,9 @@ fun WordQuizScreen(
                         painter = painterResource(id = R.drawable.icon_readword),
                         contentDescription = "listen button",
                         modifier = Modifier
-                            .size(screenWidth * 0.07f)
-                            .padding(start = screenWidth * 0.02f)
                             .clickable { listen(question.korean, Locale.KOREAN) }
                     )
                 }
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -252,8 +251,6 @@ fun WordQuizScreen(
                     Image(painter = painterResource(id = R.drawable.icon_readword),
                         contentDescription = "listen button",
                         modifier = Modifier
-                            .size(screenWidth * 0.07f)
-                            .padding(start = screenWidth * 0.02f)
                             .clickable { listen(question.english, Locale.US) })
 
                 }
@@ -264,24 +261,8 @@ fun WordQuizScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Spacer(modifier = Modifier.height(screenHeight * 0.23f))
                 Box(
                     modifier = Modifier
-                        .size(screenWidth * 0.12f)
-                        .shadow(
-                            elevation = 10.dp,
-                            shape = RoundedCornerShape(16.dp)
-                        ) // Increased shadow for more visibility
-
-                        .background(
-                            brush = Brush.verticalGradient(
-                                colors = listOf(
-                                    Color(0xFF77E4D2), // Bright turquoise
-                                    Color(0xFF4ECDC4)  // Slightly darker shade
-                                )
-                            ),
-                            shape = RoundedCornerShape(16.dp)
-                        )
                         .clickable {
                             val micPermission = ContextCompat.checkSelfPermission(
                                 context,
@@ -292,63 +273,52 @@ fun WordQuizScreen(
                                     .makeText(context, "마이크 권한이 필요합니다.", Toast.LENGTH_SHORT)
                                     .show()
                             } else
-                                speechRecognizer.startListening(speechIntent)
+                                isRecording = true
+                            speechRecognizer.startListening(speechIntent)
+
+                            // Stop listening after 5 seconds
+                            Handler(Looper.getMainLooper()).postDelayed({
+                                speechRecognizer.stopListening()
+                                isRecording = false
+                            }, 4000) // 5000ms = 5 seconds
+
                         }
                 ) {
-                    // Glossy effect overlay
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(
-                                Brush.radialGradient(
-                                    colors = listOf(
-                                        Color.White.copy(alpha = 0.4f), // Shiny highlight
-                                        Color.Transparent
-                                    ),
-                                    center = Offset(30f, 20f), // Light source effect
-                                    radius = 120f
-                                ),
-                                shape = RoundedCornerShape(16.dp)
-                            )
-                    )
                     Image(
-                        painter = painterResource(id = R.drawable.speakbutton),
+                        painter = painterResource(id = R.drawable.icon_speakword),
                         contentDescription = "Speak button",
                         modifier = Modifier
-                            .fillMaxSize()
                             .padding(8.dp),
-                        contentScale = ContentScale.Fit // Ensures it fills the box
                     )
                 }
-                Spacer(modifier = Modifier.height(screenHeight * 0.05f))
                 Row {
                     repeat(3) { index ->
                         Image(
                             painter = painterResource(id = question.imageId),
                             contentDescription = "listen button",
                             modifier = Modifier.size(screenWidth * 0.055f),
-                            alpha = if (index < correctCount) 1.0f else 0.4f
+                            colorFilter = if (index < correctCount) null else ColorFilter.colorMatrix(
+                                ColorMatrix().apply {
+                                    setToSaturation(0.3f)
+                                }
+                            ),
                         )
-                        //index 0 = image1, index1 = image2, index2 = image3
                     }
-
                 }
-
             }
-
         }
         Image(
             painter = painterResource(id = R.drawable.icon_arrow_right),
             contentDescription = "",
             modifier = Modifier
-                .size(screenWidth * 0.155f)
                 .align(Alignment.CenterEnd)
-                .offset(x = -(screenWidth * 0.03f))
                 .clickable//(enabled = completedQuestion)
                 {
                     navController.navigate("WordInput/$categoryName/$dayIndex/${questionIndex}")
                 },
-            colorFilter = if (completedQuestion) null else ColorFilter.tint(Color.Gray)
+            colorFilter = if (completedQuestion) null else ColorFilter.colorMatrix(ColorMatrix().apply {
+                setToSaturation(0.1f)
+            })
         )
     }
 }
