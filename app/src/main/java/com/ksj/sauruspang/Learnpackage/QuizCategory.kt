@@ -116,7 +116,7 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
         listOf(
             QuizDay(
                 1, listOf(
-                    QuizQuestion(R.drawable.image_newapple, "사과", "Apple"),
+                    QuizQuestion(R.drawable.fruitvegies_apple, "사과", "Apple"),
                     QuizQuestion(R.drawable.fruitvegies_banana, "바나나", "Banana"),
                     QuizQuestion(R.drawable.fruitvegies_watermelon, "수박", "Watermelon"),
                 )
@@ -217,35 +217,35 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.stationery_pen, "크레파스", "Crayon"),
-                    QuizQuestion(R.drawable.stationery_pen, "책", "Book"),
-                    QuizQuestion(R.drawable.stationery_pen, "가방", "Bag")
+                    QuizQuestion(R.drawable.stationery_crayon, "크레파스", "Crayon"),
+                    QuizQuestion(R.drawable.stationery_book, "책", "Book"),
+                    QuizQuestion(R.drawable.stationery_bag, "가방", "Bag")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.stationery_pen, "칠판", "Blackboard"),
-                    QuizQuestion(R.drawable.stationery_pen, "풀", "Glue"),
-                    QuizQuestion(R.drawable.stationery_pen, "자", "Ruler"),
-                    QuizQuestion(R.drawable.stationery_pen, "가위", "Scissors")
+                    QuizQuestion(R.drawable.stationery_blackboard, "칠판", "Blackboard"),
+                    QuizQuestion(R.drawable.stationery_glue, "풀", "Glue"),
+                    QuizQuestion(R.drawable.stationery_ruler, "자", "Ruler"),
+                    QuizQuestion(R.drawable.stationery_scissors, "가위", "Scissors")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.stationery_pen, "연필", "Pencil"),
-                    QuizQuestion(R.drawable.stationery_pen, "가방", "Bag"),
-                    QuizQuestion(R.drawable.stationery_pen, "칠판", "Blackboard"),
-                    QuizQuestion(R.drawable.stationery_pen, "자", "Ruler"),
-                    QuizQuestion(R.drawable.stationery_pen, "지우개", "Eraser")
+                    QuizQuestion(R.drawable.stationery_pencil, "연필", "Pencil"),
+                    QuizQuestion(R.drawable.stationery_bag, "가방", "Bag"),
+                    QuizQuestion(R.drawable.stationery_blackboard, "칠판", "Blackboard"),
+                    QuizQuestion(R.drawable.stationery_ruler, "자", "Ruler"),
+                    QuizQuestion(R.drawable.stationery_eraser, "지우개", "Eraser")
                 )
             ),
             QuizDay(
                 5, listOf(
                     QuizQuestion(R.drawable.stationery_pen, "펜", "Pen"),
-                    QuizQuestion(R.drawable.stationery_pen, "크레파스", "Crayon"),
-                    QuizQuestion(R.drawable.stationery_pen, "책", "Book"),
-                    QuizQuestion(R.drawable.stationery_pen, "가위", "Scissors"),
-                    QuizQuestion(R.drawable.stationery_pen, "풀", "Glue")
+                    QuizQuestion(R.drawable.stationery_crayon, "크레파스", "Crayon"),
+                    QuizQuestion(R.drawable.stationery_book, "책", "Book"),
+                    QuizQuestion(R.drawable.stationery_scissors, "가위", "Scissors"),
+                    QuizQuestion(R.drawable.stationery_glue, "풀", "Glue")
                 )
             )
         )
@@ -265,35 +265,35 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.clothes_tshirts, "드레스", "Dress"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "바지", "Pants"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "장갑", "Gloves")
+                    QuizQuestion(R.drawable.clothes_dresses, "드레스", "Dress"),
+                    QuizQuestion(R.drawable.clothes_pants, "바지", "Pants"),
+                    QuizQuestion(R.drawable.clothes_gloves, "장갑", "Gloves")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.clothes_tshirts, "양말", "Socks"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "스웨터", "Sweater"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "자켓", "Jacket"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "신발", "Shoes")
+                    QuizQuestion(R.drawable.clothes_socks, "양말", "Socks"),
+                    QuizQuestion(R.drawable.clothes_sweater, "스웨터", "Sweater"),
+                    QuizQuestion(R.drawable.clothes_jacket, "자켓", "Jacket"),
+                    QuizQuestion(R.drawable.clothes_shoes, "신발", "Shoes")
                 )
             ),
             QuizDay(
                 4, listOf(
                     QuizQuestion(R.drawable.clothes_tshirts, "티셔츠", "T-shirt"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "신발", "Shoes"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "장갑", "Gloves"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "드레스", "Dress"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "스웨터", "Sweater")
+                    QuizQuestion(R.drawable.clothes_shoes, "신발", "Shoes"),
+                    QuizQuestion(R.drawable.clothes_gloves, "장갑", "Gloves"),
+                    QuizQuestion(R.drawable.clothes_dresses, "드레스", "Dress"),
+                    QuizQuestion(R.drawable.clothes_sweater, "스웨터", "Sweater")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.clothes_tshirts, "치마", "Skirt"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "바지", "Pants"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "모자", "Hat"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "자켓", "Jacket"),
-                    QuizQuestion(R.drawable.clothes_tshirts, "양말", "Socks")
+                    QuizQuestion(R.drawable.clothes_skirt, "치마", "Skirt"),
+                    QuizQuestion(R.drawable.clothes_pants, "바지", "Pants"),
+                    QuizQuestion(R.drawable.clothes_hat, "모자", "Hat"),
+                    QuizQuestion(R.drawable.clothes_jacket, "자켓", "Jacket"),
+                    QuizQuestion(R.drawable.clothes_socks, "양말", "Socks")
                 )
             )
         )
@@ -313,35 +313,35 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.number_00, "3", "Three"),
-                    QuizQuestion(R.drawable.number_00, "4", "Four"),
-                    QuizQuestion(R.drawable.number_00, "5", "Five")
+                    QuizQuestion(R.drawable.number_03, "3", "Three"),
+                    QuizQuestion(R.drawable.number_04, "4", "Four"),
+                    QuizQuestion(R.drawable.number_05, "5", "Five")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.number_00, "6", "Six"),
-                    QuizQuestion(R.drawable.number_00, "7", "Seven"),
-                    QuizQuestion(R.drawable.number_00, "8", "Eight"),
-                    QuizQuestion(R.drawable.number_00, "9", "Nine")
+                    QuizQuestion(R.drawable.number_06, "6", "Six"),
+                    QuizQuestion(R.drawable.number_07, "7", "Seven"),
+                    QuizQuestion(R.drawable.number_08, "8", "Eight"),
+                    QuizQuestion(R.drawable.number_09, "9", "Nine")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.number_00, "10", "Ten"),
-                    QuizQuestion(R.drawable.number_00, "6", "Six"),
-                    QuizQuestion(R.drawable.number_00, "3", "Three"),
-                    QuizQuestion(R.drawable.number_00, "2", "Two"),
-                    QuizQuestion(R.drawable.number_00, "9", "Nine")
+                    QuizQuestion(R.drawable.number_10, "10", "Ten"),
+                    QuizQuestion(R.drawable.number_06, "6", "Six"),
+                    QuizQuestion(R.drawable.number_03, "3", "Three"),
+                    QuizQuestion(R.drawable.number_02, "2", "Two"),
+                    QuizQuestion(R.drawable.number_09, "9", "Nine")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.number_00, "8", "Eight"),
-                    QuizQuestion(R.drawable.number_00, "1", "One"),
-                    QuizQuestion(R.drawable.number_00, "5", "Five"),
-                    QuizQuestion(R.drawable.number_00, "7", "Seven"),
-                    QuizQuestion(R.drawable.number_00, "4", "Four")
+                    QuizQuestion(R.drawable.number_08, "8", "Eight"),
+                    QuizQuestion(R.drawable.number_01, "1", "One"),
+                    QuizQuestion(R.drawable.number_05, "5", "Five"),
+                    QuizQuestion(R.drawable.number_07, "7", "Seven"),
+                    QuizQuestion(R.drawable.number_04, "4", "Four")
                 )
             )
         )
@@ -362,33 +362,33 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             QuizDay(
                 2, listOf(
                     QuizQuestion(R.drawable.body_eye, "귀", "Ear"),
-                    QuizQuestion(R.drawable.body_eye, "무릎", "Knee"),
-                    QuizQuestion(R.drawable.body_eye, "발", "Foot")
+                    QuizQuestion(R.drawable.body_knee, "무릎", "Knee"),
+                    QuizQuestion(R.drawable.body_feet, "발", "Foot")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.body_eye, "어깨", "Shoulder"),
-                    QuizQuestion(R.drawable.body_eye, "팔", "Arm"),
-                    QuizQuestion(R.drawable.body_eye, "혀", "Tongue")
+                    QuizQuestion(R.drawable.body_shoulder, "어깨", "Shoulder"),
+                    QuizQuestion(R.drawable.body_arm, "팔", "Arm"),
+                    QuizQuestion(R.drawable.body_tongue, "혀", "Tongue")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.body_eye, "손", "Hand"),
-                    QuizQuestion(R.drawable.body_eye, "입", "Mouth"),
-                    QuizQuestion(R.drawable.body_eye, "팔", "Arm"),
-                    QuizQuestion(R.drawable.body_eye, "귀", "Ear"),
-                    QuizQuestion(R.drawable.body_eye, "어깨", "Shoulder")
+                    QuizQuestion(R.drawable.body_hand, "손", "Hand"),
+                    QuizQuestion(R.drawable.body_mouth, "입", "Mouth"),
+                    QuizQuestion(R.drawable.body_arm, "팔", "Arm"),
+                    QuizQuestion(R.drawable.body_ear, "귀", "Ear"),
+                    QuizQuestion(R.drawable.body_shoulder, "어깨", "Shoulder")
                 )
             ),
             QuizDay(
                 5, listOf(
                     QuizQuestion(R.drawable.body_eye, "눈", "Eye"),
-                    QuizQuestion(R.drawable.body_eye, "발", "Foot"),
-                    QuizQuestion(R.drawable.body_eye, "무릎", "Knee"),
-                    QuizQuestion(R.drawable.body_eye, "코", "Nose"),
-                    QuizQuestion(R.drawable.body_eye, "혀", "Tongue")
+                    QuizQuestion(R.drawable.body_feet, "발", "Foot"),
+                    QuizQuestion(R.drawable.body_knee, "무릎", "Knee"),
+                    QuizQuestion(R.drawable.body_nose, "코", "Nose"),
+                    QuizQuestion(R.drawable.body_tongue, "혀", "Tongue")
                 )
             )
         )
@@ -408,33 +408,33 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.week_mon, "목요일", "Thursday"),
-                    QuizQuestion(R.drawable.week_mon, "금요일", "Friday"),
-                    QuizQuestion(R.drawable.week_mon, "토요일", "Saturday")
+                    QuizQuestion(R.drawable.week_thu, "목요일", "Thursday"),
+                    QuizQuestion(R.drawable.week_fri, "금요일", "Friday"),
+                    QuizQuestion(R.drawable.week_sat, "토요일", "Saturday")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.week_mon, "일요일", "Sunday"),
-                    QuizQuestion(R.drawable.week_mon, "평일", "Weekday"),
-                    QuizQuestion(R.drawable.week_mon, "주말", "Weekend")
+                    QuizQuestion(R.drawable.week_sun, "일요일", "Sunday"),
+                    QuizQuestion(R.drawable.week_weekdays, "평일", "Weekday"),
+                    QuizQuestion(R.drawable.week_weekends, "주말", "Weekend")
                 )
             ),
             QuizDay(
                 4, listOf(
                     QuizQuestion(R.drawable.week_mon, "월요일", "Monday"),
-                    QuizQuestion(R.drawable.week_mon, "토요일", "Saturday"),
-                    QuizQuestion(R.drawable.week_mon, "금요일", "Friday"),
-                    QuizQuestion(R.drawable.week_mon, "평일", "Weekday"),
-                    QuizQuestion(R.drawable.week_mon, "주말", "Weekend")
+                    QuizQuestion(R.drawable.week_sat, "토요일", "Saturday"),
+                    QuizQuestion(R.drawable.week_fri, "금요일", "Friday"),
+                    QuizQuestion(R.drawable.week_weekdays, "평일", "Weekday"),
+                    QuizQuestion(R.drawable.week_weekends, "주말", "Weekend")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.week_mon, "화요일", "Tuesday"),
-                    QuizQuestion(R.drawable.week_mon, "수요일", "Wednesday"),
-                    QuizQuestion(R.drawable.week_mon, "목요일", "Thursday"),
-                    QuizQuestion(R.drawable.week_mon, "일요일", "Sunday")
+                    QuizQuestion(R.drawable.week_tue, "화요일", "Tuesday"),
+                    QuizQuestion(R.drawable.week_wed, "수요일", "Wednesday"),
+                    QuizQuestion(R.drawable.week_thu, "목요일", "Thursday"),
+                    QuizQuestion(R.drawable.week_sun, "일요일", "Sunday")
                 )
             )
         )
@@ -454,35 +454,35 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.months_01, "4월", "April"),
-                    QuizQuestion(R.drawable.months_01, "5월", "May"),
-                    QuizQuestion(R.drawable.months_01, "6월", "June")
+                    QuizQuestion(R.drawable.months_04, "4월", "April"),
+                    QuizQuestion(R.drawable.months_05, "5월", "May"),
+                    QuizQuestion(R.drawable.months_06, "6월", "June")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.months_01, "7월", "July"),
-                    QuizQuestion(R.drawable.months_01, "8월", "August"),
-                    QuizQuestion(R.drawable.months_01, "9월", "September"),
-                    QuizQuestion(R.drawable.months_01, "10월", "October")
+                    QuizQuestion(R.drawable.months_07, "7월", "July"),
+                    QuizQuestion(R.drawable.months_08, "8월", "August"),
+                    QuizQuestion(R.drawable.months_09, "9월", "September"),
+                    QuizQuestion(R.drawable.months_10, "10월", "October")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.months_01, "11월", "November"),
-                    QuizQuestion(R.drawable.months_01, "12월", "December"),
-                    QuizQuestion(R.drawable.months_01, "2월", "February"),
-                    QuizQuestion(R.drawable.months_01, "9월", "September"),
-                    QuizQuestion(R.drawable.months_01, "5월", "May")
+                    QuizQuestion(R.drawable.months_11, "11월", "November"),
+                    QuizQuestion(R.drawable.months_12, "12월", "December"),
+                    QuizQuestion(R.drawable.months_02, "2월", "February"),
+                    QuizQuestion(R.drawable.months_09, "9월", "September"),
+                    QuizQuestion(R.drawable.months_05, "5월", "May")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.months_01, "3월", "March"),
-                    QuizQuestion(R.drawable.months_01, "8월", "August"),
+                    QuizQuestion(R.drawable.months_03, "3월", "March"),
+                    QuizQuestion(R.drawable.months_08, "8월", "August"),
                     QuizQuestion(R.drawable.months_01, "1월", "January"),
-                    QuizQuestion(R.drawable.months_01, "10월", "October"),
-                    QuizQuestion(R.drawable.months_01, "6월", "June")
+                    QuizQuestion(R.drawable.months_10, "10월", "October"),
+                    QuizQuestion(R.drawable.months_06, "6월", "June")
                 )
             )
         )
@@ -501,34 +501,34 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.weather_spring, "겨울", "Winter"),
-                    QuizQuestion(R.drawable.weather_spring, "화창한", "Sunny"),
-                    QuizQuestion(R.drawable.weather_spring, "더운", "Hot")
+                    QuizQuestion(R.drawable.weather_winter, "겨울", "Winter"),
+                    QuizQuestion(R.drawable.weather_sunny, "화창한", "Sunny"),
+                    QuizQuestion(R.drawable.weather_hot, "더운", "Hot")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.weather_spring, "비", "Rainy"),
-                    QuizQuestion(R.drawable.weather_spring, "눈", "Snowy"),
-                    QuizQuestion(R.drawable.weather_spring, "추운", "Cold")
+                    QuizQuestion(R.drawable.weather_rainy, "비", "Rain"),
+                    QuizQuestion(R.drawable.weather_snowy, "눈", "Snow"),
+                    QuizQuestion(R.drawable.weather_cold, "추운", "Cold")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.weather_spring, "여름", "Summer"),
-                    QuizQuestion(R.drawable.weather_spring, "비", "Rainy"),
+                    QuizQuestion(R.drawable.weather_summer, "여름", "Summer"),
+                    QuizQuestion(R.drawable.weather_rainy, "비", "Rainy"),
                     QuizQuestion(R.drawable.weather_spring, "봄", "Spring"),
-                    QuizQuestion(R.drawable.weather_spring, "화창한", "Sunny"),
-                    QuizQuestion(R.drawable.weather_spring, "겨울", "Winter")
+                    QuizQuestion(R.drawable.weather_sunny, "화창한", "Sunny"),
+                    QuizQuestion(R.drawable.weather_winter, "겨울", "Winter")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.weather_spring, "가을", "Fall"),
-                    QuizQuestion(R.drawable.weather_spring, "추운", "Cold"),
-                    QuizQuestion(R.drawable.weather_spring, "더운", "Hot"),
-                    QuizQuestion(R.drawable.weather_spring, "눈", "Snowy"),
-                    QuizQuestion(R.drawable.weather_spring, "더운", "Hot")
+                    QuizQuestion(R.drawable.weather_autumn, "가을", "Fall"),
+                    QuizQuestion(R.drawable.weather_cold, "추운", "Cold"),
+                    QuizQuestion(R.drawable.weather_hot, "더운", "Hot"),
+                    QuizQuestion(R.drawable.weather_snowy, "눈", "Snowy"),
+                    QuizQuestion(R.drawable.weather_hot, "더운", "Hot")
                 )
             )
         )
@@ -540,40 +540,40 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
         listOf(
             QuizDay(
                 1, listOf(
-                    QuizQuestion(R.drawable.shapes_circle, "원", "Circle"),
-                    QuizQuestion(R.drawable.shapes_triangle, "삼각형", "Triangle"),
-                    QuizQuestion(R.drawable.shapes_rectangle, "사각형", "Square")
+                    QuizQuestion(R.drawable.shapes_circle, "동그라미", "Circle"),
+                    QuizQuestion(R.drawable.shapes_triangle, "세모", "Triangle"),
+                    QuizQuestion(R.drawable.shapes_rectangle, "네모", "Square")
                 )
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.shapes_circle, "별", "Star"),
-                    QuizQuestion(R.drawable.shapes_circle, "하트", "Heart"),
-                    QuizQuestion(R.drawable.shapes_circle, "다이아몬드", "Diamond")
+                    QuizQuestion(R.drawable.shapes_star, "별", "Star"),
+                    QuizQuestion(R.drawable.shapes_heart, "하트", "Heart"),
+                    QuizQuestion(R.drawable.shapes_diamond, "다이아몬드", "Diamond")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.shapes_circle, "클로버", "Clover"),
-                    QuizQuestion(R.drawable.shapes_circle, "화살표", "Arrow")
+                    QuizQuestion(R.drawable.shapes_clover, "클로버", "Clover"),
+                    QuizQuestion(R.drawable.shapes_arrow, "화살표", "Arrow")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.shapes_circle, "다이아몬드", "Diamond"),
-                    QuizQuestion(R.drawable.shapes_circle, "원", "Circle"),
-                    QuizQuestion(R.drawable.shapes_circle, "하트", "Heart"),
-                    QuizQuestion(R.drawable.shapes_circle, "화살표", "Arrow"),
-                    QuizQuestion(R.drawable.shapes_circle, "삼각형", "Triangle")
+                    QuizQuestion(R.drawable.shapes_diamond, "다이아몬드", "Diamond"),
+                    QuizQuestion(R.drawable.shapes_circle, "동그라미", "Circle"),
+                    QuizQuestion(R.drawable.shapes_heart, "하트", "Heart"),
+                    QuizQuestion(R.drawable.shapes_arrow, "화살표", "Arrow"),
+                    QuizQuestion(R.drawable.shapes_triangle, "세모", "Triangle")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.shapes_circle, "사각형", "Square"),
-                    QuizQuestion(R.drawable.shapes_circle, "별", "Star"),
-                    QuizQuestion(R.drawable.shapes_circle, "클로버", "Clover"),
-                    QuizQuestion(R.drawable.shapes_circle, "화살표", "Arrow"),
-                    QuizQuestion(R.drawable.shapes_circle, "삼각형", "Triangle")
+                    QuizQuestion(R.drawable.shapes_rectangle, "네모", "Square"),
+                    QuizQuestion(R.drawable.shapes_heart, "별", "Star"),
+                    QuizQuestion(R.drawable.shapes_clover, "클로버", "Clover"),
+                    QuizQuestion(R.drawable.shapes_arrow, "화살표", "Arrow"),
+                    QuizQuestion(R.drawable.shapes_triangle, "세모", "Triangle")
                 )
             )
         )
@@ -587,40 +587,40 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
                 1, listOf(
                     QuizQuestion(R.drawable.jobs_teacher, "선생님", "Teacher"),
                     QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
-                    QuizQuestion(R.drawable.jobs_firefighter, "소방관", "Firefighter")
+                    QuizQuestion(R.drawable.jobs_chef, "요리사", "Chef")
                 )
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.jobs_teacher, "의사", "Doctor"),
-                    QuizQuestion(R.drawable.jobs_teacher, "마술사", "Magician"),
-                    QuizQuestion(R.drawable.jobs_teacher, "군인", "Soldier")
+                    QuizQuestion(R.drawable.jobs_doctor, "의사", "Doctor"),
+                    QuizQuestion(R.drawable.jobs_magician, "마술사", "Magician"),
+                    QuizQuestion(R.drawable.jobs_soldier, "군인", "Soldier")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.jobs_teacher, "간호사", "Nurse"),
-                    QuizQuestion(R.drawable.jobs_teacher, "운동선수", "Athlete"),
-                    QuizQuestion(R.drawable.jobs_teacher, "가수", "Singer"),
-                    QuizQuestion(R.drawable.jobs_teacher, "우주비행사", "Astronaut")
+                    QuizQuestion(R.drawable.jobs_nurse, "간호사", "Nurse"),
+                    QuizQuestion(R.drawable.jobs_athlete, "운동선수", "Athlete"),
+                    QuizQuestion(R.drawable.jobs_singer, "가수", "Singer"),
+                    QuizQuestion(R.drawable.jobs_astronaut, "우주비행사", "Astronaut")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.jobs_teacher, "경찰관", "Police"),
-                    QuizQuestion(R.drawable.jobs_teacher, "운동선수", "Athlete"),
-                    QuizQuestion(R.drawable.jobs_teacher, "의사", "Doctor"),
-                    QuizQuestion(R.drawable.jobs_teacher, "마술사", "Magician"),
+                    QuizQuestion(R.drawable.jobs_police, "경찰관", "Police"),
+                    QuizQuestion(R.drawable.jobs_athlete, "운동선수", "Athlete"),
+                    QuizQuestion(R.drawable.jobs_doctor, "의사", "Doctor"),
+                    QuizQuestion(R.drawable.jobs_magician, "마술사", "Magician"),
                     QuizQuestion(R.drawable.jobs_teacher, "선생님", "Teacher")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.jobs_teacher, "요리사", "Chef"),
-                    QuizQuestion(R.drawable.jobs_teacher, "가수", "Singer"),
-                    QuizQuestion(R.drawable.jobs_teacher, "군인", "Soldier"),
-                    QuizQuestion(R.drawable.jobs_teacher, "간호사", "Nurse"),
-                    QuizQuestion(R.drawable.jobs_teacher, "우주비행사", "Astronaut")
+                    QuizQuestion(R.drawable.jobs_chef, "요리사", "Chef"),
+                    QuizQuestion(R.drawable.jobs_singer, "가수", "Singer"),
+                    QuizQuestion(R.drawable.jobs_soldier, "군인", "Soldier"),
+                    QuizQuestion(R.drawable.jobs_nurse, "간호사", "Nurse"),
+                    QuizQuestion(R.drawable.jobs_astronaut, "우주비행사", "Astronaut")
                 )
             )
         )
@@ -639,34 +639,34 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.planet_sun, "지구", "Earth"),
-                    QuizQuestion(R.drawable.planet_sun, "화성", "Mars"),
-                    QuizQuestion(R.drawable.planet_sun, "목성", "Jupiter")
+                    QuizQuestion(R.drawable.planet_earth, "지구", "Earth"),
+                    QuizQuestion(R.drawable.planet_mars, "화성", "Mars"),
+                    QuizQuestion(R.drawable.planet_jupiter, "목성", "Jupiter")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.planet_sun, "토성", "Saturn"),
-                    QuizQuestion(R.drawable.planet_sun, "천왕성", "Uranus"),
-                    QuizQuestion(R.drawable.planet_sun, "해왕성", "Neptune")
+                    QuizQuestion(R.drawable.planet_saturn, "토성", "Saturn"),
+                    QuizQuestion(R.drawable.planet_uranus, "천왕성", "Uranus"),
+                    QuizQuestion(R.drawable.planet_neptune, "해왕성", "Neptune")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.planet_sun, "수성", "Mercury"),
-                    QuizQuestion(R.drawable.planet_sun, "지구", "Earth"),
-                    QuizQuestion(R.drawable.planet_sun, "화성", "Mars"),
-                    QuizQuestion(R.drawable.planet_sun, "해왕성", "Neptune"),
+                    QuizQuestion(R.drawable.planet_mercury, "수성", "Mercury"),
+                    QuizQuestion(R.drawable.planet_earth, "지구", "Earth"),
+                    QuizQuestion(R.drawable.planet_mars, "화성", "Mars"),
+                    QuizQuestion(R.drawable.planet_neptune, "해왕성", "Neptune"),
                     QuizQuestion(R.drawable.planet_sun, "태양", "Sun")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.planet_sun, "금성", "Venus"),
-                    QuizQuestion(R.drawable.planet_sun, "목성", "Jupiter"),
-                    QuizQuestion(R.drawable.planet_sun, "토성", "Saturn"),
-                    QuizQuestion(R.drawable.planet_sun, "천왕성", "Uranus"),
-                    QuizQuestion(R.drawable.planet_sun, "해왕성", "Neptune")
+                    QuizQuestion(R.drawable.planet_venus, "금성", "Venus"),
+                    QuizQuestion(R.drawable.planet_jupiter, "목성", "Jupiter"),
+                    QuizQuestion(R.drawable.planet_saturn, "토성", "Saturn"),
+                    QuizQuestion(R.drawable.planet_uranus, "천왕성", "Uranus"),
+                    QuizQuestion(R.drawable.planet_neptune, "해왕성", "Neptune")
                 )
             )
         )
@@ -685,35 +685,35 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.country_korea, "미국", "United States"),
-                    QuizQuestion(R.drawable.country_korea, "스위스", "Switzerland"),
+                    QuizQuestion(R.drawable.country_usa, "미국", "United States"),
+                    QuizQuestion(R.drawable.country_swiss, "스위스", "Swiss"),
                     QuizQuestion(R.drawable.country_korea, "캐나다", "Canada")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.country_korea, "호주", "Australia"),
-                    QuizQuestion(R.drawable.country_korea, "독일", "Germany"),
-                    QuizQuestion(R.drawable.country_korea, "영국", "United Kingdom"),
-                    QuizQuestion(R.drawable.country_korea, "프랑스", "France")
+                    QuizQuestion(R.drawable.country_austrailia, "호주", "Australia"),
+                    QuizQuestion(R.drawable.country_germany, "독일", "Germany"),
+                    QuizQuestion(R.drawable.country_uk, "영국", "United Kingdom"),
+                    QuizQuestion(R.drawable.country_france, "프랑스", "France")
                 )
             ),
             QuizDay(
                 4, listOf(
-                    QuizQuestion(R.drawable.country_korea, "이탈리아", "Italy"),
-                    QuizQuestion(R.drawable.country_korea, "러시아", "Russia"),
-                    QuizQuestion(R.drawable.country_korea, "사우디", "Saudi Arabia"),
-                    QuizQuestion(R.drawable.country_korea, "일본", "Japan"),
-                    QuizQuestion(R.drawable.country_korea, "호주", "Australia")
+                    QuizQuestion(R.drawable.country_italy, "이탈리아", "Italy"),
+                    QuizQuestion(R.drawable.country_russia, "러시아", "Russia"),
+                    QuizQuestion(R.drawable.country_saudi, "사우디", "Saudi Arabia"),
+                    QuizQuestion(R.drawable.country_japan, "일본", "Japan"),
+                    QuizQuestion(R.drawable.country_austrailia, "호주", "Australia")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.country_korea, "미국", "United States"),
-                    QuizQuestion(R.drawable.country_korea, "스위스", "Switzerland"),
+                    QuizQuestion(R.drawable.country_usa, "미국", "United States"),
+                    QuizQuestion(R.drawable.country_swiss, "스위스", "Switzerland"),
                     QuizQuestion(R.drawable.country_korea, "한국", "South Korea"),
-                    QuizQuestion(R.drawable.country_korea, "독일", "Germany"),
-                    QuizQuestion(R.drawable.country_korea, "중국", "China")
+                    QuizQuestion(R.drawable.country_germany, "독일", "Germany"),
+                    QuizQuestion(R.drawable.country_china, "중국", "China")
                 )
             )
         )
@@ -732,35 +732,35 @@ sealed class QuizCategory(val name: String, val thumbnail: Int, val days: List<Q
             ),
             QuizDay(
                 2, listOf(
-                    QuizQuestion(R.drawable.foods_rice, "피자", "Pizza"),
-                    QuizQuestion(R.drawable.foods_rice, "치킨", "Chicken"),
-                    QuizQuestion(R.drawable.foods_rice, "우유", "Milk")
+                    QuizQuestion(R.drawable.foods_pizza, "피자", "Pizza"),
+                    QuizQuestion(R.drawable.foods_chicken, "치킨", "Chicken"),
+                    QuizQuestion(R.drawable.foods_milk, "우유", "Milk")
                 )
             ),
             QuizDay(
                 3, listOf(
-                    QuizQuestion(R.drawable.foods_rice, "국수", "Noodles"),
-                    QuizQuestion(R.drawable.foods_rice, "케이크", "Cake"),
-                    QuizQuestion(R.drawable.foods_rice, "치즈", "Cheese"),
-                    QuizQuestion(R.drawable.foods_rice, "과자", "Snack")
+                    QuizQuestion(R.drawable.foods_noodles, "국수", "Noodles"),
+                    QuizQuestion(R.drawable.foods_cake, "케이크", "Cake"),
+                    QuizQuestion(R.drawable.foods_cheese, "치즈", "Cheese"),
+                    QuizQuestion(R.drawable.foods_snack, "과자", "Snack")
                 )
             ),
             QuizDay(
                 4, listOf(
                     QuizQuestion(R.drawable.foods_rice, "밥", "Rice"),
-                    QuizQuestion(R.drawable.foods_rice, "피자", "Pizza"),
-                    QuizQuestion(R.drawable.foods_rice, "치킨", "Chicken"),
-                    QuizQuestion(R.drawable.foods_rice, "국수", "Noodles"),
-                    QuizQuestion(R.drawable.foods_rice, "과자", "Snack")
+                    QuizQuestion(R.drawable.foods_pizza, "피자", "Pizza"),
+                    QuizQuestion(R.drawable.foods_chicken, "치킨", "Chicken"),
+                    QuizQuestion(R.drawable.foods_noodles, "국수", "Noodles"),
+                    QuizQuestion(R.drawable.foods_snack, "과자", "Snack")
                 )
             ),
             QuizDay(
                 5, listOf(
-                    QuizQuestion(R.drawable.foods_rice, "빵", "Bread"),
-                    QuizQuestion(R.drawable.foods_rice, "버거", "Burger"),
-                    QuizQuestion(R.drawable.foods_rice, "우유", "Milk"),
-                    QuizQuestion(R.drawable.foods_rice, "케이크", "Cake"),
-                    QuizQuestion(R.drawable.foods_rice, "치즈", "Cheese")
+                    QuizQuestion(R.drawable.foods_bread, "빵", "Bread"),
+                    QuizQuestion(R.drawable.foods_burger, "버거", "Burger"),
+                    QuizQuestion(R.drawable.foods_milk, "우유", "Milk"),
+                    QuizQuestion(R.drawable.foods_cake, "케이크", "Cake"),
+                    QuizQuestion(R.drawable.foods_cheese, "치즈", "Cheese")
                 )
             )
         )
