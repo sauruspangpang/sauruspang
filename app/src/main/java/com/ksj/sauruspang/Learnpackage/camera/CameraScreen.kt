@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -84,6 +85,7 @@ fun CameraScreen(
             painter = painterResource(R.drawable.icon_backtochooseda),
             contentDescription = "뒤로 가기 버튼",
             modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp)
                 .clickable {
                     category?.name?.let { categoryName ->
                         navController.navigate("stage/$categoryName")
@@ -211,7 +213,10 @@ fun CameraScreen(
             contentDescription = "",
             modifier = Modifier
                 .clickable { }
-                .align(Alignment.TopEnd))
+                .align(Alignment.TopEnd)
+                .padding(top = 10.dp, end = 10.dp)
+        )
+
 
     }
 }

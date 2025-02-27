@@ -95,58 +95,88 @@ fun CameraAnswerScreen(
             modifier = Modifier.matchParentSize()
         )
 
-            Image(
-                painter = painterResource(id = R.drawable.icon_arrow_left),
-                contentDescription = "previous question",
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .clickable {
-                        if (clickCount == 1) {
-                            navController.navigate(sharedFront) {
+        Image(
+            painter = painterResource(id = R.drawable.icon_arrow_left),
+            contentDescription = "previous question",
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .clickable {
+                    if (clickCount == 1) {
+                        navController.navigate(sharedFront) {
+                            popUpTo(sharedPopUp) { inclusive = false }
+                        }
+                    } else {
+                        if (questionIndex > 0) {
+                            navController.navigate(sharedBack) {
                                 popUpTo(sharedPopUp) { inclusive = false }
                             }
-                        } else {
-                            if (questionIndex > 0) {
-                                navController.navigate(sharedBack) {
-                                    popUpTo(sharedPopUp) { inclusive = false }
-                                }
-                            }
-                            clickCount = 0
                         }
+                        clickCount = 0
                     }
-            )
-            Box(
+                }
+        )
+        Box(
+            modifier = Modifier
+                .align(Alignment.Center)
+                .clickable {
+                    navController.navigate("camerax")
+                    sharedRouteViewModel.sharedCategory = category
+                }
+        ) {
+            CapturedImage(capturedImage, modifier = Modifier.matchParentSize())
+            Image(
+                painter = painterResource(id = R.drawable.image_frame),
+                contentDescription = "camera",
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .clickable {
-                        navController.navigate("camerax")
-                        sharedRouteViewModel.sharedCategory = category
+            )
+        }
+        Text(
+            text = question.english,
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .padding(bottom = 20.dp),
+            style = TextStyle(
+                fontWeight = FontWeight.Bold,
+                fontSize = 75.sp
+            )
+        )
+        Image(
+            painter = painterResource(id = R.drawable.icon_arrow_right),
+            contentDescription = "next question",
+            modifier = Modifier
+                .align(Alignment.CenterEnd)
+                .clickable(enabled = correct) {
+                    if (questionIndex == questions.size - 1) {
+                        navController.navigate(sharedQuizStart) {
+                            popUpTo(sharedQuizStart) { inclusive = false }
+                        }
+                    } else {
+                        navController.navigate(sharedFront) {
+                            popUpTo(sharedPopUp) { inclusive = false }
+                        }
                     }
-            ) {
-                CapturedImage(capturedImage, modifier = Modifier.matchParentSize())
-                Image(
-                    painter = painterResource(id = R.drawable.image_frame),
-                    contentDescription = "camera",
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                )
-            }
-            Text(
-                text = question.english,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(bottom = 20.dp),
-                style = TextStyle(
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 75.sp
-                )
-            )
+                    retryCount = 0
+                    correct = false
+                },
+            colorFilter = if (correct) null else ColorFilter.colorMatrix(
+                ColorMatrix().apply {
+                    setToSaturation(0.1f)
+                })
+        )
+        Row(modifier = Modifier.align(Alignment.BottomCenter)) {
             Image(
-                painter = painterResource(id = R.drawable.icon_arrow_right),
-                contentDescription = "next question",
+                painter = painterResource(R.drawable.icon_camera_retry),
+                contentDescription = "다시 찍기",
+                modifier = Modifier.clickable(enabled = (retryCount != 0)) {
+                    capturedImage.value = viewModel.dummyBitmpa
+                    navController.navigate("camerax")
+                })
+            Image(
+                painter = painterResource(R.drawable.icon_camera_skip),
+                contentDescription = "넘어가기",
                 modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .clickable(enabled = correct) {
+                    .clickable(enabled = !correct) {
                         if (questionIndex == questions.size - 1) {
                             navController.navigate(sharedQuizStart) {
                                 popUpTo(sharedQuizStart) { inclusive = false }
@@ -158,37 +188,10 @@ fun CameraAnswerScreen(
                         }
                         retryCount = 0
                         correct = false
-                    },
-                colorFilter = if (correct) null else ColorFilter.colorMatrix(
-                    ColorMatrix().apply {
-                        setToSaturation(0.1f)
-                    })
+                    }
+                    .padding(top = 10.dp, end = 10.dp)
             )
-            Row(modifier = Modifier.align(Alignment.BottomCenter)){
-                Image(
-                    painter = painterResource(R.drawable.icon_camera_retry),
-                    contentDescription = "다시 찍기",
-                    modifier = Modifier.clickable(enabled = (retryCount != 0)) {
-                        capturedImage.value = viewModel.dummyBitmpa
-                        navController.navigate("camerax")
-                    })
-                Image(
-                    painter = painterResource(R.drawable.icon_camera_skip),
-                    contentDescription = "넘어가기",
-                    modifier = Modifier.clickable(enabled = !correct) {
-                        if (questionIndex == questions.size - 1) {
-                            navController.navigate(sharedQuizStart) {
-                                popUpTo(sharedQuizStart) { inclusive = false }
-                            }
-                        } else {
-                            navController.navigate(sharedFront) {
-                                popUpTo(sharedPopUp) { inclusive = false }
-                            }
-                        }
-                        retryCount = 0
-                        correct = false
-                    })
-            }
+        }
 
     }
 }

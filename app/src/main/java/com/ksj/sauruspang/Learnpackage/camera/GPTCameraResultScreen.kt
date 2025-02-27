@@ -153,7 +153,7 @@ fun GPTCameraResultScreen(
                             painter = painterResource(id = R.drawable.icon_backtochooseda),
                             contentDescription = "홈으로",
                             modifier = Modifier
-                                .size(screenWidth * 0.07f)
+                                .padding(top = 10.dp, start = 10.dp)
                                 .clickable {
                                     navController.popBackStack("home", false)
                                 }

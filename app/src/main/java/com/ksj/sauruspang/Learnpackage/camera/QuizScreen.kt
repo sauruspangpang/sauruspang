@@ -92,7 +92,7 @@ fun QuizScreen(
             painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "button to stagescreen",
             modifier = Modifier
-                .size(50.dp)
+                .padding(top = 10.dp, start = 10.dp)
                 .clickable {
                     category?.name?.let { navController.navigate("stage/$it") }
                 }

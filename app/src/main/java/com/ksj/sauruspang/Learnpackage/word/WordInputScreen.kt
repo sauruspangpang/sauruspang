@@ -130,6 +130,7 @@ fun WordInputScreen(
             painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "button to stagescreen",
             modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp)
                 .clickable {
                     navController.navigate("stage/$categoryName")
                 }

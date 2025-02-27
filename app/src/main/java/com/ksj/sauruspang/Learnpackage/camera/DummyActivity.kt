@@ -95,7 +95,7 @@ fun DummyScreen(
                     Image(painter = painterResource(id = R.drawable.icon_backtochooseda),
                         contentDescription = "",
                         modifier = Modifier
-                            .size(screenWidth * 0.07f)
+                            .padding(top = 10.dp, start = 10.dp)
                             .clickable {
                                 category?.name?.let { categoryName ->
                                     navController.navigate("stage/$categoryName")

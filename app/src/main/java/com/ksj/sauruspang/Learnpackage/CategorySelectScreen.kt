@@ -71,6 +71,7 @@ fun HomeScreen(
             contentDescription = "",
             modifier = Modifier
                 .align(Alignment.TopEnd)
+                .padding(top = 10.dp, end = 10.dp)
                 .clickable { navController.navigate("pictorial") }
         )
         Row(){
@@ -78,6 +79,7 @@ fun HomeScreen(
             painter = painterResource(id = R.drawable.icon_changeprofile),
             contentDescription = "button to profile screen",
             modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp)
                 .clickable {
                     navController.popBackStack()
                 }
@@ -134,7 +136,8 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
         ) {
             Image(
                 painter = painterResource(id = R.drawable.card_category),
-                contentDescription = "category background"
+                contentDescription = "category background",
+                modifier = Modifier.offset(y = (-5).dp)
             )
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,

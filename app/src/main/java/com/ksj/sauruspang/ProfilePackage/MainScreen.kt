@@ -94,10 +94,11 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "button to stagescreen",
             modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp)
                 .clickable {
                     navController.navigate("profile")
                 }
-                .align(Alignment.TopEnd)
+                .align(Alignment.TopStart)
         )
         Row(
             verticalAlignment = Alignment.CenterVertically,

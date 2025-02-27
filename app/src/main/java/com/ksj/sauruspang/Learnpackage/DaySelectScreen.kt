@@ -55,6 +55,7 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
                     painter = painterResource(id = R.drawable.icon_changecategory),
                     contentDescription = "button to stagescreen",
                     modifier = Modifier
+                        .padding(top = 10.dp, start = 10.dp)
                         .clickable {
                             navController.popBackStack("home", false)
                         }

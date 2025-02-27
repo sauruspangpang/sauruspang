@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -59,7 +60,7 @@ fun CongratScreen(navController: NavController, viewModel: ProfileViewmodel, cat
             Image(painter = painterResource(id = R.drawable.icon_backtochooseda),
                 contentDescription = "",
                 modifier = Modifier
-                    .size(80.dp)
+                    .padding(top = 10.dp, start = 10.dp)
                     .clickable {
                         category?.name?.let { categoryName ->
                             navController.navigate("stage/$categoryName")

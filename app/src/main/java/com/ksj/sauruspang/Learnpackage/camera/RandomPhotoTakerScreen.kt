@@ -83,8 +83,7 @@ fun GPTRandomPhotoTakerScreen(
             painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "홈으로",
             modifier = Modifier
-                .padding(16.dp)
-                .size(40.dp)
+                .padding(top = 10.dp, start = 10.dp)
                 .align(Alignment.TopStart)
                 .clickable {
                     navController.popBackStack("home", false)

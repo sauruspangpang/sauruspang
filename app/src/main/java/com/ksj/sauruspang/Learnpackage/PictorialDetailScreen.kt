@@ -74,6 +74,7 @@ fun PictorialDetailScreen(
                     painter = painterResource(R.drawable.icon_backtochooseda),
                     contentDescription = "뒤로가기",
                     modifier = Modifier
+                        .padding(top = 10.dp, start = 10.dp)
                         .clickable { navController.popBackStack() }
                 )
                 Text(

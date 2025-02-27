@@ -177,6 +177,7 @@ fun LearnScreen(
         Image(painter = painterResource(id = R.drawable.icon_backtochooseda),
             contentDescription = "",
             modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp)
                 .clickable {
                     category?.name?.let { categoryName ->
                         navController.popBackStack("stage/$categoryName", false)

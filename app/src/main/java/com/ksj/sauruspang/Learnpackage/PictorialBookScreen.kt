@@ -56,6 +56,7 @@ fun PictorialBookScreen(
                     painter = painterResource(id = R.drawable.icon_backtochooseda),
                     contentDescription = "뒤로가기",
                     modifier = Modifier
+                        .padding(top = 10.dp, start = 10.dp)
                         .clickable { navController.popBackStack() }
                 )
                 Spacer(modifier = Modifier.width(20.dp))
