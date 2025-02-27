@@ -148,7 +148,8 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 .align(Alignment.TopEnd)
                 .padding(20.dp)
                 .background(Color(0xFFFFFFFF), shape = RoundedCornerShape(20.dp))
-                .border(5.dp, Color(0xFF163a13), shape = RoundedCornerShape(20.dp)),
+                .border(5.dp, Color(0xFF163a13), shape = RoundedCornerShape(20.dp))
+                    .clickable { showEditDialog = true }
         ) {
             Text(
                 text = "학습관리",
@@ -157,7 +158,6 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                 color = Color(0xFF163a13),
                 modifier = Modifier
                     .padding(horizontal = 15.dp, vertical = 10.dp)
-                    .clickable { showEditDialog = true }
             )
         }
     }
