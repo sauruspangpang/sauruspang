@@ -65,8 +65,7 @@ fun PictorialDetailScreen(
             // 상단 바 (뒤로가기 + 제목)
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -83,7 +82,7 @@ fun PictorialDetailScreen(
                     color = Color(0xFF00BB2F), // 제목색 00bb2f (알파값 FF 추가)
                     fontWeight = FontWeight.ExtraBold,
                     modifier = Modifier
-                        .padding(end = 16.dp)
+                        .padding(top = 16.dp, end = 16.dp)
                         .background(
                             color = Color(0xFFFFFede), // 배경색 fffede (알파값 FF 추가)
                             shape = RoundedCornerShape(10.dp)

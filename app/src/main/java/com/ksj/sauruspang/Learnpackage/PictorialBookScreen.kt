@@ -48,8 +48,7 @@ fun PictorialBookScreen(
             // 상단 “도감” + 뒤로가기 버튼
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp),
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
@@ -123,12 +124,13 @@ fun CameraAnswerScreen(
                     sharedRouteViewModel.sharedCategory = category
                 }
         ) {
-            CapturedImage(capturedImage, modifier = Modifier.matchParentSize())
+            CapturedImage(capturedImage, modifier = Modifier.matchParentSize().align(Alignment.BottomCenter).offset(y = (5).dp))
             Image(
                 painter = painterResource(id = R.drawable.image_frame),
                 contentDescription = "camera",
                 modifier = Modifier
                     .align(Alignment.Center)
+                    .scale(1.2f)
             )
         }
         Text(
@@ -164,7 +166,7 @@ fun CameraAnswerScreen(
                     setToSaturation(0.1f)
                 })
         )
-        Row(modifier = Modifier.align(Alignment.BottomCenter)) {
+        Row(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 20.dp)) {
             Image(
                 painter = painterResource(R.drawable.icon_camera_retry),
                 contentDescription = "다시 찍기",
@@ -172,6 +174,7 @@ fun CameraAnswerScreen(
                     capturedImage.value = viewModel.dummyBitmpa
                     navController.navigate("camerax")
                 })
+            Spacer(modifier = Modifier.width(20.dp))
             Image(
                 painter = painterResource(R.drawable.icon_camera_skip),
                 contentDescription = "넘어가기",
@@ -189,7 +192,6 @@ fun CameraAnswerScreen(
                         retryCount = 0
                         correct = false
                     }
-                    .padding(top = 10.dp, end = 10.dp)
             )
         }
 

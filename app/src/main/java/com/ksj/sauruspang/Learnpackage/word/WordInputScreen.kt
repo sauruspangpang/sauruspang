@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -149,23 +151,23 @@ fun WordInputScreen(
                 }
         )
         Row(
+            modifier = Modifier.align(Alignment.Center)
+                ,
+            verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.align(Alignment.Center),
-            verticalAlignment = Alignment.CenterVertically
         )
         {
-
             Image(
                 painter = painterResource(question.imageId),
                 contentDescription = "Question Image",
                 modifier = Modifier
             )
-
+            Spacer(modifier = Modifier.width(50.dp))
             Box(
                 modifier = Modifier
-                    .width(screenWidth * 0.7f)
-                    .height(screenHeight * 0.7f)
-                    .offset(y=(-10.dp))
+                    .wrapContentSize()
+//                    .width(screenWidth * 0.7f)
+//                    .height(screenHeight * 0.7f)
                     .pointerInput(Unit) {
                         detectDragGestures(
                             onDragStart = { offset -> inkManager.startStroke(offset) },
@@ -178,24 +180,104 @@ fun WordInputScreen(
             {
                 Box(
                     modifier = Modifier
+                        .wrapContentSize() // 자식(Text)의 크기에 맞춰 Box 크기가 결정됨
+                        .align(Alignment.Center)
                 ) {
+                    // 배경 이미지: 부모(Box)의 크기에 맞춰 채워짐
                     Image(
                         painter = painterResource(R.drawable.image_notepadforwritingword),
                         contentDescription = "Sketchbook",
-                        contentScale = ContentScale.FillBounds,
+                        modifier = Modifier.matchParentSize(),
+                        contentScale = ContentScale.FillBounds, // Box의 크기에 맞게 이미지 조정
+
                     )
 
+                    // Text에 padding을 주면 그에 따라 Box 크기도 늘어남
                     Text(
                         text = question.english,
                         style = TextStyle(
-                            fontSize = 90.sp, fontWeight = FontWeight.Bold,
+                            fontSize = 90.sp,
+                            fontWeight = FontWeight.Bold,
                             color = Color.Black.copy(alpha = 0.2f)
                         ),
-                        modifier = Modifier.align(Alignment.Center) // 중앙 정렬
+                        modifier = Modifier
+                            .align(Alignment.Center)
+                            .padding(horizontal = 70.dp, vertical = 120.dp)
                     )
+
+                    Row(verticalAlignment = Alignment.Bottom,modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 5.dp)) {
+                        Image(painter = painterResource(R.drawable.icon_eraser),
+                            contentDescription = "Eraser",
+                            modifier = Modifier
+                                .clickable {
+                                    inkManager.clearCanvas()
+                                }
+                        )
+                        Spacer(modifier = Modifier.width(20.dp))
+                        Image(painter = painterResource(R.drawable.icon_grading),
+                            contentDescription = "Grading",
+                            modifier = Modifier
+                                .clickable {
+                                    if (isModelDownloaded) {
+                                        coroutineScope.launch {
+                                            // recognizedText와 리스트 초기화
+                                            val result = withContext(Dispatchers.IO) {
+                                                inkManager
+                                                    .recognizeInk()
+                                                    .uppercase()
+                                            }
+                                            // Main 스레드에서 상태 업데이트
+                                            recognizedText = result
+
+                                            // 안전하게 결과 분리
+                                            val recognizedSplit = result
+                                                .split(",")
+                                                .take(2)
+                                            if (recognizedSplit.size < 2) {
+                                                // 인식 결과가 부족할 경우 추가 처리
+                                                recognizedText = "인식 결과가 부족합니다. 다시 시도해 주세요."
+                                                return@launch
+                                            }
+                                            recognizedList = recognizedSplit
+                                            Log.e("recognizedList", recognizedList.toString())
+
+                                            val candidate1 = recognizedList[0]
+                                            val candidate2 = recognizedList[1]
+
+                                            val mismatchedIndexes1 =
+                                                compareWords(targetWord, candidate1)
+                                            val mismatchedIndexes2 =
+                                                compareWords(targetWord, candidate2)
+
+                                            // 두 후보가 targetWord와 길이가 같고 모두 일치해야 정답으로 판단
+                                            // 정답 조건식 변경 가능 (candidate1 == targetWord || candidate2 == targetWord)
+                                            if ((candidate1.length == targetWord.length && mismatchedIndexes1.isEmpty()) ||
+                                                (candidate2.length == targetWord.length && mismatchedIndexes2.isEmpty())
+                                            ) {
+                                                recognizedText = "정답입니다."  // TODO 로깅 텍스트
+                                                showCorrectDialog = true
+                                                isCorrect = true
+                                                hitNumber++
+                                            } else {
+                                                // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
+                                                wrongLettersInfo = "틀린 글자: " +
+                                                        "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
+                                                        "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
+                                                recognizedText = wrongLettersInfo  // TODO 로깅 텍스트
+                                                showRetryDialog = true
+                                                incorrectAnswerCount++
+                                            }
+                                        }
+                                    } else {
+                                        recognizedText =
+                                            "Model is not yet downloaded. Please try again later."
+                                    }
+                                })
+                    }
+
                 }
                 val redrawTrigger = inkManager.shouldRedraw  // 변경 감지
-                Canvas(modifier = Modifier.size(600.dp)) {
+                Canvas(modifier = Modifier) {
                     drawPath(inkManager.path, Color.Red, style = Stroke(width = 25f))
 
                 }
@@ -228,74 +310,6 @@ fun WordInputScreen(
             })
 
         )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomEnd),
-        ) {
-            //다시 쓰기 버튼
-            Image(painter = painterResource(R.drawable.icon_eraser), contentDescription = "Eraser",
-                modifier = Modifier
-                    .clickable {
-                        inkManager.clearCanvas()
-                    }
-            )
-            // 정답 확인 버튼
-            Image(painter = painterResource(R.drawable.icon_grading), contentDescription = "Grading",
-            modifier = Modifier
-                .clickable {if (isModelDownloaded) {
-                    coroutineScope.launch {
-                        // recognizedText와 리스트 초기화
-                        val result = withContext(Dispatchers.IO) {
-                            inkManager.recognizeInk().uppercase()
-                        }
-                        // Main 스레드에서 상태 업데이트
-                        recognizedText = result
-
-                        // 안전하게 결과 분리
-                        val recognizedSplit = result.split(",").take(2)
-                        if (recognizedSplit.size < 2) {
-                            // 인식 결과가 부족할 경우 추가 처리
-                            recognizedText = "인식 결과가 부족합니다. 다시 시도해 주세요."
-                            return@launch
-                        }
-                        recognizedList = recognizedSplit
-                        Log.e("recognizedList", recognizedList.toString())
-
-                        val candidate1 = recognizedList[0]
-                        val candidate2 = recognizedList[1]
-
-                        val mismatchedIndexes1 = compareWords(targetWord, candidate1)
-                        val mismatchedIndexes2 = compareWords(targetWord, candidate2)
-
-                        // 두 후보가 targetWord와 길이가 같고 모두 일치해야 정답으로 판단
-                        // 정답 조건식 변경 가능 (candidate1 == targetWord || candidate2 == targetWord)
-                        if ((candidate1.length == targetWord.length && mismatchedIndexes1.isEmpty()) ||
-                            (candidate2.length == targetWord.length && mismatchedIndexes2.isEmpty())
-                        ) {
-                            recognizedText = "정답입니다."  // TODO 로깅 텍스트
-                            showCorrectDialog = true
-                            isCorrect = true
-                            hitNumber++
-                        }
-                        else
-                        {
-                            // 틀린 글자 정보를 안전하게 생성 (단, 후보가 targetWord보다 짧은 경우 대비)
-                            wrongLettersInfo = "틀린 글자: " +
-                                    "${if (mismatchedIndexes1.isNotEmpty()) targetWord[mismatchedIndexes1[0]] else "?"}, " +
-                                    "${if (mismatchedIndexes2.isNotEmpty()) targetWord[mismatchedIndexes2[0]] else "?"}"
-                            recognizedText = wrongLettersInfo  // TODO 로깅 텍스트
-                            showRetryDialog = true
-                            incorrectAnswerCount++
-                        }
-                    }
-                } else {
-                    recognizedText =
-                        "Model is not yet downloaded. Please try again later."
-                }  })
-        }
-
 
         if (incorrectAnswerCount >= 3) {
             Button(onClick = {

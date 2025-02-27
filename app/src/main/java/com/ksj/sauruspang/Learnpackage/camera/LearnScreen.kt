@@ -255,7 +255,7 @@ fun LearnScreen(
                         question.english,
                         modifier = Modifier.clickable { listen(question.english, Locale.US) },
                         style = TextStyle(
-                            fontWeight = FontWeight.Bold, fontSize = 60.sp
+                            fontWeight = FontWeight.Bold, fontSize = 50.sp
                         )
                     )
                     Image(painter = painterResource(id = R.drawable.icon_readword),
