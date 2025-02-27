@@ -54,11 +54,12 @@ fun EditProfileDialog(
     // 단일 선택 상태: 현재 선택된 프로필의 userprofile 값을 저장 (없으면 null)
     var selectedProfileId by remember { mutableStateOf<Int?>(null) }
 
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Gray.copy(alpha = 0.8f))
-            // 배경 클릭 시 다이얼로그 외부 터치로 dismiss 처리 (내부 Box는 클릭 이벤트 전파 차단)
+        // 배경 클릭 시 다이얼로그 외부 터치로 dismiss 처리 (내부 Box는 클릭 이벤트 전파 차단)
 //            .clickable { onDismiss() }
     ) {
         // 중앙 다이얼로그 영역 (요청사항 1, 2 적용)
@@ -73,7 +74,11 @@ fun EditProfileDialog(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(color = Color(0xFFFEFFF3), shape = RoundedCornerShape(15.dp))
-                    .border(width = 2.dp, color = Color(0xFF00BB2F), shape = RoundedCornerShape(15.dp))
+                    .border(
+                        width = 2.dp,
+                        color = Color(0xFF00BB2F),
+                        shape = RoundedCornerShape(15.dp)
+                    )
                     .padding(horizontal = 16.dp)
                     // 내부 클릭 시 배경 클릭 이벤트 전파 방지
                     .clickable(enabled = false) {}
@@ -86,6 +91,23 @@ fun EditProfileDialog(
                 ) {
                     Spacer(modifier = Modifier.height(24.dp))
                     profiles.forEach { profile ->
+                        var completeCount:Int = 0
+                        var progressCount:Int = 0
+                        val keysList: List<String> = profile.categoryDayStatus.keys.toList()
+                        val inProgressCategories = keysList.filter { categoryName ->
+                            val activeDay = profile.categoryDayStatus[categoryName]
+                            val inProgress = activeDay in 2..4
+                            if (inProgress) progressCount++  // Increment progressCount for in-progress items
+                            inProgress
+                        }
+                        val completedCategories = keysList.filter { categoryName ->
+                            val activeDay = profile.categoryDayStatus[categoryName]
+                            val completed = activeDay!! > 5
+                            if(completed) completeCount++
+                            completed
+                        }
+                        var progress = inProgressCategories.joinToString(", ")
+                        var completed = completedCategories.joinToString(", ")
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
@@ -93,7 +115,10 @@ fun EditProfileDialog(
                             Box(
                                 modifier = Modifier
                                     .weight(1f) // 화면의 일정 비율을 할당
-                                    .background(Color(0xFFededed), shape = RoundedCornerShape(15.dp))
+                                    .background(
+                                        Color(0xFFededed),
+                                        shape = RoundedCornerShape(15.dp)
+                                    )
                                     .padding(12.dp)
                                     .padding(vertical = 8.dp)
                             ) {
@@ -137,15 +162,31 @@ fun EditProfileDialog(
                                     Spacer(modifier = Modifier.height(10.dp))
                                     // 3번째 줄: "- 카테고리" 텍스트
                                     Text(
-                                        text = "- 카테고리",
+                                        text = "학습 진도",
                                         fontSize = 20.sp,
                                         fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.padding(start = 72.dp)
+                                        modifier = Modifier.padding(start = 84.dp)
                                     )
                                     Spacer(modifier = Modifier.height(10.dp))
                                     // 4번째 줄: 학습 정보 (categoryDayStatus)
                                     Text(
-                                        text = profile.categoryDayStatus.toString(),
+                                        text =
+                                        if (completed.isEmpty()) {
+                                            "아직 완료한 학습이 없어요!"
+                                        }else{
+                                            "학습완료: ${completeCount}개 ( $completed )"
+                                        },
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(start = 84.dp)
+                                    )
+                                    Text(
+                                        text =
+                                        if (progress.isEmpty()) {
+                                            "아직 진행 중인 학습이 없어요!"
+                                        }else{
+                                            "학습 중: ${progressCount}개 ( $progress )"
+                                        },
                                         fontSize = 16.sp,
                                         fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(start = 84.dp)
@@ -163,10 +204,11 @@ fun EditProfileDialog(
                                     checkmarkColor = Color(0xFF00BB2F), // 필요에 따라 수정
                                     checkedColor = Color(0xFF00BB2F)    // 필요에 따라 수정
                                 ),
-                                modifier = Modifier.align(Alignment.Top)
+                                modifier = Modifier
+                                    .align(Alignment.Top)
                                     .size(32.dp),
 
-                            )
+                                )
                             Spacer(modifier = Modifier.width(20.dp))
 
                         }
