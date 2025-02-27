@@ -120,7 +120,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                     .clip(RoundedCornerShape(12.dp))
             )
             Spacer(modifier = Modifier.width(40.dp))
-            Column() {
+            Column(Modifier.fillMaxWidth(0.8f)) {
                 Row(horizontalArrangement = Arrangement.SpaceBetween) {
                     Column(modifier = Modifier) {
                         OutlinedTextField(
@@ -272,6 +272,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                         }
 
                     }
+                    Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = "만들기",
                         fontSize = 28.sp,
