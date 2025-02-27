@@ -67,24 +67,7 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
-        // 우측 상단 편집 버튼
-        Box(
-            modifier = Modifier
-                .align(Alignment.TopEnd)
-                .padding(20.dp)
-                .background(Color(0xFFFFFFFF), shape = RoundedCornerShape(20.dp))
-                .border(5.dp, Color(0xFF163a13), shape = RoundedCornerShape(20.dp))
-                .clickable { showEditDialog = true },
-        ) {
-            Text(
-                text = "학습관리",
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 28.sp,
-                color = Color(0xFF163a13),
-                modifier = Modifier
-                    .padding(horizontal = 15.dp, vertical = 10.dp)
-            )
-        }
+
         // 프로필 리스트
         Row(
             modifier = Modifier
@@ -151,10 +134,31 @@ fun ProfilePage(navController: NavController, viewModel: ProfileViewmodel) {
                         .clip(RoundedCornerShape(12.dp)),
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(painter = painterResource(R.drawable.icon_createprofile), contentDescription = "ADD",)
+                    Image(
+                        painter = painterResource(R.drawable.icon_createprofile),
+                        contentDescription = "ADD",
+                    )
                 }
             }
             Spacer(modifier = Modifier.width(50.dp))
+        }
+        // 우측 상단 편집 버튼
+        Box(
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(20.dp)
+                .background(Color(0xFFFFFFFF), shape = RoundedCornerShape(20.dp))
+                .border(5.dp, Color(0xFF163a13), shape = RoundedCornerShape(20.dp)),
+        ) {
+            Text(
+                text = "학습관리",
+                fontWeight = FontWeight.ExtraBold,
+                fontSize = 28.sp,
+                color = Color(0xFF163a13),
+                modifier = Modifier
+                    .padding(horizontal = 15.dp, vertical = 10.dp)
+                    .clickable { showEditDialog = true }
+            )
         }
     }
 
