@@ -113,35 +113,42 @@ fun EditProfileDialog(
                                         Spacer(modifier = Modifier.width(8.dp))
                                         Text(
                                             text = profile.name,
-                                            fontSize = 16.sp
+                                            fontSize = 32.sp,
+                                            fontWeight = FontWeight.Bold
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Spacer(modifier = Modifier.height(10.dp))
                                     // 2번째 줄: 별 아이콘과 점수
                                     Row(
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
+                                        Spacer(modifier = Modifier.width(48.dp))
                                         Image(
                                             painter = painterResource(id = R.drawable.image_star),
                                             contentDescription = "Star"
                                         )
                                         Spacer(modifier = Modifier.width(4.dp))
                                         Text(
-                                            text = profile.score.toString(),
-                                            fontSize = 16.sp
+                                            text = "${profile.score.toString()}개",
+                                            fontSize = 24.sp,
+                                            fontWeight = FontWeight.Bold
                                         )
                                     }
-                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Spacer(modifier = Modifier.height(10.dp))
                                     // 3번째 줄: "- 카테고리" 텍스트
                                     Text(
                                         text = "- 카테고리",
-                                        fontSize = 16.sp
+                                        fontSize = 20.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(start = 72.dp)
                                     )
-                                    Spacer(modifier = Modifier.height(4.dp))
+                                    Spacer(modifier = Modifier.height(10.dp))
                                     // 4번째 줄: 학습 정보 (categoryDayStatus)
                                     Text(
                                         text = profile.categoryDayStatus.toString(),
-                                        fontSize = 16.sp
+                                        fontSize = 16.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(start = 84.dp)
                                     )
                                 }
                             }
