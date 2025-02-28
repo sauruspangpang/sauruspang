@@ -49,6 +49,9 @@ fun LoadingDialog(message: String) {
             ) {
                 CircularProgressIndicator()
                 Spacer(modifier = Modifier.width(16.dp))
+                Image(painter = painterResource(R.drawable.icon_checkinganswer),
+                    contentDescription = "확인 중")
+                Spacer(modifier = Modifier.width(16.dp))
                 Column {
                     Text(
                         text = message,
