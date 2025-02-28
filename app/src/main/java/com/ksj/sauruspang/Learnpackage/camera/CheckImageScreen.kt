@@ -69,7 +69,6 @@ fun ShowCameraPreviewScreen(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        // capturedImage가 더미 이미지면 카메라 프리뷰 화면을 보여줌
         if (capturedImage.value == viewModel.dummyBitmpa) {
             CameraPreviewScreen { bitmap ->
                 viewModel.setCapturedImage(bitmap) // ViewModel에 저장
@@ -78,35 +77,28 @@ fun ShowCameraPreviewScreen(
             if (isLoading) {
                 LoadingDialog(message = viewModel.answerWord)
             }
-            LaunchedEffect(isLoading) {
-                // 로딩 상태 true로 설정
-                isLoading = true
+
+            LaunchedEffect(Unit) { // isLoading을 트리거로 사용하지 않음
+                if (isLoading) return@LaunchedEffect // 중복 요청 방지
+
+                isLoading = true // 로딩 시작
                 ImagePrediction.uploadImageToServer(
                     context = context,
                     imageInput = ImageInput.BitmapInput(bitmapCapturedImage),
                     selectedModel = findCategoryName
                 ) { updatedList ->
-                    if (viewModel.answerWord
-                            .lowercase()
-                            .trim() in updatedList
-                    ) {
-                        SelectViewModelList(
-                            sharedRouteViewModel,
-                            viewModel,
-                            capturedImage
-                        )
-                        viewModel.isCorrect = true
-                        Log.d("isCorrect", "정답: ${viewModel.isCorrect}")
-                    } else {
-                        viewModel.isCorrect = false
-                        Log.d("isCorrect", "오답: ${viewModel.isCorrect}")
+                    viewModel.isCorrect = viewModel.answerWord.lowercase().trim() in updatedList
+
+                    if (viewModel.isCorrect) {
+                        SelectViewModelList(sharedRouteViewModel, viewModel, capturedImage)
                     }
-                    // 로딩 상태 false로 전환 후 메인 스레드에서 화면 전환
+
+                    Log.d("isCorrect", "결과: ${viewModel.isCorrect}")
+
                     coroutineScope.launch {
-                        isLoading = false
+                        isLoading = false // 서버 응답 후 로딩 종료
                         navController.navigate("answer")
                     }
-                    Log.e("isCorrect", "최종: ${viewModel.isCorrect}")
                 }
             }
         }
