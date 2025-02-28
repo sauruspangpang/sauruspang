@@ -57,8 +57,7 @@ fun CameraAnswerScreen(
     if (showDialog) {
         if (viewModel.isCorrect) {
             capturedImage.value?.let { bitmap ->
-                // 정답이면 도감에 업데이트 (기존 프로필 데이터는 그대로 유지)
-                profileViewmodel.updateCatalogEntry(viewModel.answerWord, bitmap)
+                profileViewmodel.updateCatalogEntry(question.korean, bitmap)
             }
             Toast.makeText(
                 navController.context,
