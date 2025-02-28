@@ -81,7 +81,10 @@ fun HomeScreen(
             modifier = Modifier
                 .padding(top = 10.dp, start = 10.dp)
                 .clickable {
-                    navController.popBackStack()
+                    navController.navigate("profile") {
+                        launchSingleTop = true
+                        popUpTo("profile")
+                    }
                 }
         )
         ProfileBox(viewModel = viewModel)}
@@ -119,7 +122,11 @@ fun HomeScreen(
             modifier = Modifier
                 .size(70.dp)
                 .align(Alignment.CenterEnd)
-                .clickable { navController.navigate("randomPhotoTaker") }
+                .clickable {
+                    navController.navigate("randomPhotoTaker") {
+                        launchSingleTop = true
+                    }
+                }
         )
     }
 }

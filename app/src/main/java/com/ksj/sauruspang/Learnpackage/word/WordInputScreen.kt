@@ -134,7 +134,7 @@ fun WordInputScreen(
             modifier = Modifier
                 .padding(top = 10.dp, start = 10.dp)
                 .clickable {
-                    navController.navigate("stage/$categoryName")
+                    navController.popBackStack("stage/$categoryName",false)
                 }
         )
         Image(
@@ -144,9 +144,9 @@ fun WordInputScreen(
                 .align(Alignment.CenterStart)
                 .clickable {
                     if (questionIndex > 0) {
-                        navController.navigate("learn/$categoryName/$dayIndex/${questionIndex - 1}")
+                        navController.popBackStack("learn/$categoryName/$dayIndex/${questionIndex - 1}",false)
                     } else {
-                        navController.navigate("learn/$categoryName/$dayIndex/0")
+                        navController.popBackStack("learn/$categoryName/$dayIndex/0",false)
                     }
                 }
         )

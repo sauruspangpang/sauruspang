@@ -33,6 +33,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
@@ -58,8 +62,7 @@ fun CameraPreviewScreen(onImageCaptured: (Bitmap) -> Unit) {
     LaunchedEffect(lensFacing) {
         val cameraProvider = context.getCameraProvider()
         cameraProvider.unbindAll()
-        val camera =
-            cameraProvider.bindToLifecycle(lifecycleOwner, cameraxSelector, preview, imageCapture)
+        cameraProvider.bindToLifecycle(lifecycleOwner, cameraxSelector, preview, imageCapture)
         preview.setSurfaceProvider(previewView.surfaceProvider)
     }
 
@@ -68,10 +71,36 @@ fun CameraPreviewScreen(onImageCaptured: (Bitmap) -> Unit) {
     ) {
         AndroidView(factory = { previewView }, modifier = Modifier.fillMaxSize())
 
+        // 흐린 오버레이 추가
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .drawWithContent {
+                    drawContent()
+                    val overlayColor = Color.Black.copy(alpha = 0.5f)
+                    val centerX = size.width / 2
+                    val squareSize = size.height // 정사각형 크기를 화면 높이로 설정
+                    val left = centerX - squareSize / 2
+                    val top = 0f // 상단부터 시작
+                    val right = centerX + squareSize / 2
+                    val bottom = size.height // 하단까지
+
+                    drawRect(overlayColor) // 전체 화면 덮기
+                    drawRect(
+                        color = Color.Transparent,
+                        topLeft = Offset(left, top),
+                        size = Size(squareSize, squareSize),
+                        blendMode = androidx.compose.ui.graphics.BlendMode.Clear // 중앙 정사각형만 투명하게
+                    )
+                }
+                .blur(10.dp) // 흐린 효과 적용
+        )
+
+        // 촬영 버튼
         Button(
             onClick = {
                 captureImage(imageCapture, context) { bitmap ->
-                    onImageCaptured(bitmap) // 캡처된 이미지를 콜백을 통해 전달
+                    onImageCaptured(bitmap)
                 }
             },
             shape = CircleShape,

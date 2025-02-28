@@ -1,5 +1,6 @@
 package com.ksj.sauruspang.ProfilePackage
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -51,6 +52,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
@@ -74,7 +76,10 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     var selectedImage by remember { mutableIntStateOf(R.drawable.test1) }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
-
+    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
+    val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    var showDatePicker by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -96,7 +101,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             modifier = Modifier
                 .padding(top = 10.dp, start = 10.dp)
                 .clickable {
-                    navController.navigate("profile")
+                    navController.popBackStack("profile",false)
                 }
                 .align(Alignment.TopStart)
         )
@@ -158,12 +163,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 .clip(RoundedCornerShape(16.dp))
                                 .padding(5.dp)
                         )
-
-
-                        var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-                        val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
-                        var showDatePicker by remember { mutableStateOf(false) }
-
                         Box(
                             modifier = Modifier
                         ) {
@@ -286,16 +285,24 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             )
                             .padding(vertical = 15.dp, horizontal = 20.dp)
                             .clickable {
-                                if (name.isNotEmpty() && birth.isNotEmpty()) {
-                                    // 프로필 생성 시 score는 0, 각 카테고리 day는 기본 활성 상태(day1)로 설정
-                                    viewModel.addProfile(
-                                        name,
-                                        birth,
-                                        userProfile++,
-                                        selectedImage
-                                    )
+                                if (selectedDate.isAfter(LocalDate.now())) {
+                                    Toast.makeText(context, "날짜를 잘못 입력하였습니다.", Toast.LENGTH_SHORT).show()
+                                } else when {
+                                    name.isEmpty() -> {
+                                        Toast.makeText(context, "이름을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                    }
+                                    name.length > 4 -> {
+                                        Toast.makeText(context, "이름을 네 자리 이하로 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                        name = ""
+                                    }
+                                    else -> {
+                                        birth = birth.ifEmpty { LocalDate.now().format(dateFormatter) }
+                                        viewModel.addProfile(name, birth, userProfile++, selectedImage)
+                                        navController.navigate("profile") {
+                                            popUpTo("profile")
+                                        }
+                                    }
                                 }
-                                navController.navigate("profile")
                             }
                     )
                 }
