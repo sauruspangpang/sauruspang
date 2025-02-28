@@ -3,6 +3,7 @@ package com.ksj.sauruspang.ProfilePackage
 import android.app.Application
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.util.Log
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -144,11 +145,11 @@ class ProfileViewmodel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    // 도감 업데이트 – 정답과 촬영된 Bitmap 저장 (동일 answer이면 덮어씌움)
     fun updateCatalogEntry(answer: String, bitmap: Bitmap) {
         val profile = profiles.getOrNull(selectedProfileIndex.value) ?: return
         val profileId = profile.userprofile
         val imageBytes = bitmapToByteArray(bitmap)
+        Log.d("ProfileViewmodel", "업데이트 시도 - profileId: $profileId, answer: $answer, imageSize: ${imageBytes.size}")
         viewModelScope.launch(Dispatchers.IO) {
             val entry = CatalogEntry(profileId = profileId, answer = answer, image = imageBytes)
             AppDatabase.getDatabase(getApplication()).catalogEntryDao().insertCatalogEntry(entry)
