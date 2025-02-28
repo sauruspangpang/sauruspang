@@ -46,24 +46,17 @@ fun StageScreen(navController: NavController, categoryName: String, viewModel: P
             contentScale = ContentScale.Crop,
             modifier = Modifier.matchParentSize()
         )
-        Column(modifier = Modifier.fillMaxSize()) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-            ) {
-                Image(
-                    painter = painterResource(id = R.drawable.icon_changecategory),
-                    contentDescription = "button to stagescreen",
-                    modifier = Modifier
-                        .padding(top = 10.dp, start = 10.dp)
-                        .clickable {
-                            navController.popBackStack("home", false)
-                        }
-                )
-                // 기존 ProfileBox 재사용 (Score 관련은 viewModel의 score 사용)
-                ProfileBox(viewModel = viewModel)
-            }
-        }
+        Image(
+            painter = painterResource(id = R.drawable.icon_changecategory),
+            contentDescription = "button to stagescreen",
+            modifier = Modifier
+                .padding(top = 10.dp, start = 10.dp)
+                .clickable {
+                    navController.popBackStack("home", false)
+                }
+        )
+        // 기존 ProfileBox 재사용 (Score 관련은 viewModel의 score 사용)
+        ProfileBox(viewModel = viewModel, modifier = Modifier.align(Alignment.TopCenter))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -96,7 +89,7 @@ fun ZigzagRow(days: List<QuizDay>, categoryName: String, navController: NavContr
                 navController = navController,
                 isActive = isActive
             )
-            Spacer(modifier = Modifier.width(100.dp))
+            Spacer(modifier = Modifier.width(50.dp))
         }
     }
 }

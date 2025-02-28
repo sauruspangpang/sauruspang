@@ -74,7 +74,6 @@ fun HomeScreen(
                 .padding(top = 10.dp, end = 10.dp)
                 .clickable { navController.navigate("pictorial") }
         )
-        Row(){
         Image(
             painter = painterResource(id = R.drawable.icon_changeprofile),
             contentDescription = "button to profile screen",
@@ -87,7 +86,7 @@ fun HomeScreen(
                     }
                 }
         )
-        ProfileBox(viewModel = viewModel)}
+        ProfileBox(viewModel = viewModel, modifier = Modifier.align(Alignment.TopCenter))
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -187,12 +186,13 @@ fun CategoryBox(category: QuizCategory, navController: NavController) {
 }
 
 @Composable
-fun ProfileBox(viewModel: ProfileViewmodel) {
+fun ProfileBox(viewModel: ProfileViewmodel, modifier: Modifier) {
     val selectedIndex = viewModel.selectedProfileIndex.value
     val profile = viewModel.profiles.getOrNull(selectedIndex)
-    Box(contentAlignment = Alignment.Center) {
+    Box(contentAlignment = Alignment.Center,
+        modifier = modifier) {
         Image(
-            painter = painterResource(R.drawable.card_profile_02),
+            painter = painterResource(R.drawable.image_woodboard),
             contentDescription = "",
         )
         profile?.let { profile ->

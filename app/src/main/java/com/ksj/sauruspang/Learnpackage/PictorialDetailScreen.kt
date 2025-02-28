@@ -129,7 +129,14 @@ fun PictorialDetailScreen(
                                 Image(
                                     bitmap = bitmap.asImageBitmap(),
                                     contentDescription = question.korean,
-                                    contentScale = ContentScale.Fit
+//                                    contentScale = ContentScale.Crop,
+                                    modifier = Modifier.width(100.dp)
+                                )
+                                Text(
+                                    text = question.korean,
+                                    textAlign = TextAlign.Center,
+                                    fontSize = 14.sp,
+                                    modifier = Modifier.widthIn(min = 60.dp)
                                 )
                             } else {
                                 // 미등록이면 QuizQuestion의 imageId를 활용하여
