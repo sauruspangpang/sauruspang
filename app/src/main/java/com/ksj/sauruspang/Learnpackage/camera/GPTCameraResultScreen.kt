@@ -141,35 +141,9 @@ fun GPTCameraResultScreen(
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
-
-    // Scaffold(TopBar 하나만 존재)
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = {
-                    Box(modifier = Modifier.fillMaxWidth()) {
-                        // 홈으로 이동 아이콘
-                        Image(
-                            painter = painterResource(id = R.drawable.icon_backtochooseda),
-                            contentDescription = "홈으로",
-                            modifier = Modifier
-                                .padding(top = 10.dp, start = 10.dp)
-                                .clickable {
-                                    navController.popBackStack("home", false)
-                                }
-                        )
-                    }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent
-                )
-            )
-        }
-    ) { padding ->
         // 메인 콘텐츠
         Box(
             modifier = Modifier
-                .padding(padding)
                 .fillMaxSize()
         ) {
             Image(painter = painterResource(id = R.drawable.wallpaper_learnscreen), contentDescription = "background", contentScale = ContentScale.Crop, modifier = Modifier.matchParentSize())
@@ -317,5 +291,5 @@ fun GPTCameraResultScreen(
                 }
             }
         }
-    }
+
 }
