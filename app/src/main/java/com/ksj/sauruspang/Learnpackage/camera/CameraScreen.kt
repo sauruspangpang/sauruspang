@@ -208,14 +208,14 @@ fun CameraScreen(
 //                })
 
         )
-        Image(
-            painter = painterResource(R.drawable.icon_camera_skip),
-            contentDescription = "",
-            modifier = Modifier
-                .clickable { }
-                .align(Alignment.TopEnd)
-                .padding(top = 10.dp, end = 10.dp)
-        )
+//        Image(
+//            painter = painterResource(R.drawable.icon_camera_skip),
+//            contentDescription = "",
+//            modifier = Modifier
+//                .clickable { }
+//                .align(Alignment.TopEnd)
+//                .padding(top = 10.dp, end = 10.dp)
+//        )
 
 
     }

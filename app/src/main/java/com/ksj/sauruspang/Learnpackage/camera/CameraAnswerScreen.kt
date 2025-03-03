@@ -123,7 +123,11 @@ fun CameraAnswerScreen(
                     sharedRouteViewModel.sharedCategory = category
                 }
         ) {
-            CapturedImage(capturedImage, modifier = Modifier.matchParentSize().align(Alignment.BottomCenter).offset(y = (5).dp))
+            CapturedImage(
+                capturedImage,
+                modifier = Modifier.matchParentSize().align(Alignment.BottomCenter)
+                    .offset(y = (5).dp)
+            )
             Image(
                 painter = painterResource(id = R.drawable.image_frame),
                 contentDescription = "camera",
@@ -165,34 +169,34 @@ fun CameraAnswerScreen(
                     setToSaturation(0.1f)
                 })
         )
-        Row(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 20.dp)) {
-            Image(
-                painter = painterResource(R.drawable.icon_camera_retry),
-                contentDescription = "다시 찍기",
-                modifier = Modifier.clickable(enabled = (retryCount != 0)) {
-                    capturedImage.value = viewModel.dummyBitmpa
-                    navController.navigate("camerax")
-                })
-            Spacer(modifier = Modifier.width(20.dp))
-            Image(
-                painter = painterResource(R.drawable.icon_camera_skip),
-                contentDescription = "넘어가기",
-                modifier = Modifier
-                    .clickable(enabled = !correct) {
-                        if (questionIndex == questions.size - 1) {
-                            navController.navigate(sharedQuizStart) {
-                                popUpTo(sharedQuizStart) { inclusive = false }
-                            }
-                        } else {
-                            navController.navigate(sharedFront) {
-                                popUpTo(sharedPopUp) { inclusive = false }
-                            }
-                        }
-                        retryCount = 0
-                        correct = false
-                    }
-            )
-        }
 
+            Row(modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 20.dp)) {
+                Image(
+                    painter = painterResource(R.drawable.icon_camera_retry),
+                    contentDescription = "다시 찍기",
+                    modifier = Modifier.clickable(enabled = (retryCount != 0)) {
+                        capturedImage.value = viewModel.dummyBitmpa
+                        navController.navigate("camerax")
+                    })
+                Spacer(modifier = Modifier.width(20.dp))
+                Image(
+                    painter = painterResource(R.drawable.icon_camera_skip),
+                    contentDescription = "넘어가기",
+                    modifier = Modifier
+                        .clickable(enabled = !correct) {
+                            if (questionIndex == questions.size - 1) {
+                                navController.navigate(sharedQuizStart) {
+                                    popUpTo(sharedQuizStart) { inclusive = false }
+                                }
+                            } else {
+                                navController.navigate(sharedFront) {
+                                    popUpTo(sharedPopUp) { inclusive = false }
+                                }
+                            }
+                            retryCount = 0
+                            correct = false
+                        }
+                )
+            }
     }
 }
