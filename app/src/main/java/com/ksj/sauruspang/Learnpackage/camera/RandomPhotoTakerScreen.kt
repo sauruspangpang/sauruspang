@@ -13,9 +13,11 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
@@ -76,8 +78,15 @@ fun GPTRandomPhotoTakerScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFDD4AA))
     ) {
+        Image(
+            painter = painterResource(id = R.drawable.wallpaper_learnscreen),
+            contentDescription = " ",
+            contentScale = ContentScale.Crop,
+            modifier = Modifier
+                .matchParentSize()
+                .zIndex(-1f)
+        )
         // 상단 좌측 홈 아이콘 (TopStart)
         Image(
             painter = painterResource(id = R.drawable.icon_backtochooseda),
