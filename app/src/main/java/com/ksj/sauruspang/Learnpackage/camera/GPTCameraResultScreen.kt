@@ -1,10 +1,13 @@
 package com.ksj.sauruspang.Learnpackage.camera
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
@@ -62,6 +65,7 @@ import com.ksj.sauruspang.util.LearnCorrect
 import com.ksj.sauruspang.util.LearnRetry
 import java.util.Locale
 
+@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GPTCameraResultScreen(
@@ -149,10 +153,11 @@ fun GPTCameraResultScreen(
             Image(painter = painterResource(id = R.drawable.wallpaper_learnscreen), contentDescription = "background", contentScale = ContentScale.Crop, modifier = Modifier.matchParentSize())
             Row(
                 horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.align(Alignment.Center)
             ) {
                 // 왼쪽(이미지 + 한국어/영어 TTS)
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.align(Alignment.CenterVertically)) {
                     Image(
                         bitmap = capturedImage.asImageBitmap(),
                         contentDescription = "Captured Image",
@@ -207,20 +212,9 @@ fun GPTCameraResultScreen(
                     // 상단 공백
                     Spacer(modifier = Modifier.height(screenHeight * 0.23f))
 
-                    // 마이크 버튼(음성 인식)
+                    //마이크 버튼(음성 인식)
                     Box(
                         modifier = Modifier
-                            .size(screenWidth * 0.12f)
-                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(16.dp))
-                            .background(
-                                brush = Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color(0xFF77E4D2),
-                                        Color(0xFF4ECDC4)
-                                    )
-                                ),
-                                shape = RoundedCornerShape(16.dp)
-                            )
                             .clickable {
                                 // 마이크 권한 체크
                                 val micPermission = ContextCompat.checkSelfPermission(
@@ -235,29 +229,11 @@ fun GPTCameraResultScreen(
                                 }
                             }
                     ) {
-                        // 광택 효과
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .background(
-                                    Brush.radialGradient(
-                                        colors = listOf(
-                                            Color.White.copy(alpha = 0.4f),
-                                            Color.Transparent
-                                        ),
-                                        center = Offset(30f, 20f),
-                                        radius = 120f
-                                    ),
-                                    shape = RoundedCornerShape(16.dp)
-                                )
-                        )
                         Image(
-                            painter = painterResource(id = R.drawable.speakbutton),
+                            painter = painterResource(id = R.drawable.icon_speakword),
                             contentDescription = "Speak button",
                             modifier = Modifier
-                                .fillMaxSize()
                                 .padding(8.dp),
-                            contentScale = ContentScale.Fit
                         )
                     }
 

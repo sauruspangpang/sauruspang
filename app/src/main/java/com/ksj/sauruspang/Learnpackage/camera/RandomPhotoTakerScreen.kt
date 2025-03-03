@@ -142,6 +142,9 @@ fun GPTRandomPhotoTakerScreen(
                     Button(onClick = { showRewardAd() }) {
                         Text("광고 시청하여 횟수 충전")
                     }
+                    Button(onClick = { usageManager.addUsage(1) }) {
+                        Text("광고 안보고 횟수 충전")
+                    }
                     Spacer(modifier = Modifier.height(16.dp))
                     if (adLoadingError.isNotEmpty()) {
                         Text("광고 로드 에러: $adLoadingError")
