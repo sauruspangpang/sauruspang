@@ -35,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -59,6 +60,12 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.LottieConstants.IterateForever
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.camera.SharedRouteViewModel
@@ -123,6 +130,9 @@ fun LearnScreen(
     val correctCount by remember { derivedStateOf { viewModel.getCorrectCount(questionId) } }
     val completedQuestion by remember { derivedStateOf { correctCount > 2 } }
 
+    var starCorrect by remember { mutableIntStateOf(0) }
+    val starComplete = starCorrect>2
+
     val recognitionListener = object : RecognitionListener {
         override fun onResults(results: Bundle?) {
             val detectedMatches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
@@ -133,6 +143,7 @@ fun LearnScreen(
                 // 점수 업데이트: 기존 점수에 5점 추가
                 val currentScore = viewModel.profiles.getOrNull(viewModel.selectedProfileIndex.value)?.score ?: 0
                 viewModel.updateScore(currentScore + 5)
+                starCorrect += 1
                 showCorrectDialog = true
             } else {
                 showRetryDialog = true
@@ -147,6 +158,7 @@ fun LearnScreen(
         override fun onPartialResults(partialResults: Bundle?) {}
         override fun onEvent(eventType: Int, params: Bundle?) {}
     }
+
     speechRecognizer.setRecognitionListener(recognitionListener)
 
     val configuration = LocalConfiguration.current
@@ -155,14 +167,7 @@ fun LearnScreen(
 
     var isRecording by remember { mutableStateOf(false) }
 
-    if (isRecording) {
-        LottieLoadingAnimation(R.drawable.recording)
-//        Image(
-//            painter = painterResource(id = R.drawable.recording), // Replace with your actual image resource
-//            contentDescription = "Recording in progress",
-//            modifier = Modifier.size(100.dp)
-//        )
-    }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -293,6 +298,7 @@ fun LearnScreen(
                             }, 4000) // 5000ms = 5 seconds
 
                         }
+
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.icon_speakword),
@@ -329,6 +335,14 @@ fun LearnScreen(
                 setToSaturation(0.1f)
             })
         )
+        if(starComplete){
+            StarAnimation()
+        }
+        Box(modifier = Modifier.align(Alignment.Center)) {
+            if (isRecording) {
+                SpeakAnimation()
+            }
+        }
     }
 
 
@@ -363,5 +377,56 @@ fun LottieLoadingAnimation(image: Int) {
             modifier = Modifier.rotate(rotationAngle),
             tint = Color.Unspecified
         )
+    }
+}
+
+
+
+@Composable
+fun SpeakAnimation() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.speakanimation))
+    val progress by animateLottieCompositionAsState(
+        composition = composition,
+        iterations = IterateForever, // Play only once
+    )
+
+    if (progress < 1f) { // Only show animation while it's playing
+        LottieAnimation(
+            composition = composition,
+            progress = { progress },
+            modifier = Modifier.fillMaxSize(0.5f)
+        )
+    }
+}
+
+
+
+
+
+
+@Composable
+fun StarAnimation() {
+
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.getstarpoint))
+    var startAnimation by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        delay(2000) // 1.5-second delay
+        startAnimation = true
+    }
+
+    if (startAnimation) {
+        val progress by animateLottieCompositionAsState(
+            composition = composition,
+            iterations = 1, // Play only once
+        )
+
+        if (progress < 1f) { // Only show animation while it's playing
+            LottieAnimation(
+                composition = composition,
+                progress = { progress },
+                modifier = Modifier.fillMaxSize(1f)
+            )
+        }
     }
 }

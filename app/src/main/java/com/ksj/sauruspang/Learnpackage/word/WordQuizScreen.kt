@@ -31,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -52,6 +53,8 @@ import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.ksj.sauruspang.Learnpackage.QuizCategory
 import com.ksj.sauruspang.Learnpackage.camera.LottieLoadingAnimation
+import com.ksj.sauruspang.Learnpackage.camera.SpeakAnimation
+import com.ksj.sauruspang.Learnpackage.camera.StarAnimation
 import com.ksj.sauruspang.ProfilePackage.ProfileViewmodel
 import com.ksj.sauruspang.R
 import com.ksj.sauruspang.util.LearnCorrect
@@ -120,6 +123,9 @@ fun WordQuizScreen(
     val correctCount by remember { derivedStateOf { viewModel.getCorrectCount(questionId) } }
     val completedQuestion by remember { derivedStateOf { correctCount > 2 } }
 
+    var starCorrect by remember { mutableIntStateOf(0) }
+    val starComplete = starCorrect>2
+
     val recognitionListener = object : RecognitionListener {
         override fun onResults(results: Bundle?) {
             val detectedMatches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
@@ -127,6 +133,7 @@ fun WordQuizScreen(
             spokenText = spoken
             if (spoken == question.english.lowercase(Locale.ROOT)) {
                 viewModel.increaseCorrectCount(questionId)
+                starCorrect += 1
                 showCorrectDialog = true
             } else {
                 showRetryDialog = true
@@ -150,9 +157,6 @@ fun WordQuizScreen(
 
     var isRecording by remember { mutableStateOf(false) }
 
-    if (isRecording) {
-        LottieLoadingAnimation(R.drawable.recording)
-    }
 
     Box(
         modifier = Modifier
@@ -322,6 +326,15 @@ fun WordQuizScreen(
                 setToSaturation(0.1f)
             })
         )
+        if(starComplete){
+            StarAnimation()
+        }
+        Box(modifier = Modifier.align(Alignment.Center)) {
+            if (isRecording) {
+                SpeakAnimation()
+            }
+        }
     }
+
 }
 
