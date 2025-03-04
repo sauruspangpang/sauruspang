@@ -1,14 +1,14 @@
 package com.ksj.sauruspang.flaskSever
 
+import ai.onnxruntime.OnnxTensor
+import ai.onnxruntime.OrtEnvironment
+import ai.onnxruntime.OrtSession
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
-import com.ksj.sauruspang.flaskSever.ImagePrediction.predictionResults
+import androidx.compose.runtime.mutableStateListOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -21,6 +21,9 @@ import org.json.JSONObject
 import java.io.File
 import java.io.FileOutputStream
 import java.io.InputStream
+import java.nio.FloatBuffer
+import kotlin.math.max
+import kotlin.math.min
 
 // ImageInput sealed class 정의
 sealed class ImageInput {
@@ -28,8 +31,8 @@ sealed class ImageInput {
     data class BitmapInput(val bitmap: Bitmap?) : ImageInput()
 }
 
+// Flask server -----------------------------
 object ImagePrediction {
-
     private const val SERVER_URL = "https://starfish-evolved-molly.ngrok-free.app/predict"
     private val client by lazy { OkHttpClient.Builder().build() }
 

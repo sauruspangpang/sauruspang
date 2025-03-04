@@ -125,5 +125,6 @@ dependencies {
     implementation("com.google.android.gms:play-services-ads:22.4.0")
     implementation("androidx.compose.material3:material3:1.1.0")
 
-
+    // ONNX runtime (ONNX 모델 예측)
+    implementation("com.microsoft.onnxruntime:onnxruntime-android:1.20.0")
 }
