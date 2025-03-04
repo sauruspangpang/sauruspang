@@ -246,7 +246,7 @@ fun GPTCameraResultScreen(
                             Image(
                                 painter = painterResource(id = R.drawable.baseline_check_24),
                                 contentDescription = "check icon",
-                                modifier = Modifier.size(screenWidth * 0.055f),
+                                modifier = Modifier.size(screenWidth * 0.055f).padding(horizontal = 5.dp),
                                 alpha = if (index < correctCount) 1.0f else 0.4f
                             )
                         }

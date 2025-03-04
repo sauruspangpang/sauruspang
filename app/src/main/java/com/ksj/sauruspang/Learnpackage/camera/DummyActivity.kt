@@ -249,7 +249,7 @@ fun DummyScreen(
                                 painter = painterResource(id = question.imageId),
                                 contentDescription = "listen button",
                                 // modifier = Modifier.size(50.dp)
-                                modifier = Modifier.size(screenWidth * 0.055f),
+                                modifier = Modifier.size(screenWidth * 0.055f).padding(horizontal = 5.dp),
                                 alpha = if (index < correctCount) 1.0f else 0.4f
                             )
                             //index 0 = image1, index1 = image2, index2 = image3

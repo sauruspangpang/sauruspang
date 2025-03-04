@@ -302,7 +302,7 @@ fun WordQuizScreen(
                         Image(
                             painter = painterResource(id = question.imageId),
                             contentDescription = "listen button",
-                            modifier = Modifier.size(screenWidth * 0.055f),
+                            modifier = Modifier.size(screenWidth * 0.055f).padding(horizontal = 5.dp),
                             colorFilter = if (index < correctCount) null else ColorFilter.colorMatrix(
                                 ColorMatrix().apply {
                                     setToSaturation(0.3f)
