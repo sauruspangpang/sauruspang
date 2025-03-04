@@ -226,7 +226,7 @@ fun ProfileBox(viewModel: ProfileViewmodel, modifier: Modifier) {
                         )
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            "${profile.score * 5}",
+                            "${profile.score}",
                             color = Color.White,
                             fontWeight = FontWeight.ExtraBold,
                         )

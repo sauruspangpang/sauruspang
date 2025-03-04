@@ -80,6 +80,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
     val dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
     var showDatePicker by remember { mutableStateOf(false) }
     val context = LocalContext.current
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -101,7 +102,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
             modifier = Modifier
                 .padding(top = 10.dp, start = 10.dp)
                 .clickable {
-                    navController.popBackStack("profile",false)
+                    navController.popBackStack("profile", false)
                 }
                 .align(Alignment.TopStart)
         )
@@ -112,8 +113,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                 .fillMaxWidth()
                 .align(Alignment.Center)
                 .offset(y = 50.dp),
-
-            ) {
+        ) {
             Image(
                 painter = painterResource(selectedImage),
                 contentDescription = "background",
@@ -163,9 +163,7 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 .clip(RoundedCornerShape(16.dp))
                                 .padding(5.dp)
                         )
-                        Box(
-                            modifier = Modifier
-                        ) {
+                        Box {
                             OutlinedTextField(
                                 value = selectedDate.format(dateFormatter),
                                 onValueChange = { },
@@ -270,7 +268,6 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                                 }
                             }
                         }
-
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     Text(
@@ -286,18 +283,40 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
                             .padding(vertical = 15.dp, horizontal = 20.dp)
                             .clickable {
                                 if (selectedDate.isAfter(LocalDate.now())) {
-                                    Toast.makeText(context, "날짜를 잘못 입력하였습니다.", Toast.LENGTH_SHORT).show()
+                                    Toast
+                                        .makeText(context, "날짜를 잘못 입력하였습니다.", Toast.LENGTH_SHORT)
+                                        .show()
                                 } else when {
                                     name.isEmpty() -> {
-                                        Toast.makeText(context, "이름을 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                        Toast
+                                            .makeText(context, "이름을 입력해주세요.", Toast.LENGTH_SHORT)
+                                            .show()
                                     }
-                                    name.length > 4 -> {
-                                        Toast.makeText(context, "이름을 네 자리 이하로 입력해주세요.", Toast.LENGTH_SHORT).show()
+                                    // ★ 수정된 부분: 이름 유효성 검사 추가 ★
+                                    !isValidName(name) -> {
+                                        Toast
+                                            .makeText(
+                                                context,
+                                                "이름은 한글 4자 이하 또는 영어 4음절 이하로 입력해주세요.",
+                                                Toast.LENGTH_SHORT
+                                            )
+                                            .show()
                                         name = ""
                                     }
+
                                     else -> {
-                                        birth = birth.ifEmpty { LocalDate.now().format(dateFormatter) }
-                                        viewModel.addProfile(name, birth, userProfile++, selectedImage)
+                                        birth =
+                                            birth.ifEmpty {
+                                                LocalDate
+                                                    .now()
+                                                    .format(dateFormatter)
+                                            }
+                                        viewModel.addProfile(
+                                            name,
+                                            birth,
+                                            userProfile++,
+                                            selectedImage
+                                        )
                                         navController.navigate("profile") {
                                             popUpTo("profile")
                                         }
@@ -313,6 +332,41 @@ fun MainScreen(navController: NavController, viewModel: ProfileViewmodel) {
         }
     }
 }
+
+// ★ 추가된 함수: 한글 4자, 영어 4음절 검사 ★
+fun isValidName(name: String): Boolean {
+    val trimmedName = name.trim()
+    return if (trimmedName.matches(Regex("^[가-힣]+$"))) {
+        trimmedName.length <= 4
+    } else if (trimmedName.matches(Regex("^[A-Za-z]+$"))) {
+        countSyllables(trimmedName) <= 4
+    } else {
+        false
+    }
+}
+
+fun countSyllables(word: String): Int {
+    val vowels = "aeiouy"
+    var count = 0
+    var lastVowel: Char? = null
+    for (c in word.toLowerCase()) {
+        if (c in vowels) {
+            // 이전 모음이 없거나, 이전 모음과 다르면 음절 수 증가
+            if (lastVowel == null || lastVowel != c) {
+                count++
+            }
+            lastVowel = c
+        } else {
+            lastVowel = null
+        }
+    }
+    // 단어가 "e"로 끝나고, 음절 수가 2 이상인 경우 예외 처리
+    if (word.endsWith("e", ignoreCase = true) && count > 1) {
+        count--
+    }
+    return count
+}
+
 
 @Composable
 fun DynamicImageLoding(onImageSelected: (Int) -> Unit) {
