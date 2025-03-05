@@ -4,11 +4,6 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.ksj.sauruspang.Learnpackage.camera.DetectedResultListViewModel
-import com.ksj.sauruspang.flaskSever.ImagePrediction.predictionResults
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,7 +29,7 @@ object ImagePrediction {
     private val client by lazy { OkHttpClient.Builder().build() }
 
     // 서버에서 예측된 prediction_result을 누적 저장할 리스트
-    val predictionResults = mutableListOf<String>()
+    private val predictionResults = mutableListOf<String>()
 
     /**
      * 하나의 함수로 Uri와 Bitmap 모두 처리

@@ -178,7 +178,7 @@ fun NaySys(viewmodel: ProfileViewmodel, tts: TextToSpeech) {
             val questionIndex = backStackEntry.arguments?.getString("questionIndex")?.toInt() ?: 0
 
             // 과일, 동물, 색 카테고리는 LearnScreen 사용
-            if (categoryName !in listOf("과일과 야채", "동물", "색")) {
+            if (categoryName !in listOf("과일과 야채", "동물", "색", "이동수단", "학용품", "옷")) {
                 WordQuizScreen(
                     navController,
                     categoryName,
