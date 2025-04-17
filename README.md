@@ -1,6 +1,7 @@
 # LAMA(AI 영유아 영어 학습 앱)
 
-![image.png](attachment:3efbec56-9ac4-4581-aa60-3f85a3d2a5ae:image.png)
+![image](https://github.com/user-attachments/assets/65e846a8-3762-4d6d-b341-31b202e01c7f)
+
 
 # 💡 Topic
 
@@ -47,43 +48,33 @@
 
 ### 프로필 생성
 
-![image.png](attachment:5c29a29f-af5a-4361-9eab-bfce83dab095:image.png)
+![image](https://github.com/user-attachments/assets/aefb8de9-afa1-456e-b613-96918365cdf5)
 
-![image.png](attachment:40f2e99d-d58a-41f9-bc67-4d95065506cd:image.png)
 
 ### 학습 카테고리 선택
 
-![image.png](attachment:bf06a373-1d41-4e91-859e-4a25f87094e7:image.png)
+![image](https://github.com/user-attachments/assets/fa080bbc-645e-4119-bbdf-69f2414cd8cc)
 
-![image.png](attachment:6364b0d0-682d-43d1-bfe1-cfabc09e120c:image.png)
 
 ### 사진 촬영 및 음성인식 학습
 
-![image.png](attachment:97868155-c2f0-426a-9b0d-0419dabbdc48:image.png)
+![image](https://github.com/user-attachments/assets/f5a678da-f994-48a5-8a45-66cba847d29f)
 
-![image.png](attachment:fb5425f0-17e9-41f9-a744-569282238d69:image.png)
-
-![image.png](attachment:31496c37-4573-4391-aebe-18a57c9ff569:image.png)
-
-![스크린샷 2025-02-23 134118.png](attachment:d44f2187-a688-4f4b-a888-ad02ba080d37:%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2025-02-23_134118.png)
 
 ### GPT API를 통한 다양한 물체 학습
 
-![image.png](attachment:19598944-cbaf-4d27-a5b8-86043c494dce:image.png)
+![image](https://github.com/user-attachments/assets/41f729a5-1aa1-4b34-9a3e-c8664495ae35)
 
-![image.png](attachment:4644bda6-2169-4df4-adaf-a33f96062703:image.png)
 
 ### 글자 연습
 
-![image.png](attachment:dae8cbe5-590d-429b-b751-87cc7b4134b5:image.png)
+![image](https://github.com/user-attachments/assets/43684f16-fdd6-45ae-96c7-63a0e0c0a27a)
 
-![스크린샷 2025-02-23 135230.png](attachment:e607c034-59f7-45b0-973b-9daccd8b6c47:%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2025-02-23_135230.png)
 
 ### 도감 및 프로필 관리 페이지
 
-![스크린샷 2025-02-23 134104.png](attachment:592021f3-0f81-44e7-a9d2-5ee93ac1bfc4:%EC%8A%A4%ED%81%AC%EB%A6%B0%EC%83%B7_2025-02-23_134104.png)
+![image](https://github.com/user-attachments/assets/c1d54fa6-e865-4137-a345-6d4e15e31f29)
 
-![image.png](attachment:ec202d28-78ab-4a99-a8ec-4ad9339dcbe8:image.png)
 
 ---
 
